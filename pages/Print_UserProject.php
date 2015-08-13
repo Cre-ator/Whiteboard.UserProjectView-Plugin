@@ -12,9 +12,9 @@
    
    $t_all_active_users = db_query($t_query);
    
-   while($t_row = db_fetch_array($t_all_active_users))
+   while($t_user_row = db_fetch_array($t_all_active_users))
    {
-      $t_users[] = $t_row;
+      $t_users[] = $t_user_row;
    }
    
    $t_user_count = count($t_users);
@@ -22,26 +22,26 @@
 
 <table class="width100" cellspacing="1" >
    <tr>
-      <td class="form-title" colspan="6">
+      <td class="form-title" colspan="5">
          <div class="center">
-         <?php echo $t_window_title . ' - UserProjectView'?>
+            <?php echo $t_window_title . ' - UserProjectView' ?>
          </div>
       </td>
    </tr>
    <tr>
-      <td class="print-spacer" colspan="6">
+      <td class="print-spacer" colspan="5">
          <hr />
       </td>
    </tr>
    <tr class="print-category">
-      <td class="print" width="16%"><?php echo plugin_lang_get('username')?></td>
-      <td class="print" width="16%"><?php echo plugin_lang_get('projects')?></td>
-      <td class="print" width="16%"><?php echo plugin_lang_get('next_version')?></td>
-      <td class="print" width="16%"><?php echo plugin_lang_get('issues')?></td>
-      <td class="print" width="16%"><?php echo plugin_lang_get('wrong_issues')?></td>
+      <td class="print" width="16%"><?php echo plugin_lang_get('username') ?></td>
+      <td class="print" width="16%"><?php echo plugin_lang_get('projects') ?></td>
+      <td class="print" width="16%"><?php echo plugin_lang_get('next_version') ?></td>
+      <td class="print" width="16%"><?php echo plugin_lang_get('issues') ?></td>
+      <td class="print" width="16%"><?php echo plugin_lang_get('wrong_issues') ?></td>
    </tr>
    <tr>
-      <td class="print-spacer" colspan="6">
+      <td class="print-spacer" colspan="5">
          <hr />
       </td>
    </tr>
@@ -68,9 +68,9 @@
 	   
 	   $t_all_projects_by_user = db_query($t_query);
 	   
-	   while ($row = db_fetch_array($t_all_projects_by_user))
+	   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 	   {
-	   	echo $names[] = $row['name'] . '<br>';
+	   	echo $names[] = $t_project_row['name'] . '<br>';
 	   }
 ?>
       </td>
@@ -85,13 +85,13 @@
 	   
 	   $t_all_projects_by_user = db_query($t_query);
 	   
-	   while ($row = db_fetch_array($t_all_projects_by_user))
+	   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 	   {
 	      $t_query = 'SELECT (mantis_bug_table.target_version) AS ""';
 	      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $row['id'];
+	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 	      $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	      
 	      $t_target_version = db_query($t_query);
@@ -111,13 +111,13 @@
 	   
 	   $t_all_projects_by_user = db_query($t_query);
 	
-	   while ($row = db_fetch_array($t_all_projects_by_user))
+	   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 	   {
 	      $t_query = 'SELECT COUNT(mantis_bug_table.id) AS ""';
 	      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $row['id'];
+	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 	      $t_query = $t_query .= ' AND mantis_bug_table.handler_id = ' . $t_user['id'];
 	      $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	         
@@ -135,17 +135,17 @@
 	   
 	   $t_all_projects = db_query($t_query);
 	   
-	   while ($project = db_fetch_array($t_all_projects))
+	   while ($t_project_row = db_fetch_array($t_all_projects))
 	   {
 	      $t_query = 'SELECT DISTINCT mantis_bug_table.id AS "id", mantis_project_table.name AS "pname"';
 	      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'];
-	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $project['id'];
+	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
 	      $t_query = $t_query .= ' AND mantis_bug_table.handler_id = ' . $t_user['id'];
 	      $t_query = $t_query .= ' AND NOT EXISTS (';
 	         $t_query = $t_query .= ' SELECT *';
 	         $t_query = $t_query .= ' FROM mantis_project_table, mantis_project_user_list_table';      
-	         $t_query = $t_query .= ' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'];
+	         $t_query = $t_query .= ' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 	         $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	      $t_query = $t_query .= ' )';
 	      
@@ -164,7 +164,7 @@
       </td>
    </tr>
    <tr>
-      <td class="print-spacer" colspan="6">
+      <td class="print-spacer" colspan="5">
          <hr />
       </td>
    </tr>

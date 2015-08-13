@@ -32,19 +32,19 @@
 ?>
       <thead>
          <tr>
-            <td class="form-title" colspan="4"><?php echo plugin_lang_get('accounts_title');?></td>
+            <td class="form-title" colspan="4"><?php echo plugin_lang_get('accounts_title'); ?></td>
             <td class="right alternate-views-links" colspan="5">
                <span class="small">
-                  <?php echo '[ <a href="' . plugin_page('Print_UserProject') . '">' . plugin_lang_get('print_button') . '</a> ]';?>
+                  <?php echo '[ <a href="' . plugin_page('Print_UserProject') . '">' . plugin_lang_get('print_button') . '</a> ]'; ?>
                </span>
             </td>
          </tr>
          <tr class="row-category">
-				<th><?php echo plugin_lang_get('username')?></th>
-				<th><?php echo plugin_lang_get('projects')?></th>
-				<th><?php echo plugin_lang_get('next_version')?></th>
-				<th><?php echo plugin_lang_get('issues')?></th>
-				<th><?php echo plugin_lang_get('wrong_issues')?></th>
+				<th><?php echo plugin_lang_get('username') ?></th>
+				<th><?php echo plugin_lang_get('projects') ?></th>
+				<th><?php echo plugin_lang_get('next_version') ?></th>
+				<th><?php echo plugin_lang_get('issues') ?></th>
+				<th><?php echo plugin_lang_get('wrong_issues') ?></th>
          </tr>
       </thead>
       <tbody>
@@ -101,19 +101,19 @@
 		
 		$t_all_projects_by_user = db_query($t_query);
 		
-		while ($row = db_fetch_array($t_all_projects_by_user))
+		while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 		{
 			if(access_has_global_level($u_access_level))
 	      {
 ?>
-	           <a href="manage_proj_edit_page.php?project_id=<?php echo $ids[] = $row['id'] ?>">
+	           <a href="manage_proj_edit_page.php?project_id=<?php echo $ids[] = $t_project_row['id'] ?>">
 <?php
-      echo $names[] = $row['name'] . "<br>"
+      echo $names[] = $t_project_row['name'] . "<br>"
 ?>
 	           </a>
 <?php
 	      } else {
-	         echo $names[] = $row['name'] . "<br>";
+	         echo $names[] = $t_project_row['name'] . "<br>";
 	      }
 		}
 ?>
@@ -131,13 +131,13 @@
 	   
 	   $t_all_projects_by_user = db_query($t_query);
 
-	   while ($row = db_fetch_array($t_all_projects_by_user))
+	   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 	   {
 	      $t_query = 'SELECT (mantis_bug_table.target_version) AS ""';
 	      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $row['id'];
-	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $row['id'];
+	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 	      $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	      
 	      $t_target_version = db_query($t_query);
@@ -159,13 +159,13 @@
 		
 		$t_all_projects_by_user = db_query($t_query);
 
-		while ($row = db_fetch_array($t_all_projects_by_user))
+		while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 		{
 		   $t_query = 'SELECT COUNT(mantis_bug_table.id) AS ""';
 		   $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-		   $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $row['id'];
-		   $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $row['id'];
-		   $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $row['id'];
+		   $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+		   $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
+		   $t_query = $t_query .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 		   $t_query = $t_query .= ' AND mantis_bug_table.handler_id = ' . $t_user['id'];
 		   $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 				
@@ -186,17 +186,17 @@
 	   
 	   $t_all_projects = db_query($t_query);
 	   
-	   while ($project = db_fetch_array($t_all_projects))
+	   while ($t_project_row = db_fetch_array($t_all_projects))
 	   {
 	   	$t_query = 'SELECT DISTINCT mantis_bug_table.id AS "id", mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"';
 	      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'];
-	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $project['id'];
+	      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
+	      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];
 	      $t_query = $t_query .= ' AND mantis_bug_table.handler_id = ' . $t_user['id'];
 	      $t_query = $t_query .= ' AND NOT EXISTS (';
 	         $t_query = $t_query .= ' SELECT *';
 	         $t_query = $t_query .= ' FROM mantis_project_table, mantis_project_user_list_table';   	
-	         $t_query = $t_query .= ' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'];
+	         $t_query = $t_query .= ' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $t_project_row['id'];
 	         $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	      $t_query = $t_query .= ' )';
 	      $t_query = $t_query .= ' ORDER BY mantis_bug_table.id';
@@ -212,7 +212,7 @@
       echo $issues[] = bug_format_id($issue['id']);
 ?>
          </a>
-         <?php echo ", " . plugin_lang_get('project')?>
+            <?php echo ", " . plugin_lang_get('project') ?>
          <a href="manage_proj_edit_page.php?project_id=<?php echo $issues[] = $issue['pid'] ?>">
 <?php
       echo $issues[] = $issue['pname'] . "<br>";
@@ -231,4 +231,4 @@
    </table>
 </div>
 <?php
-   html_page_bottom1( __FILE__ );
+   html_page_bottom1();
