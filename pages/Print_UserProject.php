@@ -62,6 +62,7 @@
 	   $t_query = 'SELECT mantis_project_table.id AS "id", mantis_project_table.name AS "name"';
 	   $t_query = $t_query .= ' FROM mantis_project_table, mantis_project_user_list_table';
 	   $t_query = $t_query .= ' WHERE mantis_project_table.id = mantis_project_user_list_table.project_id';
+	   $t_query = $t_query .= ' AND mantis_project_table.enabled = 1';
 	   $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	   $t_query = $t_query .= ' ORDER BY mantis_project_table.id';
 	   
@@ -78,6 +79,7 @@
 	   $t_query = 'SELECT mantis_project_table.id AS "id"';
 	   $t_query = $t_query .= ' FROM mantis_project_table, mantis_project_user_list_table';
 	   $t_query = $t_query .= ' WHERE mantis_project_table.id = mantis_project_user_list_table.project_id';
+	   $t_query = $t_query .= ' AND mantis_project_table.enabled = 1';
 	   $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	   $t_query = $t_query .= ' ORDER BY mantis_project_table.id';
 	   
@@ -103,6 +105,7 @@
 	   $t_query = 'SELECT mantis_project_table.id AS "id"';
 	   $t_query = $t_query .= ' FROM mantis_project_table, mantis_project_user_list_table';
 	   $t_query = $t_query .= ' WHERE mantis_project_table.id = mantis_project_user_list_table.project_id';
+	   $t_query = $t_query .= ' AND mantis_project_table.enabled = 1';
 	   $t_query = $t_query .= ' AND mantis_project_user_list_table.user_id = ' . $t_user['id'];
 	   $t_query = $t_query .= ' ORDER BY mantis_project_table.id';
 	   
