@@ -44,7 +44,7 @@ class UserProjectViewPlugin extends MantisPlugin
    	return array
    	(
 		   'ShowInFooter'           => ON,
-		   'ShowUserMenu'           => ON,
+		   'ShowMenu'           => ON,
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
@@ -68,7 +68,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $t_user_id = auth_get_current_user_id();
       $t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEWVIEW_THRESHOLD_LEVEL_DEFAULT);
       
-      if (plugin_config_get('ShowUserMenu') == 1 && $t_user_has_level)
+      if (plugin_config_get('ShowMenu') == 1 && $t_user_has_level)
       {
       	return '<a href="' . plugin_page('UserProject') . '">' . plugin_lang_get('menu_title') . '</a>';
       }

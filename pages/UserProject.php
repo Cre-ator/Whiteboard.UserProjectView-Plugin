@@ -124,7 +124,7 @@ else
 	
 		   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
 		   {
-		      $t_query = 'SELECT (mantis_bug_table.target_version) AS ""';
+		      $t_query = 'SELECT DISTINCT (mantis_bug_table.target_version) AS ""';
 		      $t_query = $t_query .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
 		      $t_query = $t_query .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $t_project_row['id'];
 		      $t_query = $t_query .= ' AND mantis_project_table.id = ' . $projects[] = $t_project_row['id'];

@@ -11,6 +11,13 @@ if(plugin_config_get('ShowInFooter') != $ShowInFooter)
    plugin_config_set('ShowInFooter', $ShowInFooter);
 }
 
+$ShowMenu = gpc_get_int('ShowMenu', ON);
+
+if(plugin_config_get('ShowMenu') != $ShowMenu)
+{
+   plugin_config_set('ShowMenu', $ShowMenu);
+}
+
 $UserProjectAccessLevel = gpc_get_int('UserProjectAccessLevel');
 
 if(plugin_config_get('UserProjectAccessLevel') != $UserProjectAccessLevel)

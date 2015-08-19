@@ -15,6 +15,7 @@ $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';
 
 $s_plugin_UserProjectView_footer = 'Plugin Info in Footer anzeigen?';
+$s_plugin_UserProjectView_menu = 'Plugin Menueeintrag anzeigen?';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 
 $s_plugin_UserProjectView_config_title = 'UserProjectView - Konfiguration';
