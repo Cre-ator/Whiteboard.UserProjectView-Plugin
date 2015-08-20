@@ -53,7 +53,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
    	$t_project_id = helper_get_current_project();
    	$t_user_id = auth_get_current_user_id();
-   	$t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEWVIEW_THRESHOLD_LEVEL_DEFAULT);
+   	$t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
    	
    	if (plugin_config_get('ShowInFooter') == 1 && $t_user_has_level)
    	{
@@ -66,7 +66,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       $t_project_id = helper_get_current_project();
       $t_user_id = auth_get_current_user_id();
-      $t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEWVIEW_THRESHOLD_LEVEL_DEFAULT);
+      $t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
       
       if (plugin_config_get('ShowMenu') == 1 && $t_user_has_level)
       {
