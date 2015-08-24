@@ -1,21 +1,21 @@
 <?php
 /* Configuration page */
 
-$s_plugin_UserProjectView_user_project_view = 'Benutzer-Projekt-Uebersicht';
+$s_plugin_UserProjectView_user_project_view = 'Benutzer-Projekt-Übersicht';
 $s_plugin_UserProjectView_menu_title = 'Benutzer';
 $s_plugin_UserProjectView_print_button = 'Drucken';
-$s_plugin_UserProjectView_accounts_title = 'Kontenuebersicht (nur aktive Benutzer)';
+$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht (nur aktive Benutzer)';
 $s_plugin_UserProjectView_username = 'Benutzername';
 $s_plugin_UserProjectView_projects = 'Zugewiesene Projekte';   
-$s_plugin_UserProjectView_issues = 'Anzahl der zugewiesenen Eintraege';
-$s_plugin_UserProjectView_wrong_issues = 'Eintraege ohne Projekt';
-$s_plugin_UserProjectView_next_version = 'Unveroeffentlichter Nachfolger';
+$s_plugin_UserProjectView_issues = 'Anzahl der zugewiesenen Einträge';
+$s_plugin_UserProjectView_wrong_issues = 'Einträge ohne Projekt';
+$s_plugin_UserProjectView_next_version = 'Unveröffentlichter Nachfolger';
 
 $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';
 
 $s_plugin_UserProjectView_footer = 'Plugin Info in Footer anzeigen?';
-$s_plugin_UserProjectView_menu = 'Plugin Menueeintrag anzeigen?';
+$s_plugin_UserProjectView_menu = 'Plugin Menüeintrag anzeigen?';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 
 $s_plugin_UserProjectView_config_title = 'UserProjectView - Konfiguration';

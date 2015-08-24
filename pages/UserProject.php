@@ -99,7 +99,7 @@ else
 		            }
 		            else
 		            {
-			           echo $names[] = $t_project_row['name'] . "<br>";
+							echo $names[] = $t_project_row['name'] . "<br>";
 		            }
 		         }
 	         echo '</td>';
@@ -138,14 +138,22 @@ else
 				      
 				      while ($issue = db_fetch_array($t_issue))
 				      {
-				         echo plugin_lang_get('issue') . ' ';
-		               echo '<a href="view.php?id=' . $issues[] = $issue['id'] . '">';
-		               echo $issues[] = bug_format_id($issue['id']);
-		               echo '</a>';
-		               echo ', ' . plugin_lang_get('project') . ' ';
-		               echo '<a href="manage_proj_edit_page.php?project_id=' . $issues[] = $issue['pid'] . '">';
-		               echo $issues[] = $issue['pname'] . "<br>";       
-		               echo '</a>';      
+				      	if(access_has_global_level($u_access_level))
+				      	{
+					         echo plugin_lang_get('issue') . ' ';
+			               echo '<a href="view.php?id=' . $issues[] = $issue['id'] . '">';
+			               echo $issues[] = bug_format_id($issue['id']);
+			               echo '</a>';
+			               echo ', ' . plugin_lang_get('project') . ' ';
+			               echo '<a href="manage_proj_edit_page.php?project_id=' . $issues[] = $issue['pid'] . '">';
+			               echo $issues[] = $issue['pname'] . '<br>';       
+			               echo '</a>';
+				      	}
+				      	else
+				      	{
+				      		echo plugin_lang_get('issue') . ' ' . $issues[] = bug_format_id($issue['id']);
+				      		echo ', ' . plugin_lang_get('project') . ' ' . $issues[] = $issue['pname'] . '<br>';
+				      	}
 		            }
 		         }
 	         echo '</td>';
