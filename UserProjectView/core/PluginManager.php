@@ -9,10 +9,10 @@ class PluginManager
 	
 	public function getAllActiveUsers()
 	{
-		$sqlquery = 'SELECT *';
-		$sqlquery = $sqlquery .= ' FROM mantis_user_table';
-		$sqlquery = $sqlquery .= ' WHERE mantis_user_table.enabled = 1';
-		$sqlquery = $sqlquery .= ' ORDER BY mantis_user_table.username';
+		$sqlquery = ' SELECT *' .
+						' FROM mantis_user_table' .
+						' WHERE mantis_user_table.enabled = 1' .
+						' ORDER BY mantis_user_table.username';
 		
 		$allActiveUsers = db_query( $sqlquery );
 		
@@ -21,10 +21,10 @@ class PluginManager
 	
 	public function getAllProjects()
 	{
-		$sqlquery = 'SELECT mantis_project_table.id';
-		$sqlquery = $sqlquery .= ' FROM mantis_project_table';
-		$sqlquery = $sqlquery .= ' WHERE mantis_project_table.enabled = 1';
-		$sqlquery = $sqlquery .= ' ORDER BY mantis_project_table.id';
+		$sqlquery = ' SELECT mantis_project_table.id' .
+						' FROM mantis_project_table' .
+						' WHERE mantis_project_table.enabled = 1' .
+						' ORDER BY mantis_project_table.id';
 		 
 		$allProjects = db_query( $sqlquery );
 		
@@ -33,12 +33,12 @@ class PluginManager
 	
 	public function getAllProjectsByUser( $userId )
 	{
-		$sqlquery = 'SELECT mantis_project_table.id AS "id", mantis_project_table.name AS "name"';
-		$sqlquery = $sqlquery .= ' FROM mantis_project_table, mantis_project_user_list_table';
-		$sqlquery = $sqlquery .= ' WHERE mantis_project_table.id = mantis_project_user_list_table.project_id';
-		$sqlquery = $sqlquery .= ' AND mantis_project_table.enabled = 1';
-		$sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.user_id = ' . $userId;
-		$sqlquery = $sqlquery .= ' ORDER BY mantis_project_table.id';
+		$sqlquery = ' SELECT mantis_project_table.id AS "id", mantis_project_table.name AS "name"' .
+						' FROM mantis_project_table, mantis_project_user_list_table' .
+						' WHERE mantis_project_table.id = mantis_project_user_list_table.project_id' .
+						' AND mantis_project_table.enabled = 1' .
+						' AND mantis_project_user_list_table.user_id = ' . $userId .
+						' ORDER BY mantis_project_table.id';
 		
 		$allProjectsByUser = db_query( $sqlquery );
 		
@@ -47,12 +47,12 @@ class PluginManager
 	
 	public function getTargetVersionByProjectAndUser( $project, $userId )
 	{
-		$sqlquery = 'SELECT DISTINCT (mantis_bug_table.target_version) AS ""';
-		$sqlquery = $sqlquery .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-		$sqlquery = $sqlquery .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'];
-		$sqlquery = $sqlquery .= ' AND mantis_project_table.id = ' . $projects[] = $project['id'];
-		$sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'];
-		$sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.user_id = ' . $userId;
+		$sqlquery = ' SELECT DISTINCT (mantis_bug_table.target_version) AS ""' .
+						' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table' .
+						' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_table.id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_user_list_table.user_id = ' . $userId;
 		
 		$targetVersion = db_query( $sqlquery );
 		
@@ -61,13 +61,13 @@ class PluginManager
 	
 	public function getAmountOfIssuesByProjectAndUser( $project, $userId )
 	{
-		$sqlquery = 'SELECT COUNT(mantis_bug_table.id) AS ""';
-	   $sqlquery = $sqlquery .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-	   $sqlquery = $sqlquery .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'];
-	   $sqlquery = $sqlquery .= ' AND mantis_project_table.id = ' . $projects[] = $project['id'];
-	   $sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'];
-	   $sqlquery = $sqlquery .= ' AND mantis_bug_table.handler_id = ' . $userId;
-	   $sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.user_id = ' . $userId;
+		$sqlquery = ' SELECT COUNT(mantis_bug_table.id) AS ""' .
+						' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table' .
+						' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_table.id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'] .
+						' AND mantis_bug_table.handler_id = ' . $userId .
+						' AND mantis_project_user_list_table.user_id = ' . $userId;
 			
 	   $amountIssues = db_query( $sqlquery );
 	   
@@ -75,18 +75,19 @@ class PluginManager
 	}
 	
 	public function getIssuesWithoutProjectByProjectAndUser( $project, $userId ) {
-		$sqlquery = 'SELECT DISTINCT mantis_bug_table.id AS "id", mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"';
-      $sqlquery = $sqlquery .= ' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table';
-      $sqlquery = $sqlquery .= ' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'];
-      $sqlquery = $sqlquery .= ' AND mantis_project_table.id = ' . $projects[] = $project['id'];
-      $sqlquery = $sqlquery .= ' AND mantis_bug_table.handler_id = ' . $userId;
-      $sqlquery = $sqlquery .= ' AND NOT EXISTS (';
-         $sqlquery = $sqlquery .= ' SELECT *';
-         $sqlquery = $sqlquery .= ' FROM mantis_project_table, mantis_project_user_list_table';   	
-         $sqlquery = $sqlquery .= ' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'];
-         $sqlquery = $sqlquery .= ' AND mantis_project_user_list_table.user_id = ' . $userId;
-      $sqlquery = $sqlquery .= ' )';
-      $sqlquery = $sqlquery .= ' ORDER BY mantis_bug_table.id';
+		$sqlquery = ' SELECT DISTINCT mantis_bug_table.id AS "id", ' .
+								' mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"' .
+						' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table' .
+						' WHERE mantis_bug_table.project_id = ' . $projects[] = $project['id'] .
+						' AND mantis_project_table.id = ' . $projects[] = $project['id'] .
+						' AND mantis_bug_table.handler_id = ' . $userId .
+						' AND NOT EXISTS (' .
+							' SELECT *' .
+							' FROM mantis_project_table, mantis_project_user_list_table' .
+							' WHERE mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'] .
+							' AND mantis_project_user_list_table.user_id = ' . $userId .
+						' )' .
+						' ORDER BY mantis_bug_table.id';
       
       $IssueWithoutProjectByProjectAndUser = db_query( $sqlquery );
       
