@@ -4,25 +4,22 @@ include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
 html_page_top1(plugin_lang_get('user_project_view'));
 html_page_top2();
 
-// actual Mantis version
-$mantis_version = substr(MANTIS_VERSION, 0, 4);
-
 // PluginManager object
 $pluginManager = new PluginManager();
 
 // All active users
-$t_all_active_users = $pluginManager->getAllActiveUsers();
+$allActiveUsers = $pluginManager->getAllActiveUsers();
 	
-while($t_row = db_fetch_array($t_all_active_users))
+while($user = db_fetch_array($allActiveUsers))
 {
-   $t_users[] = $t_row;
+   $users[] = $user;
 }
 	
-$t_user_count = count($t_users);
+$t_user_count = count($users);
 
 echo '<div id="manage-user-div" class="form-container">';
 
-if ($mantis_version == '1.2.')
+if ($pluginManager->getActMantisVersion() == '1.2.')
 {
    echo '<table class="width100" cellspacing="1">';
 }
@@ -54,15 +51,15 @@ else
 		for($i=0; $i<$t_user_count; $i++)
 		{
 		   # prefix user data with u_
-		   $t_user = $t_users[$i];
-		   extract($t_user, EXTR_PREFIX_ALL, 'u');
+		   $user = $users[$i];
+		   extract($user, EXTR_PREFIX_ALL, 'u');
 		
 		   if(!isset($t_access_level[$u_access_level]))
 		   {
 		      $t_access_level[$u_access_level] = get_enum_element('access_levels', $u_access_level);
 		   } 
 	
-			if ($mantis_version == '1.2.')
+			if ($pluginManager->getActMantisVersion() == '1.2.')
 			{
 			   echo '<tr ' . helper_alternate_class($i) . '>';
 			}
@@ -87,44 +84,44 @@ else
 	
 	         // Column Projects
 	         echo '<td>';
-					$t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+					$allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 					
-					while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+					while ($project = db_fetch_array($allProjectsByUser))
 					{
 						if(access_has_global_level($u_access_level))
 				      {
-		               echo '<a href="manage_proj_edit_page.php?project_id=' . $ids[] = $t_project_row['id'] . '">';
-		               echo $names[] = $t_project_row['name'] . '<br>';
+		               echo '<a href="manage_proj_edit_page.php?project_id=' . $ids[] = $project['id'] . '">';
+		               echo $names[] = $project['name'] . '<br>';
 		               echo '</a>';
 		            }
 		            else
 		            {
-							echo $names[] = $t_project_row['name'] . "<br>";
+							echo $names[] = $project['name'] . "<br>";
 		            }
 		         }
 	         echo '</td>';
 	
 	         // Column Target version
 	         echo '<td>';
-				   $t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+				   $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 			
-				   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+				   while ($project = db_fetch_array($allProjectsByUser))
 				   {
-				   	$t_target_version = $pluginManager->getTargetVersionByProjectAndUser($t_project_row, $t_user['id']);
+				   	$targetVersion = $pluginManager->getTargetVersionByProjectAndUser($project, $user['id']);
 				      
-				      echo $t_target_version . "<br>";
+				      echo $targetVersion . "<br>";
 				   }  
 	         echo '</td>';
 	
 	         // Column Issues
 	         echo '<td>';
-					$t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+					$allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 			
-					while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+					while ($project = db_fetch_array($allProjectsByUser))
 					{
-					   $t_sum_issue = $pluginManager->getAmountOfIssuesByProjectAndUser($t_project_row, $t_user['id']);
+					   $amountIssue = $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']);
 					   
-					   echo $t_sum_issue . '<br>';
+					   echo $amountIssue . '<br>';
 					}
 	         echo '</td>';
 	
@@ -132,9 +129,9 @@ else
 	         echo '<td>';
 				   $t_all_projects = $pluginManager->getAllProjects();
 				   
-				   while ($t_project_row = db_fetch_array($t_all_projects))
+				   while ($project = db_fetch_array($t_all_projects))
 				   {
-				      $t_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($t_project_row, $t_user['id']);
+				      $t_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
 				      
 				      while ($issue = db_fetch_array($t_issue))
 				      {

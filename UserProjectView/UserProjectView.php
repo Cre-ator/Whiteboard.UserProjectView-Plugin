@@ -49,13 +49,19 @@ class UserProjectViewPlugin extends MantisPlugin
    	);
    }
    
+   function getUserHasLevel()
+   {
+   	$projectId = helper_get_current_project();
+   	$userId = auth_get_current_user_id();
+   	
+   	$userHasLevel = user_get_access_level($userId, $projectId) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
+   	
+   	return $userHasLevel;
+   }
+   
    function footer()
    {
-   	$t_project_id = helper_get_current_project();
-   	$t_user_id = auth_get_current_user_id();
-   	$t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
-   	
-   	if (plugin_config_get('ShowInFooter') == 1 && $t_user_has_level)
+   	if (plugin_config_get('ShowInFooter') == 1 && $this->getUserHasLevel())
    	{
    		return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
    	}
@@ -64,11 +70,7 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function menu()
    {
-      $t_project_id = helper_get_current_project();
-      $t_user_id = auth_get_current_user_id();
-      $t_user_has_level = user_get_access_level($t_user_id, $t_project_id) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
-      
-      if (plugin_config_get('ShowMenu') == 1 && $t_user_has_level)
+      if (plugin_config_get('ShowMenu') == 1 && $this->getUserHasLevel())
       {
       	return '<a href="' . plugin_page('UserProject') . '">' . plugin_lang_get('menu_title') . '</a>';
       }

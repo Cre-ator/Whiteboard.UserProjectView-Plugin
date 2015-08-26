@@ -2,8 +2,6 @@
 access_ensure_global_level(plugin_config_get('UserProjectAccessLevel'));
 auth_reauthenticate();
 
-   $mantis_version = substr(MANTIS_VERSION, 0, 4);
-
 html_page_top1(plugin_lang_get('config_title'));
 html_page_top2();
 
@@ -13,7 +11,7 @@ echo '<br/>';
 echo '<form action="' . plugin_page('config_update') . '" method="post">';
 echo form_security_field('plugin_UserProjectView_config_update');
 
-if($mantis_version == '1.2.')
+if(substr(MANTIS_VERSION, 0, 4) == '1.2.')
 {
    echo '<table align="center" class="width75" cellspacing="1">';
 }
@@ -29,7 +27,7 @@ else
 		echo '</td>';
 	echo '</tr>';
 	
-   if($mantis_version == '1.2.')
+   if(substr(MANTIS_VERSION, 0, 4) == '1.2.')
    {
       echo '<tr ' . helper_alternate_class() . '>';
    }
@@ -48,7 +46,7 @@ else
       echo '</td>';
    echo '</tr>';
 	
-	if($mantis_version == '1.2.')
+	if(substr(MANTIS_VERSION, 0, 4) == '1.2.')
 	{
 	   echo '<tr ' . helper_alternate_class() . '>';
 	}
@@ -68,7 +66,7 @@ else
 		echo '</td>';
 	echo '</tr>';
 	
-	if($mantis_version == '1.2.')
+	if(substr(MANTIS_VERSION, 0, 4) == '1.2.')
 	{
 	   echo '<tr ' . helper_alternate_class() . '>';
 	}
@@ -93,7 +91,7 @@ else
 	echo '</tr>';
 echo '</table>';
 
-if($mantis_version == '1.2.')
+if(substr(MANTIS_VERSION, 0, 4) == '1.2.')
 {
 
 }

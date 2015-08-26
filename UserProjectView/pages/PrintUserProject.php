@@ -5,27 +5,24 @@ html_page_top1(plugin_lang_get('user_project_view'));
 html_head_end();
 html_body_begin();
 
-// title
-$t_title = string_display_line(config_get('window_title'));
-
 // PluginManager object
 $pluginManager = new PluginManager();
 
 // All active users
-$t_all_active_users = $pluginManager->getAllActiveUsers();
+$allActiveUsers = $pluginManager->getAllActiveUsers();
    
-while($t_user_row = db_fetch_array($t_all_active_users))
+while($user = db_fetch_array($allActiveUsers))
 {
-   $t_users[] = $t_user_row;
+   $users[] = $user;
 }
    
-$t_user_count = count($t_users);
+$userCount = count($users);
 
 echo '<table class="width100" cellspacing="1" >';
 	echo '<tr>';
 		echo '<td class="form-title" colspan="5">';
 			echo '<div class="center">';
-			echo $t_title . ' - UserProjectView';
+			echo string_display_line(config_get('window_title')) . ' - UserProjectView';
 			echo '</div>';
 		echo '</td>';
 	echo '</tr>';
@@ -47,10 +44,10 @@ echo '<table class="width100" cellspacing="1" >';
 		echo '</td>';
 	echo '</tr>';
 	
-	for($i=0; $i<$t_user_count; $i++)
+	for($i=0; $i<$userCount; $i++)
 	{
-	   $t_user = $t_users[$i];
-	   extract($t_user, EXTR_PREFIX_ALL, 'u');
+	   $user = $users[$i];
+	   extract($user, EXTR_PREFIX_ALL, 'u');
 	   echo '<tr>';
 	   	// Column User
 		   echo '<td class="print">';
@@ -58,44 +55,44 @@ echo '<table class="width100" cellspacing="1" >';
 		   echo '</td>';
 		   // Column Projects
 		   echo '<td class="print">';
-			   $t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+			   $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 			   
-			   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+			   while ($project = db_fetch_array($allProjectsByUser))
 			   {
-			   	echo $names[] = $t_project_row['name'] . '<br>';
+			   	echo $names[] = $project['name'] . '<br>';
 			   }
 		   echo '</td>';
 		   // column  Target version
 		   echo '<td class="print">';
-			   $t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+			   $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 			   
-			   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+			   while ($project = db_fetch_array($allProjectsByUser))
 			   {
-			      $t_target_version = $pluginManager->getTargetVersionByProjectAndUser($t_project_row, $t_user['id']);
+			      $targetVersion = $pluginManager->getTargetVersionByProjectAndUser($project, $user['id']);
 			      
-			      echo $t_target_version . '<br>';
+			      echo $targetVersion . '<br>';
 			   }
 		   echo '</td>';
 		   // Column Issues
 		   echo '<td class="print">';
-			   $t_all_projects_by_user = $pluginManager->getAllProjectsByUser($t_user['id']);
+			   $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 			
-			   while ($t_project_row = db_fetch_array($t_all_projects_by_user))
+			   while ($project = db_fetch_array($allProjectsByUser))
 			   {
-			      $t_sum_issue = $pluginManager->getAmountOfIssuesByProjectAndUser($t_project_row, $t_user['id']);
+			      $amountIssue = $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']);
 			      
-			      echo $t_sum_issue . '<br>';
+			      echo $amountIssue . '<br>';
 			   }
 		   echo '</td>';
 		   // Column Wrong Issues
 		   echo '<td class="print">';
-			   $t_all_projects = $pluginManager->getAllProjects();
+			   $allProjects = $pluginManager->getAllProjects();
 			   
-			   while ($t_project_row = db_fetch_array($t_all_projects))
+			   while ($project = db_fetch_array($allProjects))
 			   {
-			      $t_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($t_project_row, $t_user['id']);
+			      $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
 			      
-			      while ($issue = db_fetch_array($t_issue))
+			      while ($issue = db_fetch_array($u_issue))
 			      {
 			         echo plugin_lang_get('issue') .
 			         " " . $issues[] = bug_format_id($issue['id']) .
