@@ -31,20 +31,20 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function init()
    {
-      $t_core_path = config_get_global('plugin_path')
+      $t_core_path = config_get_global( 'plugin_path' )
                    . plugin_get_current()
                    . DIRECTORY_SEPARATOR
                    . 'core'
                    . DIRECTORY_SEPARATOR;
-      require_once($t_core_path . 'constant_api.php');
+      require_once( $t_core_path . 'constant_api.php' );
    }
 
    function config()
    {
    	return array
    	(
-		   'ShowInFooter'           => ON,
-		   'ShowMenu'           => ON,
+		   'ShowInFooter' => ON,
+		   'ShowMenu' => ON,
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
@@ -54,26 +54,28 @@ class UserProjectViewPlugin extends MantisPlugin
    	$projectId = helper_get_current_project();
    	$userId = auth_get_current_user_id();
    	
-   	$userHasLevel = user_get_access_level($userId, $projectId) >= plugin_config_get('UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT);
-   	
-   	return $userHasLevel;
+   	return user_get_access_level( $userId, $projectId ) >= plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
    }
    
    function footer()
    {
-   	if (plugin_config_get('ShowInFooter') == 1 && $this->getUserHasLevel())
+   	if ( plugin_config_get( 'ShowInFooter' )
+         && $this->getUserHasLevel()
+         )
    	{
    		return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
    	}
-   	return '';
+   	return null;
    }
    
    function menu()
    {
-      if (plugin_config_get('ShowMenu') == 1 && $this->getUserHasLevel())
+      if ( plugin_config_get( 'ShowMenu' )
+         && $this->getUserHasLevel()
+         )
       {
-      	return '<a href="' . plugin_page('UserProject') . '">' . plugin_lang_get('menu_title') . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
       }
-      return '';
+      return null;
    }
 }
