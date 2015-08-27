@@ -13,6 +13,7 @@ $s_plugin_UserProjectView_next_version = 'Unveröffentlichter Nachfolger';
 
 $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';
+$s_plugin_UserProjectView_issueswithoutproject = 'Es existieren unerreichbare Einträge!';
 
 $s_plugin_UserProjectView_footer = 'Plugin Info in Footer anzeigen?';
 $s_plugin_UserProjectView_menu = 'Plugin Menüeintrag anzeigen?';

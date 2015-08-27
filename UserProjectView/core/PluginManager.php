@@ -10,7 +10,7 @@ class PluginManager
 	public function getAllActiveUsers()
 	{
 		$sqlquery = ' SELECT *' .
-						' FROM mantis_user_table' .
+                  ' FROM mantis_user_table' .
 						' WHERE mantis_user_table.enabled = 1' .
 						' ORDER BY mantis_user_table.username';
 		
@@ -44,6 +44,33 @@ class PluginManager
 		
 		return $allProjectsByUser;
 	}
+
+   public function getAllIssuesByUser( $userId )
+   {
+      $sqlquery = ' SELECT mantis_bug_table.id AS ""' .
+                  ' FROM mantis_bug_table, mantis_user_table' .
+                  ' WHERE mantis_bug_table.handler_id = mantis_user_table.id' .
+                  ' AND mantis_user_table.id = ' . $userId .
+                  ' ORDER BY mantis_bug_table.id';
+
+      $allIssuesByUser = db_query( $sqlquery );
+
+      return $allIssuesByUser;
+   }
+
+   public function getAllIssuesWithProjectByUser( $userId )
+   {
+      $sqlquery = ' SELECT mantis_bug_table.id AS "bid", mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"' .
+                  ' FROM mantis_bug_table, mantis_user_table, mantis_project_table' .
+                  ' WHERE mantis_bug_table.project_id = mantis_project_table.id' .
+                  ' AND mantis_user_table.id = ' . $userId .
+                  ' AND mantis_bug_table.handler_id = mantis_user_table.id' .
+                  ' ORDER BY mantis_bug_table.id';
+
+      $allIssuesWithProjectByUser = db_query( $sqlquery );
+
+      return $allIssuesWithProjectByUser;
+   }
 	
 	public function getTargetVersionByProjectAndUser( $project, $userId )
 	{
@@ -70,7 +97,7 @@ class PluginManager
 						' AND mantis_project_user_list_table.user_id = ' . $userId;
 			
 	   $amountIssues = db_query( $sqlquery );
-	   
+
 	   return $amountIssues;
 	}
 	

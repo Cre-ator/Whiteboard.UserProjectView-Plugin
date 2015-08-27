@@ -13,6 +13,7 @@ $s_plugin_UserProjectView_next_version = 'Unpublished Follower';
 
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
+$s_plugin_UserProjectView_issueswithoutproject = 'There are unreachable Issues!';
 
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
