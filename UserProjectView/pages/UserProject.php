@@ -10,13 +10,14 @@ $pluginManager = new PluginManager();
 // All active users
 $allActiveUsers = $pluginManager->getAllActiveUsers();
 
-while ($user = db_fetch_array($allActiveUsers))
+while ($user = mysqli_fetch_array($allActiveUsers))
 {
    $users[] = $user;
 }
 
 $t_user_count = count($users);
 
+echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'css/UserProjectView.css">' . "\n";
 echo '<div id="manage-user-div" class="form-container">';
 
 if ($pluginManager->getActMantisVersion() == '1.2.')
@@ -29,8 +30,8 @@ else
 }
 echo '<thead>';
 echo '<tr>';
-echo '<td class="form-title" colspan="4">' . plugin_lang_get('accounts_title') . '</td>';
-echo '<td class="right alternate-views-links" colspan="5">';
+echo '<td class="form-title" colspan="5">' . plugin_lang_get('accounts_title') . '</td>';
+echo '<td class="form-title" colspan="6">';
 echo '<span class="small">';
 echo '[ <a href="' . plugin_page('PrintUserProject') . '">' . plugin_lang_get('print_button') . '</a> ]';
 echo '</span>';
@@ -38,6 +39,7 @@ echo '</td>';
 echo '</tr>';
 echo '<tr class="row-category">';
 echo '<th>' . plugin_lang_get('username') . '</th>';
+echo '<th>' . plugin_lang_get('realname') . '</th>';
 echo '<th>' . plugin_lang_get('projects') . '</th>';
 echo '<th>' . plugin_lang_get('next_version') . '</th>';
 echo '<th>' . plugin_lang_get('issues') . '</th>';
@@ -57,7 +59,7 @@ for ($i = 0; $i < $t_user_count; $i++)
    $projects = array();
    $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
 
-   while ($project = db_fetch_array($allProjectsByUser))
+   while ($project = mysqli_fetch_array($allProjectsByUser))
    {
       $projects[] = $project;
    }
@@ -68,13 +70,12 @@ for ($i = 0; $i < $t_user_count; $i++)
       $project = $projects[$j];
 
       $amount = $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']);
-      if ($amount->fields[0] == '0')
+      if ($amount == '0')
       {
-        // User has project, but zero Issues - do nothing!
+        // User has project, but zero issues - do nothing!
       }
       else
       {
-
          if ($pluginManager->getActMantisVersion() == '1.2.')
          {
             echo '<tr ' . helper_alternate_class($i) . '>';
@@ -89,12 +90,26 @@ for ($i = 0; $i < $t_user_count; $i++)
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-            echo '(' . string_display_line($u_username) . ') ' . $user['realname'];
+            echo string_display_line($u_username);
             echo '</a>';
          }
          else
          {
-            echo '(' . string_display_line($u_username) . ') ' . $user['realname'];
+            echo string_display_line($u_username);
+         }
+         echo '</td>';
+
+         // Column Real Name
+         echo '<td>';
+         if (access_has_global_level($u_access_level))
+         {
+            echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
+            echo $user['realname'];
+            echo '</a>';
+         }
+         else
+         {
+            echo $user['realname'];
          }
          echo '</td>';
 
@@ -127,33 +142,18 @@ for ($i = 0; $i < $t_user_count; $i++)
          echo '<td>';
          $t_all_projects = $pluginManager->getAllProjects();
 
-         while ($project = db_fetch_array($t_all_projects))
+         while ($project = mysqli_fetch_array($t_all_projects))
          {
-            $t_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
-           // var_dump($t_issue);
-            if ($t_issue->fields != '')
-            {
-               echo plugin_lang_get('issueswithoutproject');
-            }
-        //    while ($issue = db_fetch_array($t_issue))
-        //    {
-               //if (access_has_global_level($u_access_level))
-               //{
-              //    echo plugin_lang_get('issue') . ' ';
-        //          echo '<a href="view.php?id=' . $issues[] = $issue['id'] . '">';
-        //          echo $issues[] = bug_format_id($issue['id']);
-        //          echo '</a>';
-         //         echo ', ' . plugin_lang_get('project') . ' ';
-         //         echo '<a href="manage_proj_edit_page.php?project_id=' . $issues[] = $issue['pid'] . '">';
-         //         echo $issues[] = $issue['pname'] . '<br>';
-         //         echo '</a>';
-         //      }
-         //      else
-         //      {
-        //          echo plugin_lang_get('issue') . ' ' . $issues[] = bug_format_id($issue['id']);
-         //         echo ', ' . plugin_lang_get('project') . ' ' . $issues[] = $issue['pname'] . '<br>';
-         //      }
-        //    }
+            $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
+            while ( $issue = mysqli_fetch_array( $u_issue ) )
+               if ($u_issue->fetch_array() != null)
+               {
+                  echo plugin_lang_get('issueswithoutproject');
+
+                  echo ' [ ' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
+                  echo plugin_lang_get('detaillink');
+                  echo '</a> ]';
+               }
          }
          echo '</td>';
          echo '</tr>';
@@ -162,69 +162,70 @@ for ($i = 0; $i < $t_user_count; $i++)
 
    if ($project_count == 0)
    {
-      //echo $user['id'];
-      if ($pluginManager->getAllIssuesByUser($user['id'])->fields == '')
+      if ($pluginManager->getAllIssuesByUser($user['id']) == '')
       {
          // User has no project and no issues -> do nothing!
       }
       else
       {
          // User has no project, but issues!
+         if ($pluginManager->getActMantisVersion() == '1.2.')
+         {
+            echo '<tr ' . helper_alternate_class($i) . '>';
+         }
+         else
+         {
             echo '<tr>';
-            // Column User
-            echo '<td>';
-            if (access_has_global_level($u_access_level))
-            {
-               echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-               echo '(' . string_display_line($u_username) . ') ' . $user['realname'];
-               echo '</a>';
-            }
-            else
-            {
-               echo '(' . string_display_line($u_username) . ') ' . $user['realname'];
-            }
-            echo '</td>';
+         }
+         // Column User
+         echo '<td>';
+         if (access_has_global_level($u_access_level))
+         {
+            echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
+            echo string_display_line($u_username);
+            echo '</a>';
+         }
+         else
+         {
+            echo string_display_line($u_username);
+         }
+         echo '</td>';
 
-            // Column Projects (in this case irrelevant)
-            echo '<td />';
+         // Column Real Name
+         echo '<td>';
+         if (access_has_global_level($u_access_level))
+         {
+            echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
+            echo $user['realname'];
+            echo '</a>';
+         }
+         else
+         {
+            echo $user['realname'];
+         }
+         echo '</td>';
 
-            // Column Target Version (in this case irrelevant)
-            echo '<td />';
+         // Column Projects (in this case irrelevant)
+         echo '<td />';
 
-            // Column Issues (in this case irrelevant)
-            echo '<td />';
+         // Column Target Version (in this case irrelevant)
+         echo '<td />';
 
-            // Column Wrong Issues
-            echo '<td>';
+         // Column Issues (in this case irrelevant)
+         echo '<td />';
 
+         // Column Wrong Issues
+         echo '<td>';
          echo plugin_lang_get('issueswithoutproject');
 
-          //  $allIssuesWithProjectByUser = $pluginManager->getAllIssuesWithProjectByUser($user['id']);
-         //   while ($issue = db_fetch_array($allIssuesWithProjectByUser))
-        //    {
+         echo ' [ ' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
+         echo plugin_lang_get('detaillink');
+         echo '</a> ]';
 
-               //if (access_has_global_level($u_access_level))
-               //{
-                  //echo plugin_lang_get('issue') . ' ';
-                 // echo '<a href="view.php?id=' . $issues[] = $issue['bid'] . '">';
-                  //echo $issues[] = bug_format_id($issue['bid']);
-                  //echo '</a>';
-                  //echo ', ' . plugin_lang_get('project') . ' ';
-                  //echo '<a href="manage_proj_edit_page.php?project_id=' . $issues[] = $issue['pid'] . '">';
-                 // echo $issues[] = $issue['pname'] . '<br>';
-                 // echo '</a>';
-              // }
-              // else
-              // {
-                  //echo plugin_lang_get('issue') . ' ' . $issues[] = bug_format_id($issue['bid']);
-                  //echo ', ' . plugin_lang_get('project') . ' ' . $issues[] = $issue['pname'] . '<br>';
-              // }
-         //   }
-
-            echo '</td>';
-            echo '</tr>';
-         }
+         echo '</td>';
+         echo '</tr>';
       }
+   }
 }
 echo '</tbody>';
 echo '</table>';

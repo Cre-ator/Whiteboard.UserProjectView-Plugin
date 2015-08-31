@@ -2,6 +2,13 @@
 
 class PluginManager
 {
+   private $mysqli;
+
+   public function __construct()
+   {
+      $this->mysqli = new mysqli("localhost", "root", "", "mantisdb");
+   }
+
 	public function getActMantisVersion()
 	{
 		return substr( MANTIS_VERSION, 0, 4 );
@@ -14,7 +21,7 @@ class PluginManager
 						' WHERE mantis_user_table.enabled = 1' .
 						' ORDER BY mantis_user_table.username';
 		
-		$allActiveUsers = db_query( $sqlquery );
+		$allActiveUsers = $this->mysqli->query( $sqlquery );
 		
 		return $allActiveUsers;
 	}
@@ -26,8 +33,8 @@ class PluginManager
 						' WHERE mantis_project_table.enabled = 1' .
 						' ORDER BY mantis_project_table.id';
 		 
-		$allProjects = db_query( $sqlquery );
-		
+		$allProjects = $this->mysqli->query( $sqlquery );
+
 		return $allProjects;
 	}
 	
@@ -40,8 +47,8 @@ class PluginManager
 						' AND mantis_project_user_list_table.user_id = ' . $userId .
 						' ORDER BY mantis_project_table.id';
 		
-		$allProjectsByUser = db_query( $sqlquery );
-		
+		$allProjectsByUser = $this->mysqli->query( $sqlquery );
+
 		return $allProjectsByUser;
 	}
 
@@ -53,25 +60,11 @@ class PluginManager
                   ' AND mantis_user_table.id = ' . $userId .
                   ' ORDER BY mantis_bug_table.id';
 
-      $allIssuesByUser = db_query( $sqlquery );
+      $allIssuesByUser = $this->mysqli->query( $sqlquery )->fetch_row()[0];
 
       return $allIssuesByUser;
    }
 
-   public function getAllIssuesWithProjectByUser( $userId )
-   {
-      $sqlquery = ' SELECT mantis_bug_table.id AS "bid", mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"' .
-                  ' FROM mantis_bug_table, mantis_user_table, mantis_project_table' .
-                  ' WHERE mantis_bug_table.project_id = mantis_project_table.id' .
-                  ' AND mantis_user_table.id = ' . $userId .
-                  ' AND mantis_bug_table.handler_id = mantis_user_table.id' .
-                  ' ORDER BY mantis_bug_table.id';
-
-      $allIssuesWithProjectByUser = db_query( $sqlquery );
-
-      return $allIssuesWithProjectByUser;
-   }
-	
 	public function getTargetVersionByProjectAndUser( $project, $userId )
 	{
 		$sqlquery = ' SELECT DISTINCT (mantis_bug_table.target_version) AS ""' .
@@ -81,9 +74,14 @@ class PluginManager
 						' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'] .
 						' AND mantis_project_user_list_table.user_id = ' . $userId;
 		
-		$targetVersion = db_query( $sqlquery );
-		
+		$targetVersion = $this->mysqli->query( $sqlquery )->fetch_all()[1][0];
+
 		return $targetVersion;
+	}
+
+	public function getValidTargetVersionByProjectAndUser( $project, $userId )
+	{
+
 	}
 	
 	public function getAmountOfIssuesByProjectAndUser( $project, $userId )
@@ -95,13 +93,14 @@ class PluginManager
 						' AND mantis_project_user_list_table.project_id = ' . $projects[] = $project['id'] .
 						' AND mantis_bug_table.handler_id = ' . $userId .
 						' AND mantis_project_user_list_table.user_id = ' . $userId;
-			
-	   $amountIssues = db_query( $sqlquery );
+
+      $amountIssues = $this->mysqli->query( $sqlquery )->fetch_row()[0];
 
 	   return $amountIssues;
 	}
 	
-	public function getIssuesWithoutProjectByProjectAndUser( $project, $userId ) {
+	public function getIssuesWithoutProjectByProjectAndUser( $project, $userId )
+	{
 		$sqlquery = ' SELECT DISTINCT mantis_bug_table.id AS "id", ' .
 								' mantis_bug_table.project_id AS "pid", mantis_project_table.name AS "pname"' .
 						' FROM mantis_bug_table, mantis_project_table, mantis_project_user_list_table' .
@@ -116,8 +115,19 @@ class PluginManager
 						' )' .
 						' ORDER BY mantis_bug_table.id';
       
-      $IssueWithoutProjectByProjectAndUser = db_query( $sqlquery );
+      $issueWithoutProjectByProjectAndUser = $this->mysqli->query( $sqlquery );
       
-      return $IssueWithoutProjectByProjectAndUser;		      
+      return $issueWithoutProjectByProjectAndUser;
+	}
+
+	public function getUserDetailsByUserId( $userId )
+	{
+		$sqlquery = ' SELECT * ' .
+						' FROM mantis_user_table' .
+						' WHERE mantis_user_table.id =' . $userId;
+
+		$userDetailsByUserId = $this->mysqli->query( $sqlquery )->fetch_row();
+
+		return $userDetailsByUserId;
 	}
 }

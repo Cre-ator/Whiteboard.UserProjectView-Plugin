@@ -6,6 +6,7 @@ $s_plugin_UserProjectView_menu_title = 'Benutzer';
 $s_plugin_UserProjectView_print_button = 'Drucken';
 $s_plugin_UserProjectView_accounts_title = 'Kontenübersicht (nur aktive Benutzer)';
 $s_plugin_UserProjectView_username = 'Benutzername';
+$s_plugin_UserProjectView_realname = 'Realer Name';
 $s_plugin_UserProjectView_projects = 'Zugewiesene Projekte';   
 $s_plugin_UserProjectView_issues = 'Anzahl der zugewiesenen Einträge';
 $s_plugin_UserProjectView_wrong_issues = 'Einträge ohne Projekt';
@@ -14,6 +15,9 @@ $s_plugin_UserProjectView_next_version = 'Unveröffentlichter Nachfolger';
 $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';
 $s_plugin_UserProjectView_issueswithoutproject = 'Es existieren unerreichbare Einträge!';
+$s_plugin_UserProjectView_detaillink = 'Details';
+
+$s_plugin_UserProjectView_wrong_issues_title = 'Unerreichbare Einträge für Nutzer ';
 
 $s_plugin_UserProjectView_footer = 'Plugin Info in Footer anzeigen?';
 $s_plugin_UserProjectView_menu = 'Plugin Menüeintrag anzeigen?';

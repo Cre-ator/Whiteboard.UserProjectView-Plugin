@@ -10,105 +10,144 @@ $pluginManager = new PluginManager();
 
 // All active users
 $allActiveUsers = $pluginManager->getAllActiveUsers();
-   
-while ( $user = db_fetch_array( $allActiveUsers ) )
+
+while ($user = mysqli_fetch_array($allActiveUsers))
 {
-   $users[] = $user;
+	$users[] = $user;
 }
-   
-$userCount = count( $users );
+
+$t_user_count = count($users);
 
 echo '<table class="width100" cellspacing="1" >';
-	echo '<tr>';
-		echo '<td class="form-title" colspan="5">';
-			echo '<div class="center">';
-			echo string_display_line( config_get( 'window_title' ) ) . ' - UserProjectView';
-			echo '</div>';
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td class="print-spacer" colspan="5">';
-		echo '<hr />';
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr class="print-category">';
-		echo '<td class="print" width="20%">' . plugin_lang_get( 'username' ) . '</td>';
-		echo '<td class="print" width="20%">' . plugin_lang_get( 'projects' ) . '</td>';
-		echo '<td class="print" width="20%">' . plugin_lang_get( 'next_version' ) . '</td>';
-		echo '<td class="print" width="20%">' . plugin_lang_get( 'issues' ) . '</td>';
-		echo '<td class="print" width="20%">' . plugin_lang_get( 'wrong_issues' ) . '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td class="print-spacer" colspan="5">';
-		echo '<hr />';
-		echo '</td>';
-	echo '</tr>';
-	
-	for( $i=0; $i<$userCount; $i++ )
+echo '<tr>';
+echo '<td class="form-title" colspan="6">';
+echo '<div class="center">';
+echo string_display_line( config_get( 'window_title' ) ) . ' - UserProjectView';
+echo '</div>';
+echo '</td>';
+echo '</tr>';
+echo '<tr>';
+echo '<td class="print-spacer" colspan="6">';
+echo '<hr />';
+echo '</td>';
+echo '</tr>';
+echo '<tr class="print-category">';
+echo '<td class="print" width="16%">' . plugin_lang_get( 'username' ) . '</td>';
+echo '<th class="print" width="16%">' . plugin_lang_get( 'realname' ) . '</th>';
+echo '<td class="print" width="16%">' . plugin_lang_get( 'projects' ) . '</td>';
+echo '<td class="print" width="16%">' . plugin_lang_get( 'next_version' ) . '</td>';
+echo '<td class="print" width="16%">' . plugin_lang_get( 'issues' ) . '</td>';
+echo '<td class="print" width="16%">' . plugin_lang_get( 'wrong_issues' ) . '</td>';
+echo '</tr>';
+
+for ($i = 0; $i < $t_user_count; $i++)
+{
+	# prefix user data with u_
+	$user = $users[$i];
+	extract($user, EXTR_PREFIX_ALL, 'u');
+
+	$projects = array();
+	$allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
+
+	while ($project = mysqli_fetch_array($allProjectsByUser))
 	{
-	   $user = $users[$i];
-	   extract( $user, EXTR_PREFIX_ALL, 'u' );
-	   echo '<tr>';
-	   	// Column User
-		   echo '<td class="print">';
-		   	echo string_display_line( $u_username );
-		   echo '</td>';
-		   // Column Projects
-		   echo '<td class="print">';
-			   $allProjectsByUser = $pluginManager->getAllProjectsByUser( $user['id'] );
-			   
-			   while ( $project = db_fetch_array( $allProjectsByUser ) )
-			   {
-			   	echo $names[] = $project['name'] . '<br>';
-			   }
-		   echo '</td>';
-		   // column  Target version
-		   echo '<td class="print">';
-			   $allProjectsByUser = $pluginManager->getAllProjectsByUser( $user['id'] );
-			   
-			   while ( $project = db_fetch_array( $allProjectsByUser ) )
-			   {
-			      $targetVersion = $pluginManager->getTargetVersionByProjectAndUser( $project, $user['id'] );
-			      
-			      echo $targetVersion . '<br>';
-			   }
-		   echo '</td>';
-		   // Column Issues
-		   echo '<td class="print">';
-			   $allProjectsByUser = $pluginManager->getAllProjectsByUser( $user['id'] );
-			
-			   while ( $project = db_fetch_array( $allProjectsByUser ) )
-			   {
-			      $amountIssue = $pluginManager->getAmountOfIssuesByProjectAndUser( $project, $user['id'] );
-			      
-			      echo $amountIssue . '<br>';
-			   }
-		   echo '</td>';
-		   // Column Wrong Issues
-		   echo '<td class="print">';
-			   $allProjects = $pluginManager->getAllProjects();
-			   
-			   while ( $project = db_fetch_array( $allProjects ) )
-			   {
-			      $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser( $project, $user['id'] );
-			      
-			      while ( $issue = db_fetch_array( $u_issue ) )
-			      {
-			         echo plugin_lang_get( 'issue' ) .
-			         " " . $issues[] = bug_format_id( $issue['id'] ) .
-			         ", " . plugin_lang_get( 'project' ) .
-			         " " . $issue['pname'] .
-			         "<br>";
-			      }
-			   }
-		   echo '</td>';
-	   echo '</tr>';
-	   echo '<tr>';
-		   echo '<td class="print-spacer" colspan="5">';
-		   echo '<hr />';
-		   echo '</td>';
-	   echo '</tr>';
+		$projects[] = $project;
+	}
+	$project_count = count($projects);
+
+	for ($j = 0; $j < $project_count; $j++)
+   {
+      $project = $projects[$j];
+
+      $amount = $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']);
+      if ($amount == '0')
+      {
+         // User has project, but zero issues - do nothing!
+      }
+      else
+      {
+         echo '<tr>';
+
+         // Column User
+         echo '<td class="print">';
+         echo string_display_line($u_username);
+         echo '</td>';
+
+         // Column Real Name
+         echo '<td class="print">';
+         echo $user['realname'];
+         echo '</td>';
+
+         // Column Projects
+         echo '<td class="print">';
+         echo $project['name'] . "<br>";
+         echo '</td>';
+
+         // Column Target version
+         echo '<td class="print">';
+         echo $pluginManager->getTargetVersionByProjectAndUser($project, $user['id']) . "<br>";
+         echo '</td>';
+
+         // Column Issues
+         echo '<td class="print">';
+         echo $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']) . '<br>';
+         echo '</td>';
+
+         // Column Wrong Issues
+         echo '<td class="print">';
+         $t_all_projects = $pluginManager->getAllProjects();
+
+         while ($project = mysqli_fetch_array($t_all_projects))
+         {
+            $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
+            if ($u_issue->fetch_array() != null)
+            {
+               echo plugin_lang_get('issueswithoutproject');
+            }
+         }
+         echo '</td>';
+         echo '</tr>';
+      }
    }
+
+   if ($project_count == 0)
+   {
+      if ($pluginManager->getAllIssuesByUser($user['id']) == '')
+      {
+         // User has no project and no issues -> do nothing!
+      }
+      else
+      {
+         // User has no project, but issues!
+         echo '<tr>';
+
+         // Column User
+         echo '<td class="print">';
+         echo string_display_line($u_username);
+         echo '</td>';
+
+         // Column Real Name
+         echo '<td class="print">';
+         echo $user['realname'];
+         echo '</td>';
+
+         // Column Projects (in this case irrelevant)
+         echo '<td class="print" />';
+
+         // Column Target Version (in this case irrelevant)
+         echo '<td class="print" />';
+
+         // Column Issues (in this case irrelevant)
+         echo '<td class="print" />';
+
+         // Column Wrong Issues
+         echo '<td class="print">';
+         echo plugin_lang_get('issueswithoutproject');
+         echo '</td>';
+         echo '</tr>';
+      }
+   }
+}
 echo '</table>';
 
 html_body_end();

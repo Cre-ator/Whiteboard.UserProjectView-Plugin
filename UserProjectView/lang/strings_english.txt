@@ -6,6 +6,7 @@ $s_plugin_UserProjectView_menu_title = 'Users';
 $s_plugin_UserProjectView_print_button = 'Print';
 $s_plugin_UserProjectView_accounts_title = 'Account overview (only active accounts)';
 $s_plugin_UserProjectView_username = 'Username';
+$s_plugin_UserProjectView_realname = 'Real Name';
 $s_plugin_UserProjectView_projects = 'Assigned Projects';
 $s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
 $s_plugin_UserProjectView_wrong_issues = 'Issues without Project';
@@ -14,6 +15,9 @@ $s_plugin_UserProjectView_next_version = 'Unpublished Follower';
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
 $s_plugin_UserProjectView_issueswithoutproject = 'There are unreachable Issues!';
+$s_plugin_UserProjectView_detaillink = 'Details';
+
+$s_plugin_UserProjectView_wrong_issues_title = 'Unreachable Issues for User ';
 
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
