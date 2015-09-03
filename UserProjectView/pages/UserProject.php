@@ -7,6 +7,8 @@ html_page_top2();
 // PluginManager object
 $pluginManager = new PluginManager();
 
+$rowIndex = 0;
+$prevUserIndex = 0;
 
 
 
@@ -68,10 +70,10 @@ echo '</thead>';
 
 echo '<tbody>';
 
-for ($i = 0; $i < $t_user_count; $i++)
+for ($userIndex = 0; $userIndex < $t_user_count; $userIndex++)
 {
    # prefix user data with u_
-   $user = $users[$i];
+   $user = $users[$userIndex];
    extract($user, EXTR_PREFIX_ALL, 'u');
 
    $pluginManager->checkUserIsActive( $user['id'] );
@@ -98,7 +100,12 @@ for ($i = 0; $i < $t_user_count; $i++)
       {
          if ($pluginManager->getActMantisVersion() == '1.2.')
          {
-            echo '<tr ' . helper_alternate_class($i) . '>';
+            if ( $prevUserIndex != $userIndex )
+            {
+               $rowIndex = !$rowIndex;
+               $prevUserIndex = $userIndex;
+            }
+            echo '<tr ' . helper_alternate_class( $rowIndex ) . '>';
          }
          else
          {
@@ -186,6 +193,7 @@ for ($i = 0; $i < $t_user_count; $i++)
                echo ' [' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
                echo plugin_lang_get('detaillink');
                echo '</a>]';
+               break; // projects for this user exists => end of search
             }
          }
          echo '</td>';
@@ -207,7 +215,7 @@ for ($i = 0; $i < $t_user_count; $i++)
             // User has no project, but issues!
             if ($pluginManager->getActMantisVersion() == '1.2.')
             {
-               echo '<tr ' . helper_alternate_class($i) . '>';
+               echo '<tr ' . helper_alternate_class($userIndex) . '>';
             }
             else
             {
