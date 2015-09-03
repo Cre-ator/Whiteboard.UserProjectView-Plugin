@@ -116,12 +116,12 @@ for ($i = 0; $i < $t_user_count; $i++)
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-            echo string_display_line($u_username);
+            echo utf8_encode(string_display_line($u_username));
             echo '</a>';
          }
          else
          {
-            echo string_display_line($u_username);
+            echo utf8_encode(string_display_line($u_username));
          }
          echo '</td>';
 
@@ -137,12 +137,12 @@ for ($i = 0; $i < $t_user_count; $i++)
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-            echo $user['realname'];
+            echo utf8_encode($user['realname']);
             echo '</a>';
          }
          else
          {
-            echo $user['realname'];
+            echo utf8_encode($user['realname']);
          }
          echo '</td>';
 
@@ -152,18 +152,18 @@ for ($i = 0; $i < $t_user_count; $i++)
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_proj_edit_page.php?project_id=' . $project['id'] . '">';
-            echo $project['name'] . '<br>';
+            echo utf8_encode($project['name']) . '<br>';
             echo '</a>';
          }
          else
          {
-            echo $project['name'] . "<br>";
+            echo utf8_encode($project['name']) . "<br>";
          }
          echo '</td>';
 
          // Column Target version
          echo '<td>';
-         echo $pluginManager->getNearestTargetVersionByProject( $project['id'] ) . "<br>";
+         echo utf8_encode($pluginManager->getNearestTargetVersionByProject( $project['id'] )) . "<br>";
          echo '</td>';
 
          // Column Issues
@@ -218,12 +218,12 @@ for ($i = 0; $i < $t_user_count; $i++)
             if (access_has_global_level($u_access_level))
             {
                echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-               echo string_display_line($u_username);
+               echo utf8_encode(string_display_line($u_username));
                echo '</a>';
             }
             else
             {
-               echo string_display_line($u_username);
+               echo utf8_encode(string_display_line($u_username));
             }
             echo '</td>';
 
@@ -232,12 +232,12 @@ for ($i = 0; $i < $t_user_count; $i++)
             if (access_has_global_level($u_access_level))
             {
                echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-               echo $user['realname'];
+               echo utf8_encode($user['realname']);
                echo '</a>';
             }
             else
             {
-               echo $user['realname'];
+               echo utf8_encode($user['realname']);
             }
             echo '</td>';
 

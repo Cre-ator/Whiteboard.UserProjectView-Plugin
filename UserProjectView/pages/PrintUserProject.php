@@ -84,22 +84,22 @@ for ($i = 0; $i < $t_user_count; $i++)
 
          // Column User
          echo '<td class="print">';
-         echo string_display_line($u_username);
+         echo utf8_encode(string_display_line($u_username));
          echo '</td>';
 
          // Column Real Name
          echo '<td class="print">';
-         echo $user['realname'];
+         echo utf8_encode($user['realname']);
          echo '</td>';
 
          // Column Projects
          echo '<td class="print">';
-         echo $project['name'] . "<br>";
+         echo utf8_encode($project['name']) . "<br>";
          echo '</td>';
 
          // Column Target version
          echo '<td class="print">';
-         echo $pluginManager->getTargetVersionByProjectAndUser($project['id'], $user['id']) . "<br>";
+         echo utf8_encode($pluginManager->getTargetVersionByProjectAndUser($project['id'], $user['id'])) . "<br>";
          echo '</td>';
 
          // Column Issues
@@ -114,7 +114,7 @@ for ($i = 0; $i < $t_user_count; $i++)
          while ($project = mysqli_fetch_array($t_all_projects))
          {
             $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project['id'], $user['id']);
-            if ($u_issue->fetch_array() != null)
+            if ($u_issue->fetch_row() != null)
             {
                echo plugin_lang_get('issueswithoutproject');
             }
@@ -124,41 +124,45 @@ for ($i = 0; $i < $t_user_count; $i++)
       }
    }
 
-   if ($project_count == 0)
+   // This section is only relevant for non-filtered project-overview
+   if ($actProject == 0)
    {
-      if ( $pluginManager->getAllAssignedIssuesByUser( $user['id'] ) == '' )
+      if ($project_count == 0)
       {
-         // User has no project and no issues -> do nothing!
-      }
-      else
-      {
-         // User has no project, but issues!
-         echo '<tr>';
+         if ($pluginManager->getAllAssignedIssuesByUser($user['id']) == '')
+         {
+            // User has no project and no issues -> do nothing!
+         }
+         else
+         {
+            // User has no project, but issues!
+            echo '<tr>';
 
-         // Column User
-         echo '<td class="print">';
-         echo string_display_line($u_username);
-         echo '</td>';
+            // Column User
+            echo '<td class="print">';
+            echo utf8_encode(string_display_line($u_username));
+            echo '</td>';
 
-         // Column Real Name
-         echo '<td class="print">';
-         echo $user['realname'];
-         echo '</td>';
+            // Column Real Name
+            echo '<td class="print">';
+            echo utf8_encode($user['realname']);
+            echo '</td>';
 
-         // Column Projects (in this case irrelevant)
-         echo '<td class="print" />';
+            // Column Projects (in this case irrelevant)
+            echo '<td class="print" />';
 
-         // Column Target Version (in this case irrelevant)
-         echo '<td class="print" />';
+            // Column Target Version (in this case irrelevant)
+            echo '<td class="print" />';
 
-         // Column Issues (in this case irrelevant)
-         echo '<td class="print" />';
+            // Column Issues (in this case irrelevant)
+            echo '<td class="print" />';
 
-         // Column Wrong Issues
-         echo '<td class="print">';
-         echo plugin_lang_get('issueswithoutproject');
-         echo '</td>';
-         echo '</tr>';
+            // Column Wrong Issues
+            echo '<td class="print">';
+            echo plugin_lang_get('issueswithoutproject');
+            echo '</td>';
+            echo '</tr>';
+         }
       }
    }
 }
