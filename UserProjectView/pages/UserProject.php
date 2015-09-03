@@ -7,6 +7,9 @@ html_page_top2();
 // PluginManager object
 $pluginManager = new PluginManager();
 
+
+
+
 // actual Project ID
 $actProject = helper_get_current_project();
 
@@ -177,19 +180,14 @@ for ($i = 0; $i < $t_user_count; $i++)
          while ($project = mysqli_fetch_array($t_all_projects))
          {
             $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project['id'], $user['id']);
-            while ( $issue = mysqli_fetch_array( $u_issue ) )
+            if ($u_issue->fetch_row() != null)
             {
-               if ($u_issue->fetch_array() != null)
-               {
-                  echo plugin_lang_get('issueswithoutproject');
-
-                  echo ' [' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
-                  echo plugin_lang_get('detaillink');
-                  echo '</a>]';
-               }
+               echo plugin_lang_get('issueswithoutproject');
+               echo ' [' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
+               echo plugin_lang_get('detaillink');
+               echo '</a>]';
             }
          }
-
          echo '</td>';
          echo '</tr>';
       }
