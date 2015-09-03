@@ -4,13 +4,16 @@
 $s_plugin_UserProjectView_user_project_view = 'Benutzer-Projekt-Übersicht';
 $s_plugin_UserProjectView_menu_title = 'Benutzer';
 $s_plugin_UserProjectView_print_button = 'Drucken';
-$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht (nur aktive Benutzer)';
+$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht (nur aktive Benutzer) - ';
+$s_plugin_UserProjectView_projects_title = 'Ausgewähltes Projekt: ';
+$s_plugin_UserProjectView_project_selector_all = 'Alle';
+
 $s_plugin_UserProjectView_username = 'Benutzername';
 $s_plugin_UserProjectView_realname = 'Realer Name';
 $s_plugin_UserProjectView_projects = 'Zugewiesene Projekte';   
 $s_plugin_UserProjectView_issues = 'Anzahl der zugewiesenen Einträge';
 $s_plugin_UserProjectView_wrong_issues = 'Einträge ohne Projekt';
-$s_plugin_UserProjectView_next_version = 'Unveröffentlichter Nachfolger';
+$s_plugin_UserProjectView_next_version = 'Zielversion';
 
 $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';

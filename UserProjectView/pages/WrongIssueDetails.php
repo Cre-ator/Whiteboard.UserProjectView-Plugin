@@ -16,7 +16,7 @@ $userDetails = $pluginManager->getUserDetailsByUserId($userId);
 // Get all projects
 $allProjects = $pluginManager->getAllProjects();
 
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'css/UserProjectView.css">' . "\n";
+echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">' . "\n";
 echo '<div id="manage-user-div" class="form-container">';
 
 if ($pluginManager->getActMantisVersion() == '1.2.')
@@ -32,7 +32,7 @@ echo '<tr>';
 echo '<td class="form-title" colspan="1">' . plugin_lang_get( 'wrong_issues_title' ) . string_display_line( $userDetails[1] ) . '</td>';
 echo '<td class="form-title" colspan="2">';
 echo '<span class="small">';
-echo '[ <a href="' . plugin_page( 'PrintWrongIssueDetails' ) . '&user_id=' . $userId . '">' . plugin_lang_get( 'print_button' ) . '</a> ]';
+echo '[<a href="' . plugin_page( 'PrintWrongIssueDetails' ) . '&user_id=' . $userId . '">' . plugin_lang_get( 'print_button' ) . '</a>]';
 echo '</span>';
 echo '</td>';
 echo '</tr>';
@@ -66,7 +66,7 @@ echo '<td>';
 
 while ( $project = mysqli_fetch_array( $allProjects ) )
 {
-   $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser( $project, $userId );
+   $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser( $project['id'], $userId );
 
    while ( $issue = mysqli_fetch_array( $u_issue ) )
    {

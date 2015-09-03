@@ -7,17 +7,23 @@ html_page_top2();
 // PluginManager object
 $pluginManager = new PluginManager();
 
-// All active users
-$allActiveUsers = $pluginManager->getAllActiveUsers();
+// actual Project ID
+$actProject = helper_get_current_project();
 
-while ($user = mysqli_fetch_array($allActiveUsers))
+// actual Project Details
+$projectDetails = $pluginManager->getProjectDetailsByProjectId($actProject);
+
+// All active users
+$allValidUsers = $pluginManager->getAllValidUsers();
+
+while ($user = mysqli_fetch_array($allValidUsers))
 {
    $users[] = $user;
 }
 
 $t_user_count = count($users);
 
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'css/UserProjectView.css">' . "\n";
+echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">' . "\n";
 echo '<div id="manage-user-div" class="form-container">';
 
 if ($pluginManager->getActMantisVersion() == '1.2.')
@@ -30,10 +36,19 @@ else
 }
 echo '<thead>';
 echo '<tr>';
-echo '<td class="form-title" colspan="5">' . plugin_lang_get('accounts_title') . '</td>';
+echo '<td class="form-title" colspan="5">' . plugin_lang_get( 'accounts_title' ) . plugin_lang_get( 'projects_title' );
+if ( $actProject == 0 )
+{
+   echo plugin_lang_get( 'project_selector_all' );
+}
+else
+{
+   echo $projectDetails[1];
+}
+echo '</td>';
 echo '<td class="form-title" colspan="6">';
 echo '<span class="small">';
-echo '[ <a href="' . plugin_page('PrintUserProject') . '">' . plugin_lang_get('print_button') . '</a> ]';
+echo '[<a href="' . plugin_page('PrintUserProject') . '">' . plugin_lang_get('print_button') . '</a>]';
 echo '</span>';
 echo '</td>';
 echo '</tr>';
@@ -56,8 +71,10 @@ for ($i = 0; $i < $t_user_count; $i++)
    $user = $users[$i];
    extract($user, EXTR_PREFIX_ALL, 'u');
 
+   $pluginManager->checkUserIsActive( $user['id'] );
+
    $projects = array();
-   $allProjectsByUser = $pluginManager->getAllProjectsByUser($user['id']);
+   $allProjectsByUser = $pluginManager->getAllProjectsByProjectAndUser($actProject, $user['id']);
 
    while ($project = mysqli_fetch_array($allProjectsByUser))
    {
@@ -69,10 +86,10 @@ for ($i = 0; $i < $t_user_count; $i++)
    {
       $project = $projects[$j];
 
-      $amount = $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']);
+      $amount = $pluginManager->getAmountOfAssignedIssuesByProjectAndUser($project['id'], $user['id']);
       if ($amount == '0')
       {
-        // User has project, but zero issues - do nothing!
+         // User has project, but zero issues - do nothing!
       }
       else
       {
@@ -84,9 +101,15 @@ for ($i = 0; $i < $t_user_count; $i++)
          {
             echo '<tr>';
          }
-
          // Column User
-         echo '<td>';
+         if ( $pluginManager->checkUserIsActive( $user['id'] ) == '0')
+         {
+            echo '<td class="attention">';
+         }
+         else
+         {
+            echo '<td>';
+         }
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
@@ -100,7 +123,14 @@ for ($i = 0; $i < $t_user_count; $i++)
          echo '</td>';
 
          // Column Real Name
-         echo '<td>';
+         if ( $pluginManager->checkUserIsActive( $user['id'] ) == '0')
+         {
+            echo '<td class="attention">';
+         }
+         else
+         {
+            echo '<td>';
+         }
          if (access_has_global_level($u_access_level))
          {
             echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
@@ -130,100 +160,110 @@ for ($i = 0; $i < $t_user_count; $i++)
 
          // Column Target version
          echo '<td>';
-         echo $pluginManager->getTargetVersionByProjectAndUser($project, $user['id']) . "<br>";
+         echo $pluginManager->getNearestTargetVersionByProject( $project['id'] ) . "<br>";
          echo '</td>';
 
          // Column Issues
          echo '<td>';
-         echo $pluginManager->getAmountOfIssuesByProjectAndUser($project, $user['id']) . '<br>';
+         echo '<a href="search.php?project_id=' . $project['id'] . '&status_id=50&handler_id=' . $user['id'] . '&sticky_issues=off&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         echo $pluginManager->getAmountOfAssignedIssuesByProjectAndUser($project['id'], $user['id']) . '</a><br>';
          echo '</td>';
 
          // Column Wrong Issues
          echo '<td>';
+
          $t_all_projects = $pluginManager->getAllProjects();
 
          while ($project = mysqli_fetch_array($t_all_projects))
          {
-            $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project, $user['id']);
+            $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser($project['id'], $user['id']);
             while ( $issue = mysqli_fetch_array( $u_issue ) )
+            {
                if ($u_issue->fetch_array() != null)
                {
                   echo plugin_lang_get('issueswithoutproject');
 
-                  echo ' [ ' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
+                  echo ' [' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
                   echo plugin_lang_get('detaillink');
-                  echo '</a> ]';
+                  echo '</a>]';
                }
+            }
          }
+
          echo '</td>';
          echo '</tr>';
       }
    }
 
-   if ($project_count == 0)
+   // This section is only relevant for non-filtered project-overview
+   if ($actProject == 0)
    {
-      if ($pluginManager->getAllIssuesByUser($user['id']) == '')
+      if ($project_count == 0)
       {
-         // User has no project and no issues -> do nothing!
-      }
-      else
-      {
-         // User has no project, but issues!
-         if ($pluginManager->getActMantisVersion() == '1.2.')
+         if ( $pluginManager->getAllAssignedIssuesByUser( $user['id'] ) == '' )
          {
-            echo '<tr ' . helper_alternate_class($i) . '>';
+            // User has no project and no issues -> do nothing!
          }
          else
          {
-            echo '<tr>';
+            // User has no project, but issues!
+            if ($pluginManager->getActMantisVersion() == '1.2.')
+            {
+               echo '<tr ' . helper_alternate_class($i) . '>';
+            }
+            else
+            {
+               echo '<tr>';
+            }
+            // Column User
+            echo '<td>';
+            if (access_has_global_level($u_access_level))
+            {
+               echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
+               echo string_display_line($u_username);
+               echo '</a>';
+            }
+            else
+            {
+               echo string_display_line($u_username);
+            }
+            echo '</td>';
+
+            // Column Real Name
+            echo '<td>';
+            if (access_has_global_level($u_access_level))
+            {
+               echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
+               echo $user['realname'];
+               echo '</a>';
+            }
+            else
+            {
+               echo $user['realname'];
+            }
+            echo '</td>';
+
+            // Column Projects (in this case irrelevant)
+            echo '<td />';
+
+            // Column Target Version (in this case irrelevant)
+            echo '<td />';
+
+            // Column Issues (in this case irrelevant)
+            echo '<td />';
+
+            // Column Wrong Issues
+            echo '<td>';
+
+            echo plugin_lang_get('issueswithoutproject');
+
+            echo ' [' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
+            echo plugin_lang_get('detaillink');
+            echo '</a>]';
+
+            echo '</td>';
+            echo '</tr>';
          }
-         // Column User
-         echo '<td>';
-         if (access_has_global_level($u_access_level))
-         {
-            echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-            echo string_display_line($u_username);
-            echo '</a>';
-         }
-         else
-         {
-            echo string_display_line($u_username);
-         }
-         echo '</td>';
-
-         // Column Real Name
-         echo '<td>';
-         if (access_has_global_level($u_access_level))
-         {
-            echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-            echo $user['realname'];
-            echo '</a>';
-         }
-         else
-         {
-            echo $user['realname'];
-         }
-         echo '</td>';
-
-         // Column Projects (in this case irrelevant)
-         echo '<td />';
-
-         // Column Target Version (in this case irrelevant)
-         echo '<td />';
-
-         // Column Issues (in this case irrelevant)
-         echo '<td />';
-
-         // Column Wrong Issues
-         echo '<td>';
-         echo plugin_lang_get('issueswithoutproject');
-
-         echo ' [ ' . '<a href="' . plugin_page( 'WrongIssueDetails' ) . '&user_id=' . $user['id'] . '">';
-         echo plugin_lang_get('detaillink');
-         echo '</a> ]';
-
-         echo '</td>';
-         echo '</tr>';
       }
    }
 }

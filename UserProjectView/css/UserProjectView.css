@@ -1,20 +1,33 @@
-a:link {
+a:link
+{
    color: black;
    background: transparent;
    text-decoration: none;
 }
-a:visited {
+
+a:visited
+{
    color: black;
    background: transparent;
    text-decoration: none;
 }
-a:hover {
+
+a:hover
+{
    color: black;
    background: transparent;
    text-decoration: underline;
 }
-a:active {
+
+a:active
+{
    color: black;
    background: transparent;
    text-decoration: none;
 }
+
+td.attention
+{
+   background-color: rgba(131, 10, 13, 0.68);
+}
+

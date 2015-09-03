@@ -46,7 +46,7 @@ echo '<td class="print">';
 
 while ( $project = mysqli_fetch_array( $allProjects ) )
 {
-   $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser( $project, $userId );
+   $u_issue = $pluginManager->getIssuesWithoutProjectByProjectAndUser( $project['id'], $userId );
 
    while ( $issue = mysqli_fetch_array( $u_issue ) )
    {
