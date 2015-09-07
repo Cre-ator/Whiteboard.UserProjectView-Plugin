@@ -128,7 +128,7 @@ class PluginManager
          ' AND mantis_project_table.enabled = 1' .
          ' AND mantis_project_version_table.obsolete = false';
 
-      $validTargetVersionsByProject = $this->mysqli->query( $sqlquery )->fetch_all();
+      $validTargetVersionsByProject = $this->mysqli->query( $sqlquery )->fetch_array();
 
       return $validTargetVersionsByProject;
 	}
