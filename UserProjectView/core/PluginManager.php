@@ -36,7 +36,7 @@ class PluginManager
 	{
 		$sqlquery = ' SELECT *' .
                   ' FROM mantis_user_table' .
-                  ' WHERE mantis_user_table.access_level < 90' .
+                  ' WHERE mantis_user_table.access_level < ' . config_get_global( 'admin_site_threshold' ) .
 						' ORDER BY mantis_user_table.username';
 		
 		$allValidUsers = $this->mysqli->query( $sqlquery );
@@ -67,6 +67,78 @@ class PluginManager
 		return $allProjects;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	public function getAllMainProjectByProjectAndUser( $projectId, $userId )
+	{
+		$sqlquery = ' SELECT DISTINCT mantis_project_table.id, mantis_project_table.name' .
+				' FROM mantis_project_table, mantis_project_hierarchy_table, mantis_project_user_list_table' .
+				' WHERE mantis_project_table.enabled = 1' .
+				' AND mantis_project_table.id = mantis_project_user_list_table.project_id';
+		if ( $projectId != 0 )
+		{
+			$sqlquery .= ' AND mantis_project_table.id = ' . $projectId;
+		}
+		$sqlquery .= ' AND mantis_project_user_list_table.user_id = ' . $userId .
+				' AND NOT EXISTS (' .
+					' SELECT mantis_project_hierarchy_table.child_id' .
+					' FROM mantis_project_hierarchy_table' .
+					' WHERE mantis_project_hierarchy_table.child_id = mantis_project_table.id' .
+				' )';
+		
+		$allMainProjectsByProjectAndUser = $this->mysqli->query( $sqlquery );
+		
+		return $allMainProjectsByProjectAndUser;
+	}
+	
+	public function getAllSubProjectsByProjectAndUser ( $projectId, $userId )
+	{
+		$sqlquery = ' SELECT DISTINCT mantis_project_table.id, mantis_project_table.name' .
+				' FROM mantis_project_table, mantis_project_hierarchy_table, mantis_project_user_list_table' .
+				' WHERE mantis_project_hierarchy_table.child_id = mantis_project_table.id' .
+				' AND mantis_project_table.id = mantis_project_user_list_table.project_id' .
+				' AND mantis_project_user_list_table.user_id = ' . $userId;
+		if ( $projectId != 0 )
+		{
+			$sqlquery .= ' AND mantis_project_hierarchy_table.inherit_parent =' . $projectId;
+		}
+		$sqlquery .= ' ORDER BY mantis_project_table.id';
+	
+		$allSubProjectsByProjectAndUser = $this->mysqli->query( $sqlquery );
+		echo 'user: ' . $userId . ' project: ' . $projectId . '<br>';
+		
+		return $allSubProjectsByProjectAndUser;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public function getAllProjectsByProjectAndUser( $projectId, $userId )
 	{
 		$sqlquery = ' SELECT mantis_project_table.id AS "id", mantis_project_table.name AS "name"' .
@@ -81,15 +153,29 @@ class PluginManager
 		$sqlquery .= ' ORDER BY mantis_project_table.id';
 		
 		$allProjectsByProjectAndUser = $this->mysqli->query( $sqlquery );
-
+		
 		return $allProjectsByProjectAndUser;
+	}
+	
+		
+	public function getAllValidBugsByProjectAndUser( $projectId, $userId )
+	{
+		$sqlquery = ' SELECT mantis_bug_table.id' .
+				' FROM mantis_bug_table' .
+				' WHERE mantis_bug_table.project_id =' . $projectId . 
+				' AND mantis_bug_table.handler_id =' . $userId .
+				' AND mantis_bug_table.status = ' . config_get( 'bug_assigned_status' );
+		
+		$allValidBugsByProjectAndUser = $this->mysqli->query( $sqlquery );
+		
+		return $allValidBugsByProjectAndUser;
 	}
 
 	public function getAllAssignedIssuesByUser( $userId )
    {
       $sqlquery = ' SELECT mantis_bug_table.id AS ""' .
                   ' FROM mantis_bug_table' .
-                  ' WHERE mantis_bug_table.status = 50' .
+                  ' WHERE mantis_bug_table.status = ' . config_get( 'bug_assigned_status' ) .
                   ' AND mantis_bug_table.handler_id = ' . $userId .
                   ' ORDER BY mantis_bug_table.id';
 
@@ -182,7 +268,7 @@ class PluginManager
 						' WHERE mantis_bug_table.project_id = ' . $projectId .
 						' AND mantis_project_table.id = ' . $projectId .
 						' AND mantis_project_user_list_table.project_id = ' . $projectId .
-                  ' AND mantis_bug_table.status = 50' .
+                  ' AND mantis_bug_table.status = ' . config_get( 'bug_assigned_status' ) .
 						' AND mantis_bug_table.handler_id = ' . $userId .
 						' AND mantis_project_user_list_table.user_id = ' . $userId;
 
@@ -244,5 +330,32 @@ class PluginManager
       $projectDetailsByProjectId = $this->mysqli->query( $sqlquery )->fetch_row();
 
       return $projectDetailsByProjectId;
+   }
+   
+   /**
+    * Get a list of projects the specified user is assigned to.
+    * @param integer $p_user_id A valid user identifier.
+    * @return array An array of projects by project id the specified user is assigned to.
+    *		The array contains the id, name, view state, and project access level for the user.
+    */
+   public function getAssignedProjectsByUserId( $userId ) {
+
+   	$sqlquery = ' SELECT DISTINCT mantis_project_table.id' .
+     		' FROM mantis_project_table' .
+     		' LEFT JOIN mantis_project_user_list_table' .
+     		' ON mantis_project_table.id = mantis_project_user_list_table.project_id' .
+     		' WHERE mantis_project_table.enabled = \'1\' AND ' .
+     		' mantis_project_user_list_table.user_id = ' . $userId .
+     		' ORDER BY mantis_project_table.name';
+   	
+   	$t_result = $this->mysqli->query( $sqlquery );
+
+   	$t_projects = array();
+   	
+   	while( $t_row = mysqli_fetch_array( $t_result ) ) {
+   		$t_project_id = $t_row['id'];
+   		$t_projects[$t_project_id] = $t_row;
+   	}
+   	return $t_projects;
    }
 }

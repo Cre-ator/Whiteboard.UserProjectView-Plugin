@@ -45,6 +45,9 @@ class UserProjectViewPlugin extends MantisPlugin
    	(
 		   'ShowInFooter' => ON,
 		   'ShowMenu' => ON,
+   		'IAUserHighlighting' => ON,
+   		'IABGColor' => "#8b0000",
+   		'IATColor' => "#000000",
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }

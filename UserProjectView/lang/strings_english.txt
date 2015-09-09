@@ -10,7 +10,8 @@ $s_plugin_UserProjectView_project_selector_all = 'All';
 
 $s_plugin_UserProjectView_username = 'Username';
 $s_plugin_UserProjectView_realname = 'Real Name';
-$s_plugin_UserProjectView_projects = 'Assigned Projects';
+$s_plugin_UserProjectView_projects = 'Assigned Project';
+$s_plugin_UserProjectView_subproject = 'Subproject';
 $s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
 $s_plugin_UserProjectView_wrong_issues = 'Issues without Project';
 $s_plugin_UserProjectView_next_version = 'Target Version';
@@ -24,6 +25,9 @@ $s_plugin_UserProjectView_wrong_issues_title = 'Unreachable Issues for User ';
 
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
+$s_plugin_UserProjectView_inactiveUserHighlighting = 'Highlighting of inactive Users?';
+$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour in highlighted userfield';
+$s_plugin_UserProjectView_textcolor = 'Textcolour in highlighted userfield';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 
 $s_plugin_UserProjectView_config_title = 'UserProjectView - Configuration';

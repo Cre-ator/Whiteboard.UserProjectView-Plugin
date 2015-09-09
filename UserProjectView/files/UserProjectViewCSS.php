@@ -1,3 +1,10 @@
+<?php
+header('Content-type: text/css');
+ 
+$backgroundcolor = config_get( 'backgroundcolor' );
+$textcolor = config_get( 'textcolor' );
+?>
+
 a:link
 {
    color: black;
@@ -28,6 +35,6 @@ a:active
 
 td.attention
 {
-   background-color: rgba(131, 10, 13, 0.68);
+   background-color: <?=$backgroundcolor?>;
+   text-color: <?=$textcolor?>;
 }
-

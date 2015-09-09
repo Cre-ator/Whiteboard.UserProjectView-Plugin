@@ -28,7 +28,7 @@ echo '<table class="width100" cellspacing="1" >';
 echo '<tr>';
 echo '<td class="form-title" colspan="6">';
 echo '<div class="center">';
-echo string_display_line( config_get( 'window_title' ) ) . ' - UserProjectView - ' . plugin_lang_get( 'projects_title' );
+echo string_display_line( config_get( 'window_title' ) ) . ' - UserProjectView - ' . utf8_encode(plugin_lang_get( 'projects_title' ));
 if ( $actProject == 0 )
 {
    echo plugin_lang_get( 'project_selector_all' );
@@ -54,10 +54,10 @@ echo '<td class="print" width="16%">' . plugin_lang_get( 'issues' ) . '</td>';
 echo '<td class="print" width="16%">' . plugin_lang_get( 'wrong_issues' ) . '</td>';
 echo '</tr>';
 
-for ($i = 0; $i < $t_user_count; $i++)
+for ($userIndex = 0; $userIndex < $t_user_count; $userIndex++)
 {
 	# prefix user data with u_
-	$user = $users[$i];
+	$user = $users[$userIndex];
 	extract($user, EXTR_PREFIX_ALL, 'u');
 
 	$projects = array();
