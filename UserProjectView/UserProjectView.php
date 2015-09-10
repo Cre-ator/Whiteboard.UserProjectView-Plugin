@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'A view that shows all projects of a specific user.';
       $this->page        = 'config_page';
 
-      $this->version     = '1.0.1';
+      $this->version     = '1.0.3';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'

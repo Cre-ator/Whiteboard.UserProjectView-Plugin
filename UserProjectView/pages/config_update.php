@@ -34,13 +34,27 @@ if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting 
 
 
 $backgroundcolor = gpc_get_string( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
-plugin_config_set( 'IABGColor', $backgroundcolor );
 
+if ( plugin_config_get( 'IABGColor' ) != $backgroundcolor && plugin_config_get( 'IABGColor' ) != '' )
+{
+	plugin_config_set( 'IABGColor', $backgroundcolor );
+}
+elseif (plugin_config_get( 'IABGColor' ) == '' )
+{
+	plugin_config_set( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+}
 
 
 $textcolor = gpc_get_string( 'IATColor', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
-plugin_config_set( 'IATColor', $textcolor );
 
+if ( plugin_config_get( 'IATColor' ) != $textcolor && plugin_config_get( 'IATColor' ) != '' )
+{
+	plugin_config_set( 'IATColor', $textcolor );
+}
+elseif (plugin_config_get( 'IATColor' ) == '' )
+{
+	plugin_config_set( 'IATColor', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+}
 
 
 $UserProjectAccessLevel = gpc_get_int( 'UserProjectAccessLevel' );
