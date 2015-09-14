@@ -1,10 +1,6 @@
 <?php
 require_once (USERPROJECTVIEW_CORE_URI . 'constant_api.php');
-
-
 include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
-
-
 
 html_page_top1(plugin_lang_get('user_project_view'));
 
@@ -18,9 +14,6 @@ $pluginManager = new PluginManager();
 // actual Project ID
 $actProject = helper_get_current_project();
 
-// actual Project Details
-$projectDetails = $pluginManager->getProjectDetailsByProjectId($actProject);
-
 // user material
 $allValidUsers = $pluginManager->getAllValidUsers();
 
@@ -29,8 +22,7 @@ while ($user = mysqli_fetch_array($allValidUsers))
    $users[] = $user;
 }
 
-$t_user_count = count($users);
-
+$userCount = count($users);
 
 echo '<div id="manage-user-div" class="form-container">';
 
@@ -44,15 +36,7 @@ else
 }
 echo '<thead>';
 echo '<tr>';
-echo '<td class="form-title" colspan="6">' . plugin_lang_get( 'accounts_title' ) . plugin_lang_get( 'projects_title' );
-if ( $actProject == 0 )
-{
-   echo utf8_encode(plugin_lang_get( 'project_selector_all' ));
-}
-else
-{
-   echo $projectDetails[1];
-}
+echo '<td class="form-title" colspan="6">' . plugin_lang_get( 'accounts_title' ) . plugin_lang_get( 'projects_title' ) . project_get_name($actProject);
 echo '</td>';
 echo '<td class="form-title" colspan="7">';
 echo '<span class="small">';
@@ -69,435 +53,306 @@ echo '<th>' . plugin_lang_get('next_version') . '</th>';
 echo '<th>' . plugin_lang_get('issues') . '</th>';
 echo '<th>' . plugin_lang_get('wrong_issues') . '</th>';
 echo '</tr>';
-
 echo '</thead>';
-
 echo '<tbody>';
-
 
 // for each user
 // -----------------------------------------------------------------------------
-for ($userIndex = 0; $userIndex < $t_user_count; $userIndex++)
+for ( $userIndex = 0; $userIndex < $userCount; $userIndex++ )
 {
-   # prefix user data with u_
-   $user = $users[$userIndex];
-   extract($user, EXTR_PREFIX_ALL, 'u');
-
-   // project material
-   $mainProjects = array();
-   $mainProjectsByUser = $pluginManager->getAllMainProjectByProjectAndUser($actProject, $user['id']);
-	
-   while ($mainProject = mysqli_fetch_array($mainProjectsByUser))
-   {
-      $mainProjects[] = $mainProject;
-   }
-
-   $mainProjectCount = count($mainProjects);
-
-   // for each project
-   // --------------------------------------------------------------------------
-   for ($mainProjectIndex = 0; $mainProjectIndex < $mainProjectCount; $mainProjectIndex++)
-   {
-      $mainProject = $mainProjects[$mainProjectIndex];
-
-		// bug material
-      $validBugs = array();
-      $allValidBugsByProjectAndUser = $pluginManager->getAllValidBugsByProjectAndUser($mainProject['id'], $user['id']);
-            
-      while ($validBug = mysqli_fetch_array($allValidBugsByProjectAndUser))
-      {
-      	$validBugs[] = $validBug;
-      }
-      
-      $validBugCount = count($validBugs);
-      
-      $checkEquivalentBugs = false;
-      $bugCounter = 1;
-      
-      // for each bug
-      // -----------------------------------------------------------------------
-      for ($validBugIndex = 0; $validBugIndex < $validBugCount; $validBugIndex++)
-      {  
-      	$validBug = $validBugs[$validBugIndex];
-      	
-      	$project_id = $mainProject['id'];
-      	$user_id = $user['id'];
-      	$target_version = bug_get_field($validBug['id'], 'target_version');
-      	
-      	$bugCounter = $pluginManager->getAmountOfEqualIssuesByProjectUserTargetVersion($project_id, $user_id, $target_version);
-      	
-      	if ( $bugCounter > 1	&& $checkEquivalentBugs == true )
-      	{     		
-      		continue;
-      	}
-      	else
-      	{
-		      if ($pluginManager->getActMantisVersion() == '1.2.')
-		      {
-		      	if ( $prevUserIndex != $userIndex )
-		      	{
-		      		$rowIndex = !$rowIndex;
-		      		$prevUserIndex = $userIndex;
-		      	}
-		      	echo '<tr ' . helper_alternate_class($userIndex) . '>';
-		      }
-		      else
-		      {
-		      	echo '<tr>';
-		      }
-		      
-		      // Column User
-		      if ( user_get_field( $user['id'], 'enabled' ) == '0' )
-		      {
-		      	if ( plugin_config_get( 'IAUserHighlighting' ) )
-		      	{
-	               $backgroundcolor = plugin_config_get( 'IABGColor' );
-	               $textcolor = plugin_config_get( 'IATColor' );
-		      		echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
-		      	}
-		      	else
-		      	{
-		      		echo '<td>';
-		      	}
-		      }
-		      else
-		      {
-		      	echo '<td>';
-		      }
-		      if (access_has_global_level($u_access_level))
-		      {
-		      	echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-		      	echo utf8_encode(string_display_line($u_username));
-		      	echo '</a>';
-		      }
-		      else
-		      {
-		      	echo utf8_encode(string_display_line($u_username));
-		      }
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column Real Name
-		      if ( user_get_field( $user['id'], 'enabled' ) == '0' )
-		      {
-		      	if ( plugin_config_get( 'IAUserHighlighting' ) )
-		      	{
-	               $backgroundcolor = plugin_config_get( 'IABGColor' );
-	               $textcolor = plugin_config_get( 'IATColor' );
-		      		echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
-		      	}
-		      	else
-		      	{
-		      		echo '<td>';
-		      	}
-		      }
-		      else
-		      {
-		      	echo '<td>';
-		      }
-		      if (access_has_global_level($u_access_level))
-		      {
-		      	echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-		      	echo utf8_encode($user['realname']);
-		      	echo '</a>';
-		      }
-		      else
-		      {
-		      	echo utf8_encode($user['realname']);
-		      }
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column Projects
-		      echo '<td>';
-		      
-		      if (access_has_global_level($u_access_level))
-		      {
-		      	echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProject['id'] . '">';
-		      	echo utf8_encode($mainProject['name']);
-		      	echo '</a>';
-		      }
-		      else
-		      {
-		      	echo utf8_encode($mainProject['name']);
-		      }
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column subproject
-		      echo '<td>';
-		
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column Target version
-		      echo '<td>';
-		      if ( bug_get_field($validBug['id'], 'target_version') != null )
-		      {
-		      	echo '[' . date( 'Y-m-d', version_get_field( version_get_id( bug_get_field($validBug['id'], 'target_version'), $mainProject['id'] ), 'date_order' ) ) . '] [' . $mainProject['name'] . '] ' . bug_get_field($validBug['id'], 'target_version');
-		      }
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column Issues
-		      echo '<td>';
-		      echo '<a href="search.php?project_id=' . $mainProject['id'] . '&status_id='. config_get( 'bug_assigned_status' ) . '&handler_id=' . $user['id'] . '&sticky_issues=off&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-		      echo $bugCounter . '</a>';
-		      echo '</td>';
-		      
-		      
-		      
-		      // Column Wrong Issues
-		      echo '<td>';
-		      
-		      echo '</td>';
-      	}
-      	$checkEquivalentBugs = true;
+   $user = $users[ $userIndex ];
+   $userId = $user['id'];
+   $userAccessLevel = $user['access_level'];
    
-      }
-	      
-	      
-	      
-	      
+   $subProjectsByProject = $pluginManager->getSubprojectsByProject( $actProject );
+   
+   $subProjectCount = count( $subProjectsByProject );
+   $filteredBugs = array();
+   
+   for ( $subProjectIndex = 0; $subProjectIndex < $subProjectCount; $subProjectIndex++ )
+   {
+   	$subProject = $subProjectsByProject[ $subProjectIndex ];
 
-      $SubProjects = array();
-      $SubProjects = project_hierarchy_get_all_subprojects($mainProject['id']);
-      
-      $subProjectCount = count($SubProjects);
-      
-      // subprojects available
-      if ($subProjectCount > 0)
-      {
-	      // for each subproject
-	      // --------------------------------------------------------------------
-	      for ($subProjectIndex = 0; $subProjectIndex < $subProjectCount; $subProjectIndex++)
-	      {
-	      	$subProject = $SubProjects[$subProjectIndex];
-	      	$subProjectRow = project_get_row($subProject);
-	      	
-	      	// bug material
-	      	$subValidBugs = array();
-	      	$subAllValidBugsByProjectAndUser = $pluginManager->getAllValidBugsByProjectAndUser($subProjectRow['id'], $user['id']);
-	      	
-	      	while ($subValidBug = mysqli_fetch_array($subAllValidBugsByProjectAndUser))
-	      	{
-	      		$subValidBugs[] = $subValidBug;
-	      	}
-	      	
-	      	$subValidBugCount = count($subValidBugs);
-	      	
-	      	$subCheckEquivalentBugs = false;
-	      	$subBugCounter = 1;
-	      	
-	      	// for each bug
-	      	// -----------------------------------------------------------------------
-	      	for ($validBugIndex = 0; $validBugIndex < $subValidBugCount; $validBugIndex++)
-	      	{
-	      		$subValidBug = $subValidBugs[$validBugIndex];
-	      		 	      		
-	      		$sub_project_id = $subProjectRow['id'];
-	      		$user_id = $user['id'];
-	      		$sub_target_version = bug_get_field($subValidBug['id'], 'target_version');
-	      		 
-	      		$subBugCounter = $pluginManager->getAmountOfEqualIssuesByProjectUserTargetVersion($sub_project_id, $user_id, $sub_target_version);
-	      		 
-	      		if ( $subBugCounter > 1	&& $subCheckEquivalentBugs == true )
-	      		{
-	      			continue;
-	      		}
-	      		else
-	      		{
-			         if ($pluginManager->getActMantisVersion() == '1.2.')
-			         {
-			         	if ( $prevUserIndex != $userIndex )
-			         	{
-			         		$rowIndex = !$rowIndex;
-			         		$prevUserIndex = $userIndex;
-			         	}
-			            echo '<tr ' . helper_alternate_class($userIndex) . '>';
-			         }
-			         else
-			         {
-			            echo '<tr>';
-			         }
-				         
-				         
-				         
-						// Column User
-						if ( user_get_field( $user['id'], 'enabled' ) == '0' )
-						{
-							if ( plugin_config_get( 'inactiveUserHighlighting' ) )
-							{
-								$backgroundcolor = plugin_config_get( 'IABGColor' );
-								$textcolor = plugin_config_get( 'IATColor' );
-								echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
-							}
-							else
-							{
-								echo '<td>';
-							}
-			         }
-			         else
-			         {
-			         	echo '<td>';
-			         }
-			         if (access_has_global_level($u_access_level))
-			         {
-			         	echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-			         	echo utf8_encode(string_display_line($u_username));
-			         	echo '</a>';
-			         }
-			         else
-			         {
-			         	echo utf8_encode(string_display_line($u_username));
-			         }
-			         echo '</td>';
-				         
-				         
-				         
-						// Column Real Name
-						if ( user_get_field( $user['id'], 'enabled' ) == '0' )
-						{
-							if ( plugin_config_get( 'inactiveUserHighlighting' ) )
-							{
-								$backgroundcolor = plugin_config_get( 'IABGColor' );
-								$textcolor = plugin_config_get( 'IATColor' );
-								echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
-			         	}
-			         	else
-			         	{
-			         		echo '<td>';
-			         	}
-			         }
-			         else
-			         {
-			         	echo '<td>';
-			         }
-			         if (access_has_global_level($u_access_level))
-			         {
-			         	echo '<a href="manage_user_edit_page.php?user_id=' . $u_id . '">';
-			         	echo utf8_encode($user['realname']);
-			         	echo '</a>';
-			         }
-			         else
-			         {
-			         	echo utf8_encode($user['realname']);
-			         }
-			         echo '</td>';
-				         
-				         
-				         
-			         // Column Projects
-			         echo '<td>';
-			         
-						if (access_has_global_level($u_access_level))
-						{
-							echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProject['id'] . '">';
-							echo utf8_encode($mainProject['name']);
-							echo '</a>';
-						}
-						else
-						{
-							echo utf8_encode($mainProject['name']);
-						}
-						echo '</td>';
-			         
-			         
-			         
-						// Column subproject
-						echo '<td>';
+   	$filteredValidBugsByUserAndProject = $pluginManager->getValidBugsByUserAndProject( $userId, $subProject );
+   	
+   	while ($filteredValidBug = mysqli_fetch_row($filteredValidBugsByUserAndProject))
+   	{
+   		$filteredValidBugs[] = $filteredValidBug;
+   	}
+   }
+   
+   $allValidBugsByUser = array();
+   
+   if ( $actProject != 0 )
+   {
+	   for ($i = 0; $i < count($filteredValidBugs); $i++)
+	   {
+	   	$allValidBugsByUser[$i] = $filteredValidBugs[$i][0];
+	   }
+   }
+   else
+   {
+   	$validBugsByUser = $pluginManager->getAllValidBugsByUser( $userId );
+   	
+   	while ($validBug = mysqli_fetch_row($validBugsByUser))
+   	{
+   		$allValidBugsByUser[] = $validBug;
+   	}
+   }
+   
+   // bug material
+   $validBugCount = count($allValidBugsByUser);
+   
+   $checkEquivalentBugs = false;
+   $bugCounter = 1;
+   
+   // for each bug
+   // -----------------------------------------------------------------------
+   for ($validBugIndex = 0; $validBugIndex < $validBugCount; $validBugIndex++)
+   {	
+   	$validBug = $allValidBugsByUser[$validBugIndex];
+   	   	
+   	$validBugTargetVersion = bug_get_field($validBug[0], 'target_version');
+   	$validBugAssignedProject = bug_get_field($validBug[0], 'project_id');
+   	$validBugAssignedProjectName = project_get_name($validBugAssignedProject);
+   	
+//    	if ($validBugTargetVersion == '')
+   	{
+   		
+   	}
+//    	else 
+   	{
+		   $bugCounter = $pluginManager->getAmountOfEqualIssuesByProjectUserTargetVersion($validBugAssignedProject, $userId, $validBugTargetVersion);		
+   	}
+   	
+//    	echo $validBug . '--' . $bugCounter . '--' . bug_get_field($validBug[0], 'id') . ' || ';
+   	
+   	if ( $bugCounter > 1	&& $checkEquivalentBugs == true )
+   	{
+   		continue;
+   	}
+   	elseif ( $bugCounter == 0 )
+   	{
+   		continue;
+   	}
+   	else
+   	{
+	   	if ($pluginManager->getActMantisVersion() == '1.2.')
+	   	{
+	   		if ( $prevUserIndex != $userIndex )
+	   		{
+	   			$rowIndex = !$rowIndex;
+	   			$prevUserIndex = $userIndex;
+	   		}
+	   		echo '<tr ' . helper_alternate_class($userIndex) . '>';
+	   	}
+	   	else
+	   	{
+	   		echo '<tr>';
+	   	}
+	   	
+	   	
+	   	// Column User
+	   	if ( user_get_field( $userId, 'enabled' ) == '0' )
+	   	{
+	   		if ( plugin_config_get( 'IAUserHighlighting' ) )
+	   		{
+	   			$backgroundcolor = plugin_config_get( 'IABGColor' );
+	   			$textcolor = plugin_config_get( 'IATColor' );
+	   			echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
+	   		}
+	   		else
+	   		{
+	   			echo '<td>';
+	   		}
+	   	}
+	   	else
+	   	{
+	   		echo '<td>';
+	   	}
+	   	if (access_has_global_level($userAccessLevel))
+	   	{
+	   		echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
+	   		echo utf8_encode(string_display_line($user['username']));
+	   		echo '</a>';
+	   	}
+	   	else
+	   	{
+	   		echo utf8_encode(string_display_line($user['username']));
+	   	}
+	   	
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column Real Name
+	   	if ( user_get_field( $userId, 'enabled' ) == '0' )
+	   	{
+	   		if ( plugin_config_get( 'IAUserHighlighting' ) )
+	   		{
+	   			$backgroundcolor = plugin_config_get( 'IABGColor' );
+	   			$textcolor = plugin_config_get( 'IATColor' );
+	   			echo '<td style="background-color:' . $backgroundcolor . ';color:' . $textcolor . '">';
+	   		}
+	   		else
+	   		{
+	   			echo '<td>';
+	   		}
+	   	}
+	   	else
+	   	{
+	   		echo '<td>';
+	   	}
+	   	if (access_has_global_level($userAccessLevel))
+	   	{
+	   		echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
+	   		echo utf8_encode($user['realname']);
+	   		echo '</a>';
+	   	}
+	   	else
+	   	{
+	   		echo utf8_encode($user['realname']);
+	   	}
+	   	
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column Main Project
+	   	echo '<td>';
+	   	
+	   	if ($validBugTargetVersion == '')
+	   	{
+	   		// no target version available -> get main project by project hierarchy
+	   		$parent_project = project_hierarchy_get_parent( $validBugAssignedProject, false );
+				if ( project_hierarchy_is_toplevel( $validBugAssignedProject ) )
+				{
+					// selected project is toplevel -> main project
+					if (access_has_global_level($userAccessLevel))
+					{
+						echo '<a href="manage_proj_edit_page.php?project_id=' . $validBugAssignedProject . '">';
+						echo $validBugAssignedProjectName;
+						echo '</a>';
+					}
+					else 
+					{
+						echo $validBugAssignedProjectName;						
+					}
+				}
+	   		else 
+	   		{
+	   			// selected project is subproject
+					while ($parent_project != null)
+					{
+						$parent_project = project_hierarchy_get_parent($parent_project, false);
 						
-						$parent_project = project_hierarchy_get_parent( $subProjectRow['id'], false );
+						if ( project_hierarchy_is_toplevel( $parent_project ) )
+						{
+							break;
+						}
+					}
+					if (access_has_global_level($userAccessLevel))
+					{
+						echo '<a href="manage_proj_edit_page.php?project_id=' . $parent_project . '">';
+						echo project_get_name($parent_project);
+						echo '</a>';
+					}
+					else
+					{
+						echo project_get_name($parent_project);
+					}
+	   		}
+	   	}
+	   	else
+	   	{
+	   		// identify main project by target version of selected issue
+	   		$mainProjectByVersion = mysqli_fetch_row($pluginManager->getMainProjectByVersion($validBugTargetVersion))[0];
+	   		
+	   		if (access_has_global_level($userAccessLevel))
+	   		{
+	   			echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProjectByVersion . '">';
+		   		echo project_get_name($mainProjectByVersion);
+		   		echo '</a>';
+	   		}
+	   		else 
+	   		{
+	   			echo project_get_name($mainProjectByVersion);
+	   		}
+	   	}
+	   	
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column assigned Project
+	   	echo '<td>';
+	   		
+	   	if ( project_hierarchy_is_toplevel($validBugAssignedProject) )
+	   	{
+	   		// assigned project is toplevel -> already shown in project column
+	   	}
+	   	else 
+	   	{
+	   		if (access_has_global_level($userAccessLevel))
+	   		{
+	   			echo '<a href="manage_proj_edit_page.php?project_id=' . $validBugAssignedProject . '">';
+	   			echo $validBugAssignedProjectName;
+	   			echo '</a>';
+   			}
+   			else
+   			{
+   				echo $validBugAssignedProjectName;
+   			}
+	   	}
 
-						$arrayIndex = 0;
-						$parent_project_array = array();
-						
-						while ($parent_project != null)
-						{
-							$parent_project = project_hierarchy_get_parent($parent_project, false);
-							
-							$parent_project_array[$arrayIndex] = $parent_project;
-							$arrayIndex ++;
-						}
-						
-						$parent_projects_count = count($parent_project_array);
-						for ($project_index = 0; $project_index < $parent_projects_count; $project_index++)
-						{
-							$p_project_id = $parent_project_array[$parent_projects_count - $project_index - 1];
-							
-							if ($p_project_id != 0)
-							{
-								$p_project_name = project_get_field($p_project_id, 'name');
-								if (access_has_global_level($u_access_level))
-								{
-									echo '<a href="manage_proj_edit_page.php?project_id=' . $p_project_id . '">';
-									echo $p_project_name;
-									echo '</a>';
-								}
-								else
-								{
-									echo $p_project_name;
-								}
-								echo ' >> ';
-							}
-						}
-
-						if (access_has_global_level($u_access_level))
-						{
-							echo '<a href="manage_proj_edit_page.php?project_id=' . $subProjectRow['id'] . '">';
-							echo utf8_encode($subProjectRow['name']);
-							echo '</a>';
-						}
-						else
-						{
-							echo utf8_encode($subProjectRow['name']);
-						}
-						echo '</td>';
-				        
-						
-						
-						// Column Target version
-				      echo '<td>';
-				      
-				      $tpl_bug = bug_get( $subValidBug['id'], true );
-				      $t_version_rows = version_get_all_rows( $tpl_bug->project_id );
-				      
-				      if ($subValidBug['target_version'] != null)
-				      {
-					      $tpl_target_version_string   = '';
-					      $tpl_target_version_string   = prepare_version_string( $tpl_bug->project_id, version_get_id( $tpl_bug->target_version, $tpl_bug->project_id) , $t_version_rows );
-					      
-					      echo '[' . date( 'Y-m-d', version_get_field( version_get_id( bug_get_field($tpl_bug->id, 'target_version'), $subProjectRow['id'] ), 'date_order' ) ) . '] ' . $tpl_target_version_string;
-				      }
-				      echo '</td>';
-			         
-			         
-			         
-						// Column Issues
-						echo '<td>';
-						echo '<a href="search.php?project_id=' . $subProjectRow['id'] . '&status_id='. config_get( 'bug_assigned_status' ) . '&handler_id=' . $user['id'] . '&sticky_issues=off&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-						echo $subBugCounter . '</a>';
-						echo '</td>';
-			         
-			         
-			         
-						// Column Wrong Issues
-						echo '<td>';
-						
-						echo '</td>';
-						
-						
-						echo '</tr>';
-	      		}
-	      		$subCheckEquivalentBugs = true;
-	      	}
-	      }
-      }
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column Target Version
+	   	echo '<td>';
+	   	
+	   	if ( $validBugTargetVersion != '' )
+	   	{
+	   		$t_version_rows = version_get_all_rows( $validBugAssignedProject );
+	   		$tpl_target_version_string   = '';
+	   		$tpl_target_version_string   = prepare_version_string( $validBugAssignedProject, version_get_id( $validBugTargetVersion, $validBugAssignedProject) , $t_version_rows );
+	   		 
+	   		echo date( 'Y-m-d', version_get_field( version_get_id( $validBugTargetVersion, $validBugAssignedProject ), 'date_order' ) ) . ' ';
+	   		
+	   		if (access_has_global_level($userAccessLevel))
+		      {
+		      	echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProjectByVersion . '">';
+		      	echo $tpl_target_version_string;
+		      	echo '</a>';
+		      }
+		      else
+		      {
+		      	echo $tpl_target_version_string;
+		      }
+	   	}
+	   	
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column Issues
+	   	echo '<td>';
+	   	
+	   	echo '<a href="search.php?project_id=' . $validBugAssignedProject . '&status_id='. config_get( 'bug_assigned_status' ) . '&handler_id=' . $userId . '&sticky_issues=on&target_version=' . $validBugTargetVersion . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+	   	echo $bugCounter;
+	   	echo '</a>';
+	   	
+	   	echo '</td>';
+	   	
+	   	
+	   	
+	   	// Column Wrong Issues
+	   	echo '<td>';
+	   	
+	   	echo '</td>';
+   	}
+   	$checkEquivalentBugs = true;
    }
 }
 

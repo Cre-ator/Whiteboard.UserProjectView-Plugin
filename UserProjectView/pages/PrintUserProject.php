@@ -22,7 +22,7 @@ while ( $user = mysqli_fetch_array( $allValidUsers ) )
 	$users[] = $user;
 }
 
-$t_user_count = count( $users );
+$userCount = count( $users );
 
 echo '<table class="width100" cellspacing="1" >';
 echo '<tr>';
@@ -54,7 +54,7 @@ echo '<td class="print" width="16%">' . plugin_lang_get( 'issues' ) . '</td>';
 echo '<td class="print" width="16%">' . plugin_lang_get( 'wrong_issues' ) . '</td>';
 echo '</tr>';
 
-for ($userIndex = 0; $userIndex < $t_user_count; $userIndex++)
+for ($userIndex = 0; $userIndex < $userCount; $userIndex++)
 {
 	# prefix user data with u_
 	$user = $users[$userIndex];

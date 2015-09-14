@@ -10,8 +10,8 @@ $s_plugin_UserProjectView_project_selector_all = 'All';
 
 $s_plugin_UserProjectView_username = 'Username';
 $s_plugin_UserProjectView_realname = 'Real Name';
-$s_plugin_UserProjectView_projects = 'Assigned Project';
-$s_plugin_UserProjectView_subproject = 'Subproject';
+$s_plugin_UserProjectView_projects = 'Main Project';
+$s_plugin_UserProjectView_subproject = 'Assigned Project';
 $s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
 $s_plugin_UserProjectView_wrong_issues = 'Issues without Project';
 $s_plugin_UserProjectView_next_version = 'Target Version';
