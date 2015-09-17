@@ -4,7 +4,7 @@
 $s_plugin_UserProjectView_user_project_view = 'User-Project-Overview';
 $s_plugin_UserProjectView_menu_title = 'Users';
 $s_plugin_UserProjectView_print_button = 'Print';
-$s_plugin_UserProjectView_accounts_title = 'Account overview (only active accounts) - ';
+$s_plugin_UserProjectView_accounts_title = 'Account overview - ';
 $s_plugin_UserProjectView_projects_title = 'Selected Project: ';
 $s_plugin_UserProjectView_project_selector_all = 'All';
 
@@ -13,13 +13,14 @@ $s_plugin_UserProjectView_realname = 'Real Name';
 $s_plugin_UserProjectView_projects = 'Main Project';
 $s_plugin_UserProjectView_subproject = 'Assigned Project';
 $s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
-$s_plugin_UserProjectView_wrong_issues = 'Issues without Project';
 $s_plugin_UserProjectView_next_version = 'Target Version';
+$s_plugin_UserProjectView_remark = 'Remark';
 
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
-$s_plugin_UserProjectView_issueswithoutproject = 'There are unreachable Issues!';
-$s_plugin_UserProjectView_detaillink = 'Details';
+$s_plugin_UserProjectView_unreachableIssue = 'Issue(s) is/are unreachable!';
+$s_plugin_UserProjectView_inactiveUser = 'User is inactive!';
+$s_plugin_UserProjectView_sum = 'total:';
 
 $s_plugin_UserProjectView_wrong_issues_title = 'Unreachable Issues for User ';
 

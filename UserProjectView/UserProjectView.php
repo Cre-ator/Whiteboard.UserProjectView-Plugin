@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'A view that shows all projects of a specific user.';
       $this->page        = 'config_page';
 
-      $this->version     = '1.0.3';
+      $this->version     = '1.0.6';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'
@@ -77,7 +77,7 @@ class UserProjectViewPlugin extends MantisPlugin
          && $this->getUserHasLevel()
          )
       {
-      	return '<a href="' . plugin_page( 'UserProject' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject?page_number=1' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
       }
       return null;
    }

@@ -4,7 +4,7 @@
 $s_plugin_UserProjectView_user_project_view = 'Benutzer-Projekt-Übersicht';
 $s_plugin_UserProjectView_menu_title = 'Benutzer';
 $s_plugin_UserProjectView_print_button = 'Drucken';
-$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht (nur aktive Benutzer) - ';
+$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht - ';
 $s_plugin_UserProjectView_projects_title = 'Ausgewähltes Projekt: ';
 $s_plugin_UserProjectView_project_selector_all = 'Alle';
 
@@ -12,14 +12,15 @@ $s_plugin_UserProjectView_username = 'Benutzername';
 $s_plugin_UserProjectView_realname = 'Realer Name';
 $s_plugin_UserProjectView_projects = 'Hauptprojekt';
 $s_plugin_UserProjectView_subproject = 'Zugewiesenes Projekt';
-$s_plugin_UserProjectView_issues = 'Anzahl der zugewiesenen Einträge';
-$s_plugin_UserProjectView_wrong_issues = 'Einträge ohne Projekt';
+$s_plugin_UserProjectView_issues = 'Anzahl zugewiesener Einträge';
 $s_plugin_UserProjectView_next_version = 'Zielversion';
+$s_plugin_UserProjectView_remark = 'Bemerkung';
 
 $s_plugin_UserProjectView_issue = 'Eintrag';
 $s_plugin_UserProjectView_project = 'Projekt';
-$s_plugin_UserProjectView_issueswithoutproject = 'Es existieren unerreichbare Einträge!';
-$s_plugin_UserProjectView_detaillink = 'Details';
+$s_plugin_UserProjectView_unreachableIssue = 'Eintrag(e) ist/sind nicht erreichbar!';
+$s_plugin_UserProjectView_inactiveUser = 'Benutzer ist inaktiv!';
+$s_plugin_UserProjectView_sum = 'Summe:';
 
 $s_plugin_UserProjectView_wrong_issues_title = 'Unerreichbare Einträge für Nutzer ';
 
