@@ -7,6 +7,8 @@ $pluginManager = new PluginManager();
 
 $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
 
+$unreachIssueStatusValue = plugin_config_get( 'UnreachableIssueThreshold' );
+
 $sortName = true;
 $sortProject = false;
 
@@ -138,7 +140,7 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	}
 	
 	// prepare unreachable issues
-	$unreachableIssues = mysqli_fetch_row( $pluginManager->getUnreachableIssuesByBugAndUser( $actBugId, $actBugAssignedUserId ) );
+	$unreachableIssues = mysqli_fetch_row( $pluginManager->getUnreachableIssuesByBugAndUser( $actBugId, $actBugAssignedUserId, $unreachIssueStatusValue ) );
 
 	if ( $unreachableIssues != null && user_is_administrator( $actBugAssignedUserId ) == false )
 	{
@@ -165,7 +167,7 @@ $rowCount = count( $dataRows );
 $rowFlag = false;
 $amountOfShownIssues = 0;
 
-html_page_top1( plugin_lang_get( 'user_project_view' ) );
+html_page_top1( plugin_lang_get( 'userProject_title' ) );
 html_head_end();
 html_body_begin();
 
@@ -173,7 +175,7 @@ echo '<table class="width100" cellspacing="1" >';
 echo '<tr>';
 echo '<td class="form-title" colspan="7">';
 echo '<div class="center">';
-echo string_display_line( config_get( 'window_title' ) ) . ' - UserProjectView - ' . utf8_encode(plugin_lang_get( 'projects_title' ) . project_get_name(helper_get_current_project() ) );
+echo string_display_line( utf8_encode(plugin_lang_get( 'userProject_title' ) . ' - ' . project_get_name(helper_get_current_project() ) ) );
 echo '</div>';
 echo '</td>';
 echo '</tr>';

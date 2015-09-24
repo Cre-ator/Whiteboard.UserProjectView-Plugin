@@ -1,34 +1,38 @@
 <?php
-/* Configuration page */
 
-$s_plugin_UserProjectView_user_project_view = 'User-Project-Overview';
-$s_plugin_UserProjectView_menu_title = 'Users';
-$s_plugin_UserProjectView_print_button = 'Print';
+$s_plugin_UserProjectView_title = 'Whiteboard';
+$s_plugin_UserProjectView_print_button = 'Print Report';
 $s_plugin_UserProjectView_accounts_title = 'Account overview - ';
 $s_plugin_UserProjectView_projects_title = 'Selected Project: ';
-$s_plugin_UserProjectView_project_selector_all = 'All';
+
+$s_plugin_UserProjectView_userProject_title = 'User Report';
+
 
 $s_plugin_UserProjectView_username = 'Username';
 $s_plugin_UserProjectView_realname = 'Real Name';
 $s_plugin_UserProjectView_projects = 'Main Project';
 $s_plugin_UserProjectView_subproject = 'Assigned Project';
-$s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
+$s_plugin_UserProjectView_issues = 'Issues';
 $s_plugin_UserProjectView_next_version = 'Target Version';
-$s_plugin_UserProjectView_remark = 'Remark';
+$s_plugin_UserProjectView_remark = 'Information';
 
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
 $s_plugin_UserProjectView_unreachableIssue = 'Issue(s) is/are unreachable!';
 $s_plugin_UserProjectView_inactiveUser = 'User is inactive!';
-$s_plugin_UserProjectView_sum = 'total:';
-
-$s_plugin_UserProjectView_wrong_issues_title = 'Unreachable Issues for User ';
+$s_plugin_UserProjectView_zeroIssues = 'User has no Issues!';
+$s_plugin_UserProjectView_noUser = 'Issue has no assigned User!';
 
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
-$s_plugin_UserProjectView_inactiveUserHighlighting = 'Highlighting of inactive Users?';
-$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour in highlighted userfield';
-$s_plugin_UserProjectView_textcolor = 'Textcolour in highlighted userfield';
+$s_plugin_UserProjectView_inactiveUserHighlighting = 'Mark inactive Users?';
+$s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Mark Users with unreachable Issues?';
+$s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark Issues without assigned User?';
+$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
+$s_plugin_UserProjectView_textcolor = 'Textcolour';
+$s_plugin_UserProjectView_columnAmount = 'Amount of Columns';
+$s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
+$s_plugin_UserProjectView_unreachable_issue_threshold = 'Threshold for uneachable Issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 
 $s_plugin_UserProjectView_config_title = 'UserProjectView - Configuration';
