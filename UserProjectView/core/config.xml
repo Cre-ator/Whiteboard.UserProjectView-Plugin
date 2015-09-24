@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<config>
-    <dbpath>localhost</dbpath>
-    <dbuser>root</dbuser>
-    <dbpass></dbpass>
-    <dbname>mantis_1217</dbname>
-</config>

@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'A view that shows all projects of a specific user.';
       $this->page        = 'config_page';
 
-      $this->version     = '1.0.1';
+      $this->version     = '1.0.6';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'
@@ -45,6 +45,9 @@ class UserProjectViewPlugin extends MantisPlugin
    	(
 		   'ShowInFooter' => ON,
 		   'ShowMenu' => ON,
+   		'IAUserHighlighting' => ON,
+   		'IABGColor' => "#8b0000",
+   		'IATColor' => "#000000",
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
@@ -74,7 +77,7 @@ class UserProjectViewPlugin extends MantisPlugin
          && $this->getUserHasLevel()
          )
       {
-      	return '<a href="' . plugin_page( 'UserProject' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject?page_number=1' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
       }
       return null;
    }

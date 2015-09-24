@@ -27,6 +27,8 @@ else
 		echo '</td>';
 	echo '</tr>';
 	
+	
+	
    if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
    {
       echo '<tr ' . helper_alternate_class() . '>';
@@ -46,6 +48,8 @@ else
       echo '</td>';
    echo '</tr>';
 	
+   
+   
 	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 	{
 	   echo '<tr ' . helper_alternate_class() . '>';
@@ -66,6 +70,76 @@ else
 		echo '</td>';
 	echo '</tr>';
 	
+
+	
+	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+	{
+		echo '<tr ' . helper_alternate_class() . '>';
+	}
+	else
+	{
+		echo '<tr>';
+	}
+
+		echo '<td class="category">';
+		echo plugin_lang_get( 'inactiveUserHighlighting' );
+		echo '</td>';
+		echo '<td width="200px">';
+      ?>
+		<label><input type="radio" name="IAUserHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
+		<label><input type="radio" name="IAUserHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<?php
+		echo '</td>';
+	echo '</tr>';
+	
+	
+
+	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+	{
+		echo '<tr ' . helper_alternate_class() . '>';
+	}
+	else
+	{
+		echo '<tr>';
+	}
+	
+		echo '<td class="category">';
+		echo plugin_lang_get( 'backgroundcolor' );
+		echo '</td>';
+		echo '<td width="200px">';
+		?>
+		<label>
+			<input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" />
+		</label>
+		<?php
+		echo '</td>';
+	echo '</tr>';
+	
+	
+
+	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+	{
+		echo '<tr ' . helper_alternate_class() . '>';
+	}
+	else
+	{
+		echo '<tr>';
+	}
+	
+		echo '<td class="category">';
+		echo plugin_lang_get( 'textcolor' );
+		echo '</td>';
+		echo '<td width="200px">';
+		?>
+		<label>
+			<input type="text" name="IATColor" value="<?php echo plugin_config_get( 'IATColor', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT ); ?>" />
+		</label>
+		<?php
+		echo '</td>';
+	echo '</tr>';
+	
+	
+
 	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 	{
 	   echo '<tr ' . helper_alternate_class() . '>';
@@ -89,7 +163,10 @@ else
 		  echo '<input type="submit" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
 		echo '</td>';
 	echo '</tr>';
+
 echo '</table>';
+
+
 
 if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 {
