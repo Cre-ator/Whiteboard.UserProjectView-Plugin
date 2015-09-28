@@ -36,22 +36,25 @@ class PluginManager
 	
 	public function getUnreachableIssuesByBugAndUser( $bugId, $userId, $status )
 	{
-		$sqlquery = ' SELECT mantis_bug_table.id AS \'bid\',' .
-				' mantis_bug_table.project_id AS \'pid\'' .
-				' FROM mantis_bug_table' .
-				' WHERE mantis_bug_table.id = ' . $bugId .
-				' AND mantis_bug_table.status = ' . $status .
-				' AND mantis_bug_table.handler_id = ' . $userId .
-				' AND NOT EXISTS (' .
-					' SELECT *' .
-					' FROM mantis_project_user_list_table, mantis_bug_table' .
-					' WHERE mantis_project_user_list_table.project_id = mantis_bug_table.project_id' .
-					' AND mantis_project_user_list_table.user_id = ' . $userId .
-					' AND mantis_bug_table.id = ' . $bugId .
-				' )' .
-				' ORDER BY mantis_bug_table.id';
-		
-		$unreachableIssuesByBugAndUser = $this->mysqli->query( $sqlquery );
+		foreach ( $status as $state)
+		{
+			$sqlquery = ' SELECT mantis_bug_table.id AS \'bid\',' .
+					' mantis_bug_table.project_id AS \'pid\'' .
+					' FROM mantis_bug_table' .
+					' WHERE mantis_bug_table.id = ' . $bugId .
+					' AND mantis_bug_table.status = ' . $state .
+					' AND mantis_bug_table.handler_id = ' . $userId .
+					' AND NOT EXISTS (' .
+						' SELECT *' .
+						' FROM mantis_project_user_list_table, mantis_bug_table' .
+						' WHERE mantis_project_user_list_table.project_id = mantis_bug_table.project_id' .
+						' AND mantis_project_user_list_table.user_id = ' . $userId .
+						' AND mantis_bug_table.id = ' . $bugId .
+					' )' .
+					' ORDER BY mantis_bug_table.id';
+			
+			$unreachableIssuesByBugAndUser = $this->mysqli->query( $sqlquery );
+		}
 		
 		return $unreachableIssuesByBugAndUser;
 	}
@@ -169,7 +172,7 @@ class PluginManager
 		echo '<table align="center">';
 			echo '<tr">';
 				echo '<td>';
-				echo '[ <a href="' . plugin_page('UserProject') . '">';
+				echo '[ <a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=ASC">';
 				echo plugin_lang_get( 'userProject_title' );
 				echo '</a> ]';
 				echo '</td>';

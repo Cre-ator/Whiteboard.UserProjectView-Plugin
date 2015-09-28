@@ -31,6 +31,7 @@ $s_plugin_UserProjectView_backgroundcolor = 'Hintergrundfarbe';
 $s_plugin_UserProjectView_textcolor = 'Textfarbe';
 $s_plugin_UserProjectView_columnAmount = 'Anzahl Spalten';
 $s_plugin_UserProjectView_columnStatSelect = 'Status für Spalte';
+$s_plugin_UserProjectView_issueThreshold = 'Schwelle für f�r Anzahl Issues';
 $s_plugin_UserProjectView_unreachable_issue_threshold = 'Schwelle für unerreichbare Issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 

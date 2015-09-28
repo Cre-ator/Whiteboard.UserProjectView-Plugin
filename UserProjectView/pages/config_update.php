@@ -1,10 +1,11 @@
 <?php
+
+$reload='<script language="javascript">document.location.reload();</script>';
+
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
 access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 auth_reauthenticate();
-
-
 
 $ShowInFooter = gpc_get_int( 'ShowInFooter', ON );
 
@@ -14,14 +15,12 @@ if ( plugin_config_get( 'ShowInFooter' ) != $ShowInFooter )
 }
 
 
-
 $ShowMenu = gpc_get_int( 'ShowMenu', ON );
 
 if ( plugin_config_get( 'ShowMenu' ) != $ShowMenu )
 {
    plugin_config_set( 'ShowMenu', $ShowMenu );
 }
-
 
 
 $ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', ON );
@@ -137,6 +136,7 @@ $statselectcol1 = gpc_get_int( 'statselectcol1', 50 );
 if ( plugin_config_get( 'statselectcol1' ) != $statselectcol1 )
 {
 	plugin_config_set( 'statselectcol1', $statselectcol1 );
+	echo $reload;
 }
 
 $statselectcol2 = gpc_get_int( 'statselectcol2', 50 );
@@ -144,6 +144,7 @@ $statselectcol2 = gpc_get_int( 'statselectcol2', 50 );
 if ( plugin_config_get( 'statselectcol2' ) != $statselectcol2 )
 {
 	plugin_config_set( 'statselectcol2', $statselectcol2 );
+	echo $reload;
 }
 
 $statselectcol3 = gpc_get_int( 'statselectcol3', 50 );
@@ -151,16 +152,104 @@ $statselectcol3 = gpc_get_int( 'statselectcol3', 50 );
 if ( plugin_config_get( 'statselectcol3' ) != $statselectcol3 )
 {
 	plugin_config_set( 'statselectcol3', $statselectcol3 );
+	echo $reload;
 }
 
-
-$UnreachableIssueThreshold = gpc_get_int( 'UnreachableIssueThreshold' );
-
-if ( plugin_config_get( 'UnreachableIssueThreshold' ) != $UnreachableIssueThreshold )
+foreach ($_POST['UnreachableIssueThreshold'] as $unreachableIssueThresholds)
 {
-	plugin_config_set( 'UnreachableIssueThreshold', $UnreachableIssueThreshold );
+	$unreachableIssueThreshold = gpc_get_int_array( 'UnreachableIssueThreshold' );
+	if ( plugin_config_get( 'UnreachableIssueThreshold' ) != $unreachableIssueThreshold )
+	{
+		plugin_config_set( 'UnreachableIssueThreshold', $unreachableIssueThreshold );
+	}
 }
 
+$issueThreshold1 = gpc_get_int( 'issueThreshold1', 0 );
+
+if ( plugin_config_get( 'issueThreshold1' ) != $issueThreshold1 )
+{
+	plugin_config_set( 'issueThreshold1', $issueThreshold1 );
+}
+
+$issueThreshold2 = gpc_get_int( 'issueThreshold2', 0 );
+
+if ( plugin_config_get( 'issueThreshold2' ) != $issueThreshold2 )
+{
+	plugin_config_set( 'issueThreshold2', $issueThreshold2 );
+}
+
+$issueThreshold3 = gpc_get_int( 'issueThreshold3', 0 );
+
+if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
+{
+	plugin_config_set( 'issueThreshold3', $issueThreshold3 );
+}
+
+$iTBGColor1 = gpc_get_string( 'ITBGColor1', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITBGColor1' ) != $iTBGColor1 && plugin_config_get( 'ITBGColor1' ) != '' )
+{
+	plugin_config_set( 'ITBGColor1', $iTBGColor1 );
+}
+elseif (plugin_config_get( 'ITBGColor1' ) == '' )
+{
+	plugin_config_set( 'ITBGColor1', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+}
+
+$iTBGColor2 = gpc_get_string( 'ITBGColor2', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITBGColor2' ) != $iTBGColor2 && plugin_config_get( 'ITBGColor2' ) != '' )
+{
+	plugin_config_set( 'ITBGColor2', $iTBGColor2 );
+}
+elseif (plugin_config_get( 'ITBGColor2' ) == '' )
+{
+	plugin_config_set( 'ITBGColor2', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+}
+
+$iTBGColor3 = gpc_get_string( 'ITBGColor3', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITBGColor3' ) != $iTBGColor3 && plugin_config_get( 'ITBGColor3' ) != '' )
+{
+	plugin_config_set( 'ITBGColor3', $iTBGColor3 );
+}
+elseif (plugin_config_get( 'ITBGColor3' ) == '' )
+{
+	plugin_config_set( 'ITBGColor3', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+}
+
+$iTTColor1 = gpc_get_string( 'ITTColor1', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITTColor1' ) != $iTTColor1 && plugin_config_get( 'ITTColor1' ) != '' )
+{
+	plugin_config_set( 'ITTColor1', $iTTColor1 );
+}
+elseif (plugin_config_get( 'ITTColor1' ) == '' )
+{
+	plugin_config_set( 'ITTColor1', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+}
+
+$iTTColor2 = gpc_get_string( 'ITTColor2', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITTColor2' ) != $iTTColor2 && plugin_config_get( 'ITTColor2' ) != '' )
+{
+	plugin_config_set( 'ITTColor2', $iTTColor2 );
+}
+elseif (plugin_config_get( 'ITTColor2' ) == '' )
+{
+	plugin_config_set( 'ITTColor2', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+}
+
+$iTTColor3 = gpc_get_string( 'ITTColor3', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+
+if ( plugin_config_get( 'ITTColor3' ) != $iTTColor3 && plugin_config_get( 'ITTColor3' ) != '' )
+{
+	plugin_config_set( 'ITTColor3', $iTTColor3 );
+}
+elseif (plugin_config_get( 'ITTColor3' ) == '' )
+{
+	plugin_config_set( 'ITTColor3', PLUGINS_USERPROJECTVIEW_TEXT_COLOR_DEFAULT );
+}
 
 $UserProjectAccessLevel = gpc_get_int( 'UserProjectAccessLevel' );
 

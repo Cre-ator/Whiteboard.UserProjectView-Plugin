@@ -32,6 +32,7 @@ $s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
 $s_plugin_UserProjectView_textcolor = 'Textcolour';
 $s_plugin_UserProjectView_columnAmount = 'Amount of Columns';
 $s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
+$s_plugin_UserProjectView_issueThreshold = 'Issue Threshold';
 $s_plugin_UserProjectView_unreachable_issue_threshold = 'Threshold for uneachable Issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
 

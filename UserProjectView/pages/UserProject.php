@@ -10,10 +10,12 @@ $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get
 $unreachIssueStatusValue = plugin_config_get( 'UnreachableIssueThreshold' );
 $amountStatColumns = plugin_config_get( 'colAmount' );
 $statCols = array();
+$issueThresholds = array();
 
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	$statCols[$statColIndex] = plugin_config_get( 'statselectcol' . $statColIndex );
+	$issueThresholds[$statColIndex] = plugin_config_get( 'issueThreshold' . $statColIndex );
 }
 
 $f_page_number	= gpc_get_int( 'page_number', 1 );
@@ -142,10 +144,19 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	
 	// prepare unreachable issues
 	$unreachableIssues = mysqli_fetch_row( $pluginManager->getUnreachableIssuesByBugAndUser( $actBugId, $actBugAssignedUserId, $unreachIssueStatusValue ) );
-
-	if ( $unreachableIssues != null && user_is_administrator( $actBugAssignedUserId ) == false )
+	
+	if ( $actBugAssignedUserId != '0' )
 	{
-		$uRIssueFlag = true;
+		if ( $unreachableIssues != null && user_is_administrator( $actBugAssignedUserId ) == false )
+		{
+			$uRIssueFlag = true;
+		}
+	}
+	
+	if ( $actBugAssignedProjectId == $actBugMainProjectId )
+	{
+		$actBugAssignedProjectId = '';
+		$aBAPIname = '';
 	}
 	
 	// prepare record matchcode
@@ -205,22 +216,22 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 	
 	if ( $statCols[2] != null )
 	{
-		if ( $rowVals[5] == '' )
+		if ( $rowVals[5] == '' && $rowVals[10] == false )
 		{
 			$tableRow[$rowIndex]['specColumn2'] = mysqli_fetch_row( $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[2] ) )[0];
 		}
-		else
+		elseif ( $rowVals[10] == false )
 		{
 			$tableRow[$rowIndex]['specColumn2'] = mysqli_fetch_row( $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[2] ) )[0];		
 		}
 	}
 	if ( $statCols[3] != null )
 	{
-		if ( $rowVals[5] == '' )
+		if ( $rowVals[5] == '' && $rowVals[10] == false )
 		{
 			$tableRow[$rowIndex]['specColumn3'] = mysqli_fetch_row( $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[3] ) )[0];
 		}
-		else
+		elseif ( $rowVals[10] == false )
 		{
 			$tableRow[$rowIndex]['specColumn3'] = mysqli_fetch_row( $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[3] ) )[0];		
 		}
@@ -278,7 +289,7 @@ for ( $rowIndexT = 0; $rowIndexT < $rowCount; $rowIndexT++ )
 		$tableRow[$addRow]['bugTargetVersion'] = '';
 		$tableRow[$addRow]['bugTargetVersionDate'] = '';
 		$tableRow[$addRow]['bugTargetVersionPreparedString'] = '';
-		$tableRow[$addRow]['unreachableIssueFlag'] = '';
+		$tableRow[$addRow]['unreachableIssueFlag'] = false;
 		$tableRow[$addRow]['inactiveUserFlag'] = $userIsActive;
 		$tableRow[$addRow]['zeroIssuesFlag'] = true;
 		$tableRow[$addRow]['specColumn1'] = '0';
@@ -291,15 +302,15 @@ for ( $rowIndexT = 0; $rowIndexT < $rowCount; $rowIndexT++ )
 
 foreach ( $tableRow as $key => $row )
 {
-	$userNameS[$key] = $row['userName'];
-	$userRealnameS[$key] = $row['userRealname'];
-	$mainProjectNameS[$key] = $row['mainProjectName'];
+	$sortUserName[$key] = $row['userName'];
+	$sortUserRealname[$key] = $row['userRealname'];
+	$sortMainProject[$key] = $row['mainProjectName'];
+	$sortAssignedProject[$key] = $row['bugAssignedProjectName'];
+	$sortTargetVersion[$key] = $row['bugTargetVersion'];
+	$sortSpecColumnFst[$key] = $row['specColumn1'];
+	$sortSpecColumnScd[$key] = $row['specColumn2'];
+	$sortSpecColumnThd[$key] = $row['specColumn3'];
 }
-
-array_multisort($userNameS, SORT_ASC, SORT_STRING, $tableRow);
-
-$tableRowCount = count( $tableRow );
-$specColumnIssueAmount = array();
 
 html_page_top1( plugin_lang_get( 'userProject_title' ) );
 
@@ -316,6 +327,9 @@ if ( $pluginManager->getUserHasLevel() )
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 $dynamicColspan = $amountStatColumns + 6;
+
+$sortVal = $sortUserName;
+$sortOrder = 'ASC';
 
 echo '<div id="manage-user-div" class="form-container">';
 
@@ -336,21 +350,120 @@ echo '<td class="form-title" colspan="' . $dynamicColspan .
 echo '</td>';
 echo '</tr>';
 echo '<tr class="row-category">';
-echo '<th>' . plugin_lang_get( 'username' ) . '</th>';
-echo '<th>' . plugin_lang_get( 'realname' ) . '</th>';
-echo '<th>' . plugin_lang_get( 'projects' ) . '</th>';
-echo '<th>' . plugin_lang_get( 'subproject' ) . '</th>';
-echo '<th>' . plugin_lang_get( 'next_version' ) . '</th>';
+	echo '<th>';
+	echo plugin_lang_get( 'username' ) . ' ';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';		
+	echo '</th>';
+	echo '<th>';
+	echo plugin_lang_get( 'realname' ) . ' ';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=realName&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=realName&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';
+	echo '</th>';
+	echo '<th>';
+	echo plugin_lang_get( 'projects' ) . ' ';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=mainProject&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=mainProject&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';
+	echo '</th>';
+	echo '<th>';
+	echo plugin_lang_get( 'subproject' ) . ' ';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=assignedProject&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=assignedProject&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';
+	echo '</th>';
+	echo '<th>';
+	echo plugin_lang_get( 'next_version' ) . ' ';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=targetVersion&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=targetVersion&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';
+	echo '</th>';
+
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
-	echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) .
-		'">' . MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]] .
-		'</th>';
+	echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) .'">';
+	echo MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]];
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=specColumn' . $headIndex . '&sort=ASC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+	echo '</a>';
+	echo '<a href="' . plugin_page('UserProject') . '&sortVal=specColumn' . $headIndex . '&sort=DESC">';
+	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+	echo '</a>';
+	echo '</th>';
 }
 echo '<th>' . plugin_lang_get( 'remark' ) . '</th>';
 echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
+
+
+
+$sortVal = $_GET['sortVal'];
+$sortOrder = $_GET['sort'];
+
+if ( $sortVal == 'userName' )
+{
+	$sortVal = $sortUserName;
+}
+elseif ( $sortVal == 'realName')
+{
+	$sortVal = $sortUserRealname;
+}
+elseif ( $sortVal == 'mainProject')
+{
+	$sortVal = $sortMainProject;
+}
+elseif ( $sortVal == 'assignedProject')
+{
+	$sortVal = $sortAssignedProject;
+}
+elseif ( $sortVal == 'targetVersion')
+{
+	$sortVal = $sortTargetVersion;
+}
+elseif ( $sortVal == 'specColumn1')
+{
+	$sortVal = $sortSpecColumnFst;
+}
+elseif ( $sortVal == 'specColumn2')
+{
+	$sortVal = $sortSpecColumnScd;
+}
+elseif ( $sortVal == 'specColumn3')
+{
+	$sortVal = $sortSpecColumnThd;
+}
+
+if ( $sortOrder == 'ASC' )
+{
+	$sortOrder = SORT_ASC;
+}
+elseif ( $sortOrder == 'DESC' )
+{
+	$sortOrder = SORT_DESC;
+}
+
+array_multisort($sortVal, $sortOrder, SORT_STRING, $tableRow);
+
+$tableRowCount = count( $tableRow );
+$specColumnIssueAmount = array();
 
 for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 {
@@ -376,11 +489,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{
 		$specStatus = $statCols[$statColIndex];
-		if ( $userId == '0'
-			&& $specStatus == config_get( 'bug_assigned_status' )
-			|| $specStatus == config_get( 'bug_feedback_status' )
-// 			|| $specStatus == config_get( 'bug_resolved_status' )
-// 			|| $specStatus == config_get( 'bug_closed_status' )
+		if ( $userId == '0' && $specStatus == config_get( 'bug_assigned_status' )
+			|| $userId == '0' && $specStatus == config_get( 'bug_feedback_status' )
+ 			|| $userId == '0' && $specStatus == 80
+ 			|| $userId == '0' && $specStatus == 90
 			)
 		{
 			$noUserFlag = true;
@@ -396,7 +508,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	{	
 		if ( access_has_global_level( $userAccessLevel ) )
 		{
-			echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
+			echo '<a href="search.php?&handler_id=' . $userId .
+			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
 			echo $userName;
 			echo '</a>';
 		}
@@ -414,7 +527,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	{
 		if ( access_has_global_level( $userAccessLevel ) )
 		{
-			echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
+			echo '<a href="search.php?&handler_id=' . $userId .
+			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
 			echo $userRealname;
 			echo '</a>';
 		}
@@ -430,7 +544,9 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo '<td>';
 	if ( access_has_global_level( $userAccessLevel ) )
 	{
-		echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProjectId . '">';
+		echo '<a href="search.php?project_id=' . $mainProjectId .
+			'&handler_id=' . $userId .
+			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
 		echo $mainProjectName;
 		echo '</a>';
 	}
@@ -443,18 +559,17 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	
 	// column assigned project
 	echo '<td>';
-	if ( $bugAssignedProjectName != $mainProjectName )
+	if ( access_has_global_level( $userAccessLevel ) )
 	{
-		if ( access_has_global_level( $userAccessLevel ) )
-		{
-			echo '<a href="manage_proj_edit_page.php?project_id=' . $bugAssignedProjectId . '">';
-			echo $bugAssignedProjectName;
-			echo '</a>';
-		}
-		else
-		{
-			echo $bugAssignedProjectName;
-		}
+		echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
+			'&handler_id=' . $userId .
+			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+		echo $bugAssignedProjectName;
+		echo '</a>';
+	}
+	else
+	{
+		echo $bugAssignedProjectName;
 	}
 	echo '</td>';
 	
@@ -464,7 +579,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo $bugTargetVersionDate . ' ';
 	if ( access_has_global_level( $userAccessLevel ) )
 	{
-		echo '<a href="manage_proj_edit_page.php?project_id=' . $mainProjectId . '">';
+		echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
+			'&handler_id=' . $userId .
+			'&sticky_issues=on&target_version=' . $bugTargetVersion .
+			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
 		echo $bugTargetVersionPreparedString;
 		echo '</a>';
 	}
@@ -474,17 +592,31 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	}
 	echo '</td>';
 	
+	
+	// Column(s) amount of issues
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{
+		$issueThreshold = $issueThresholds[$statColIndex];
 		$specStatus = $statCols[$statColIndex];
-		echo '<td bgcolor="' . get_status_color( $statCols[$statColIndex], null, null ) . '">';
+		$issueAmount = $issueCounter[$statColIndex];
+		
+		if ( $issueThreshold < $issueAmount )
+		{
+			$iTBGColor = plugin_config_get( 'ITBGColor' . $statColIndex );
+			$iTTColor = plugin_config_get( 'ITTColor' . $statColIndex );
+			echo '<td style="background-color:' . $iTBGColor . ';color:' . $iTTColor . '">';
+		}
+		else
+		{
+			echo '<td bgcolor="' . get_status_color( $statCols[$statColIndex], null, null ) . '">';
+		}
 		echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
 			'&status_id='. $specStatus .
 			'&handler_id=' . $userId .
 			'&sticky_issues=on&target_version=' . $bugTargetVersion .
 			'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-		$specColumnIssueAmount[$statColIndex] += $issueCounter[$statColIndex];
-		echo $issueCounter[$statColIndex];
+		$specColumnIssueAmount[$statColIndex] += $issueAmount;
+		echo $issueAmount;
 		echo '</a>';
 		echo '</td>';
 	}
