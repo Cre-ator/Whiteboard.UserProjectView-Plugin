@@ -22,6 +22,17 @@ class PluginManager
 	{
 		return substr( MANTIS_VERSION, 0, 4 );
 	}	
+	
+	public function getAllUsers()
+	{
+		$sqlquery = ' SELECT mantis_user_table.id' .
+				' FROM mantis_user_table' .
+				' WHERE mantis_user_table.access_level < ' . config_get_global( 'admin_site_threshold' );
+	
+		$allActiveUsers = $this->mysqli->query( $sqlquery );
+	
+		return $allActiveUsers;
+	}
 
 	public function getMainProjectByVersion( $version )
 	{
@@ -29,78 +40,58 @@ class PluginManager
 				' FROM mantis_project_version_table' .
 				' WHERE mantis_project_version_table.version = \'' . $version . '\'';
 				
-		$mainProjectByVersion = $this->mysqli->query( $sqlquery );
+		$mainProjectByVersion = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
 		
 		return $mainProjectByVersion;
 	}
 	
-	public function getUnreachableIssuesByBugAndUser( $bugId, $userId, $status )
+	public function getIssuesByIndividual( $userId, $projectId, $targetVersion, $status )
 	{
-		foreach ( $status as $state)
+		$sqlquery = ' SELECT mantis_bug_table.id' .
+				' FROM mantis_bug_table ' .
+				' WHERE mantis_bug_table.handler_id = ' . $userId .
+				' AND mantis_bug_table.status = ' . $status .
+				' AND mantis_bug_table.target_version = \'' . $targetVersion . '\'';
+		if ( $projectId != '' || $projectId != 0 )
 		{
-			$sqlquery = ' SELECT mantis_bug_table.id AS \'bid\',' .
-					' mantis_bug_table.project_id AS \'pid\'' .
-					' FROM mantis_bug_table' .
-					' WHERE mantis_bug_table.id = ' . $bugId .
-					' AND mantis_bug_table.status = ' . $state .
-					' AND mantis_bug_table.handler_id = ' . $userId .
-					' AND NOT EXISTS (' .
-						' SELECT *' .
-						' FROM mantis_project_user_list_table, mantis_bug_table' .
-						' WHERE mantis_project_user_list_table.project_id = mantis_bug_table.project_id' .
-						' AND mantis_project_user_list_table.user_id = ' . $userId .
-						' AND mantis_bug_table.id = ' . $bugId .
-					' )' .
-					' ORDER BY mantis_bug_table.id';
-			
-			$unreachableIssuesByBugAndUser = $this->mysqli->query( $sqlquery );
+			$sqlquery .= ' AND mantis_bug_table.project_id = ' . $projectId;
 		}
-		
-		return $unreachableIssuesByBugAndUser;
+			
+		$issuesByIndividual = $this->mysqli->query( $sqlquery );
+				
+		return $issuesByIndividual;
 	}
-	
-	public function getAllActiveUsers()
-	{
-		$sqlquery = ' SELECT mantis_user_table.id' .
-				' FROM mantis_user_table' .
-				' WHERE mantis_user_table.access_level < ' . config_get_global( 'admin_site_threshold' );
-		//		' WHERE mantis_user_table.enabled = 1';
 		
-		$allActiveUsers = $this->mysqli->query( $sqlquery );
-		
-		return $allActiveUsers;
-	}
-	
-	public function getAmountOfIssuesByUser( $userId, $status )
-	{
-		$sqlquery = ' SELECT COUNT(*)' .
-				' FROM mantis_bug_table' .
-				' WHERE mantis_bug_table.status = ' . $status .
-				' AND mantis_bug_table.handler_id =' . $userId;
-		
-		$amountOfIssuesByUser = $this->mysqli->query( $sqlquery );
-		
-		return $amountOfIssuesByUser;
-	}
-	
 	public function getAmountOfIssuesByIndividual( $userId, $projectId, $targetVersion, $status )
 	{		
-		$sqlquery = 'SELECT COUNT(*)' .
+		$sqlquery = ' SELECT COUNT(*)' .
 			' FROM mantis_bug_table ' .
-			' WHERE mantis_bug_table.handler_id = ' . $userId;
-			if ( $projectId != '' )
+			' WHERE mantis_bug_table.handler_id = ' . $userId .
+			' AND mantis_bug_table.status = ' . $status .
+			' AND mantis_bug_table.target_version = \'' . $targetVersion . '\'';
+			if ( $projectId != '' || $projectId != 0 )
 			{
 				$sqlquery .= ' AND mantis_bug_table.project_id = ' . $projectId;
 			}
-			$sqlquery .= ' AND mantis_bug_table.target_version = \'' . $targetVersion . '\'' .
-			' AND mantis_bug_table.status = ' . $status;
-		
-		$amountOfIssuesByIndividual = $this->mysqli->query( $sqlquery );
+			
+		$amountOfIssuesByIndividual = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
 
 		return $amountOfIssuesByIndividual;
 	}
 	
-	public function buildSpecificRow( $userId, $rowFlag, $unreachableIssueFlag, $noUserFlag )
+	public function checkUserIsAssignedToProject( $userId, $projectId )
+	{
+		$sqlquery = ' SELECT mantis_project_user_list_table.user_id' .
+				' FROM mantis_project_user_list_table' .
+				' WHERE mantis_project_user_list_table.project_id = ' . $projectId .
+				' AND mantis_project_user_list_table.user_id = ' . $userId;
+		
+		$result = $this->mysqli->query( $sqlquery );
+		
+		return $result;
+	}
+	
+	public function buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag )
 	{
 		// inaktive user marks
 		$iABackgroundColor = plugin_config_get( 'IABGColor' );
@@ -112,46 +103,33 @@ class PluginManager
 		$nUBackgroundColor =  plugin_config_get( 'NUBGColor' );
 		$nUTextColor = plugin_config_get( 'NUTColor' );
 		
-		if ( $rowFlag )
-		{
-			$rowIndex = 2;		
-		}
-		else
+		$zIBackgroundColor = plugin_config_get( 'ZIBGColor' );
+		$zITextColor = plugin_config_get( 'ZITColor' );
+		
+		if ( $rowVal == true )
 		{
 			$rowIndex = 1;
 		}
-		if ( $userId != '0' && user_get_field( $userId, 'enabled' ) == '0' )
+		else 
 		{
-			if ( plugin_config_get( 'IAUserHighlighting' ) )
-			{
-				echo '<tr style="background-color:' . $iABackgroundColor . ';color:' . $iATextColor . '">';
-			}
-			else
-			{
-				echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
-			}
+			$rowIndex = 2;
 		}
-		elseif ( $noUserFlag )
+		
+		if ( $userId != '0' && user_get_field( $userId, 'enabled' ) == '0' && plugin_config_get( 'IAUserHighlighting' ) )
 		{
-			if ( plugin_config_get( 'NUIssueHighlighting' ) )
-			{
-				echo '<tr style="background-color:' . $nUBackgroundColor . ';color:' . $nUTextColor . '">';
-			}
-			else
-			{
-				echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
-			}
+			echo '<tr style="background-color:' . $iABackgroundColor . ';color:' . $iATextColor . '">';
 		}
-		elseif ( $unreachableIssueFlag )
+		elseif ( $noUserFlag && plugin_config_get( 'NUIssueHighlighting' ) )
 		{
-			if ( plugin_config_get( 'URUserHighlighting' ) )
-			{
-				echo '<tr style="background-color:' . $uRBackgroundColor . ';color:' . $uRTextColor . '">';
-			}
-			else
-			{
-				echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
-			}
+			echo '<tr style="background-color:' . $nUBackgroundColor . ';color:' . $nUTextColor . '">';
+		}
+		elseif ( $zeroIssuesFlag && plugin_config_get( 'ZIssueHighlighting' ) )
+		{
+			echo '<tr style="background-color:' . $zIBackgroundColor . ';color:' . $zITextColor . '">';
+		}
+		elseif ( $unreachableIssueFlag && plugin_config_get( 'URUserHighlighting' ) )
+		{
+			echo '<tr style="background-color:' . $uRBackgroundColor . ';color:' . $uRTextColor . '">';
 		}
 		else
 		{
@@ -185,7 +163,7 @@ class PluginManager
 		echo '<table align="center">';
 			echo '<tr">';
 				echo '<td>';
-				echo '[ <a href="' . plugin_page('PrintUserProject') . '">';
+				echo '[ <a href="' . plugin_page('PrintUserProject') . '&sortVal=userName&sort=ASC">';
 				echo plugin_lang_get( 'print_button' );
 				echo '</a> ]';
 				echo '</td>';
