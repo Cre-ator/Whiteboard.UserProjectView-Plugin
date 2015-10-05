@@ -32,13 +32,12 @@ $s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Mark row if user i
 $s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark issues without assigned user?';
 $s_plugin_UserProjectView_zeroIssueHighlighting = 'Mark users without issues?';
 $s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
-$s_plugin_UserProjectView_textcolor = 'Textcolour';
 $s_plugin_UserProjectView_columnAmount = 'Amount of columns';
-$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached fields?';
-$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark old issues?';
+$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached threshold (amount)?';
+$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark reached threshold (age)?';
 $s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
-$s_plugin_UserProjectView_issueThreshold = 'Issue threshold';
-$s_plugin_UserProjectView_informationThreshold = 'Old issue warning threshold (days)';
+$s_plugin_UserProjectView_issueThreshold = 'Issue amount threshold';
+$s_plugin_UserProjectView_informationThreshold = 'Issue age threshold (days)';
 $s_plugin_UserProjectView_unreachable_issue_threshold = 'Threshold for uneachable issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView access level';
 

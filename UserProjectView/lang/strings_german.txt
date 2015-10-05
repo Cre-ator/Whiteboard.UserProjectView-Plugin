@@ -32,13 +32,12 @@ $s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Hervorhebung bei f
 $s_plugin_UserProjectView_noUserIssueHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';
 $s_plugin_UserProjectView_zeroIssueHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
 $s_plugin_UserProjectView_backgroundcolor = 'Hintergrundfarbe';
-$s_plugin_UserProjectView_textcolor = 'Textfarbe';
 $s_plugin_UserProjectView_columnAmount = 'Anzahl Spalten';
-$s_plugin_UserProjectView_highlightColumnThreshold = 'Überschreiten der Schwelle markieren?';
-$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Überschreiten der Schwelle anzeigen?';
+$s_plugin_UserProjectView_highlightColumnThreshold = 'Überschreiten der Schwelle anzeigen (Anzahl überschritten)?';
+$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Überschreiten der Schwelle anzeigen (Alter überschritten)?';
 $s_plugin_UserProjectView_columnStatSelect = 'Status für Spalte';
 $s_plugin_UserProjectView_issueThreshold = 'Schwelle für Anzahl Issues';
-$s_plugin_UserProjectView_informationThreshold = 'Schwelle für Anzeige alter Issues (Tage)';
+$s_plugin_UserProjectView_informationThreshold = 'Schwelle für Alter Issues (Tage)';
 $s_plugin_UserProjectView_unreachable_issue_threshold = 'Schwelle für unerreichbare Issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Zugriffslevel';
 

@@ -133,7 +133,7 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	{
 		$t_version_rows = version_get_all_rows( $actBugAssignedProjectId );
 		$tpl_target_version_string = '';
-		$tpl_target_version_string = prepare_version_string( $actBugAssignedProjectId, version_get_id( $actBugTargetVersion, $actBugAssignedProjectId) , $t_version_rows );
+		$tpl_target_version_string = prepare_version_string( $actBugAssignedProjectId, version_get_id( $actBugTargetVersion, $actBugAssignedProjectId ) , $t_version_rows );
 		
 		$versionDate = date( 'Y-m-d', version_get_field( version_get_id( $actBugTargetVersion, $actBugAssignedProjectId ), 'date_order' ) );
 	}
@@ -253,8 +253,13 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 	$userRealname = user_get_realname( $userId );
 	$userIsActive = user_is_enabled( $userId );
 	
-	$addRow = $rowIndex + 1 + $userRowIndex;
+	if ( $userIsActive == false )
+	{
+		continue;
+	}
 	
+	$addRow = $rowIndex + 1 + $userRowIndex;
+		
 	$amountOfIssues = '';
 	if ( $t_project_id == 0 )
 	{
@@ -282,7 +287,7 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $statCols[$statColIndex], '', $subProject );
+					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $subProject, '', $statCols[$statColIndex] );
 				}
 			}
 		}
@@ -586,8 +591,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	// build row
 	$pluginManager->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
 	
-	
-	
+
 	// column user
 	echo '<td>';
 	if ( access_has_global_level( $userAccessLevel ) )
@@ -682,9 +686,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		
 		if ( $issueThreshold < $issueAmount && plugin_config_get( 'CTFHighlighting' ) )
 		{
-			$iTBGColor = plugin_config_get( 'ITBGColor' . $statColIndex );
-			$iTTColor = plugin_config_get( 'ITTColor' . $statColIndex );
-			echo '<td style="background-color:' . $iTBGColor . ';color:' . $iTTColor . '">';
+			echo '<td style="background-color:' . plugin_config_get( 'ITBGColor' ) . '">';
 		}
 		else
 		{
@@ -705,9 +707,13 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	// column remark
 	echo '<td>';
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-	{
-		$specStatus = $statCols[$statColIndex];
+	{ 
+		if ( $bugAssignedProjectId == null && $mainProjectId == null )
+		{
+			continue;
+		}
 		
+		$specStatus = $statCols[$statColIndex];
 		if ( $specStatus == config_get( 'bug_assigned_status') && plugin_config_get( 'OIHighlighting' )
 			|| $specStatus == config_get( 'bug_feedback_status' ) && plugin_config_get( 'OIHighlighting' )
 			|| $specStatus == 40 && plugin_config_get( 'OIHighlighting' )
@@ -807,7 +813,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo '</tr>';
 }
 
-echo '<tr><td colspan="5">';
+echo '<tr class="spacer"><td colspan="5">';
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	echo '<td>' . $specColumnIssueAmount[$statColIndex] . '</td>';

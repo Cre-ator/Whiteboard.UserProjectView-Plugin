@@ -48,7 +48,7 @@ class PluginManager
 	public function getIssuesByIndividual( $userId, $projectId, $targetVersion, $status )
 	{
 		$sqlquery = ' SELECT mantis_bug_table.id' .
-				' FROM mantis_bug_table ' .
+				' FROM mantis_bug_table' .
 				' WHERE mantis_bug_table.handler_id = ' . $userId .
 				' AND mantis_bug_table.status = ' . $status .
 				' AND mantis_bug_table.target_version = \'' . $targetVersion . '\'';
@@ -93,18 +93,13 @@ class PluginManager
 	
 	public function buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag )
 	{
-		// inaktive user marks
 		$iABackgroundColor = plugin_config_get( 'IABGColor' );
-		$iATextColor = plugin_config_get( 'IATColor' );
 		
 		$uRBackgroundColor = plugin_config_get( 'URBGColor' );
-		$uRTextColor = plugin_config_get( 'URTColor' );
 		
 		$nUBackgroundColor =  plugin_config_get( 'NUBGColor' );
-		$nUTextColor = plugin_config_get( 'NUTColor' );
 		
 		$zIBackgroundColor = plugin_config_get( 'ZIBGColor' );
-		$zITextColor = plugin_config_get( 'ZITColor' );
 		
 		if ( $rowVal == true )
 		{
@@ -117,19 +112,19 @@ class PluginManager
 		
 		if ( $userId != '0' && user_get_field( $userId, 'enabled' ) == '0' && plugin_config_get( 'IAUserHighlighting' ) )
 		{
-			echo '<tr style="background-color:' . $iABackgroundColor . ';color:' . $iATextColor . '">';
+			echo '<tr style="background-color:' . $iABackgroundColor . '">';
 		}
 		elseif ( $noUserFlag && plugin_config_get( 'NUIssueHighlighting' ) )
 		{
-			echo '<tr style="background-color:' . $nUBackgroundColor . ';color:' . $nUTextColor . '">';
+			echo '<tr style="background-color:' . $nUBackgroundColor . '">';
 		}
 		elseif ( $zeroIssuesFlag && plugin_config_get( 'ZIssueHighlighting' ) )
 		{
-			echo '<tr style="background-color:' . $zIBackgroundColor . ';color:' . $zITextColor . '">';
+			echo '<tr style="background-color:' . $zIBackgroundColor . '">';
 		}
 		elseif ( $unreachableIssueFlag && plugin_config_get( 'URUserHighlighting' ) )
 		{
-			echo '<tr style="background-color:' . $uRBackgroundColor . ';color:' . $uRTextColor . '">';
+			echo '<tr style="background-color:' . $uRBackgroundColor . '">';
 		}
 		else
 		{
