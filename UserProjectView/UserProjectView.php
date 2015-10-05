@@ -5,10 +5,10 @@ class UserProjectViewPlugin extends MantisPlugin
    function register()
    {
       $this->name        = 'UserProjectView';
-      $this->description = 'A view that shows all projects of a specific user.';
+      $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.0.6';
+      $this->version     = '1.1.0';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'
@@ -45,9 +45,33 @@ class UserProjectViewPlugin extends MantisPlugin
    	(
 		   'ShowInFooter' => ON,
 		   'ShowMenu' => ON,
-   		'IAUserHighlighting' => ON,
+   			
+   		'IAUserHighlighting' => OFF,
    		'IABGColor' => "#8b0000",
-   		'IATColor' => "#000000",
+   			
+   		'URUserHighlighting' => OFF,
+   		'URBGColor' => "#8b0000",
+   			
+			'NUIssueHighlighting' => OFF,
+			'NUBGColor' => "#8b0000",
+   			
+			'ZIssueHighlighting' => OFF,
+			'ZIBGColor' => "#8b0000",
+   			
+   		'colAmount' => 1,
+   		'CTFHighlighting' => OFF,
+   		'OIHighlighting' => OFF,
+   			
+			'ITBGColor1' => "#8b0000",
+   			
+   		'statselectcol1' => 50,
+   			
+   		'issueThreshold1' => 5,
+   			
+   		'oldIssueThreshold1' => 30,
+   			
+   		'UnreachableIssueThreshold' => 50,
+   			
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
@@ -62,9 +86,7 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function footer()
    {
-   	if ( plugin_config_get( 'ShowInFooter' )
-         && $this->getUserHasLevel()
-         )
+   	if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
    	{
    		return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
    	}
@@ -73,11 +95,9 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function menu()
    {
-      if ( plugin_config_get( 'ShowMenu' )
-         && $this->getUserHasLevel()
-         )
+      if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
       {
-      	return '<a href="' . plugin_page( 'UserProject?page_number=1' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'plugin_index' ) . '">' . plugin_lang_get( 'title' ) . '</a>';
       }
       return null;
    }

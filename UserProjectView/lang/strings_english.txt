@@ -1,35 +1,48 @@
 <?php
-/* Configuration page */
 
-$s_plugin_UserProjectView_user_project_view = 'User-Project-Overview';
-$s_plugin_UserProjectView_menu_title = 'Users';
-$s_plugin_UserProjectView_print_button = 'Print';
+$s_plugin_UserProjectView_title = 'Whiteboard';
+$s_plugin_UserProjectView_print_button = 'Print report';
 $s_plugin_UserProjectView_accounts_title = 'Account overview - ';
-$s_plugin_UserProjectView_projects_title = 'Selected Project: ';
-$s_plugin_UserProjectView_project_selector_all = 'All';
+$s_plugin_UserProjectView_projects_title = 'Selected project: ';
+
+$s_plugin_UserProjectView_userProject_title = 'User report';
 
 $s_plugin_UserProjectView_username = 'Username';
-$s_plugin_UserProjectView_realname = 'Real Name';
-$s_plugin_UserProjectView_projects = 'Main Project';
-$s_plugin_UserProjectView_subproject = 'Assigned Project';
-$s_plugin_UserProjectView_issues = 'Amount of assigned Issues';
-$s_plugin_UserProjectView_next_version = 'Target Version';
-$s_plugin_UserProjectView_remark = 'Remark';
+$s_plugin_UserProjectView_realname = 'Real name';
+$s_plugin_UserProjectView_projects = 'Main project';
+$s_plugin_UserProjectView_subproject = 'Assigned project';
+$s_plugin_UserProjectView_issues = 'Issues';
+$s_plugin_UserProjectView_next_version = 'Target version';
+$s_plugin_UserProjectView_remark = 'Information';
 
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
-$s_plugin_UserProjectView_unreachableIssue = 'Issue(s) is/are unreachable!';
+$s_plugin_UserProjectView_noProject = 'User is not assigned to this project!';
+$s_plugin_UserProjectView_showUnreachIssues = 'Show unreachable Issues';
 $s_plugin_UserProjectView_inactiveUser = 'User is inactive!';
-$s_plugin_UserProjectView_sum = 'total:';
-
-$s_plugin_UserProjectView_wrong_issues_title = 'Unreachable Issues for User ';
+$s_plugin_UserProjectView_zeroIssues = 'User has no issues!';
+$s_plugin_UserProjectView_noUser = 'Issue has no assigned user!';
+$s_plugin_UserProjectView_since = 'since';
+$s_plugin_UserProjectView_day = 'days';
 
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
-$s_plugin_UserProjectView_inactiveUserHighlighting = 'Highlighting of inactive Users?';
-$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour in highlighted userfield';
-$s_plugin_UserProjectView_textcolor = 'Textcolour in highlighted userfield';
-$s_plugin_UserProjectView_accesslevel = 'UserProjectView Access Level';
+$s_plugin_UserProjectView_inactiveUserHighlighting = 'Mark inactive users?';
+$s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Mark row if user is not assigned to project?';
+$s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark issues without assigned user?';
+$s_plugin_UserProjectView_zeroIssueHighlighting = 'Mark users without issues?';
+$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
+$s_plugin_UserProjectView_columnAmount = 'Amount of columns';
+$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached threshold (amount)?';
+$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark reached threshold (age)?';
+$s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
+$s_plugin_UserProjectView_issueThreshold = 'Issue amount threshold';
+$s_plugin_UserProjectView_informationThreshold = 'Issue age threshold (days)';
+$s_plugin_UserProjectView_unreachable_issue_threshold = 'Threshold for uneachable issues';
+$s_plugin_UserProjectView_accesslevel = 'UserProjectView access level';
 
-$s_plugin_UserProjectView_config_title = 'UserProjectView - Configuration';
-$s_plugin_UserProjectView_config_caption = 'UserProjectView - General Configuration';
+$s_plugin_UserProjectView_config_title = 'Whiteboard Management - Configuration';
+$s_plugin_UserProjectView_config_caption = 'UserProjectView - General configuration';
+$s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Configuration for specific row highlighting';
+$s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Configuration for specific columns';
+$s_plugin_UserProjectView_config_information = 'UserProjectView - Configuration for informational column';
