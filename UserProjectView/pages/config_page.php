@@ -60,8 +60,8 @@ else
       echo '</td>';
       echo '<td width="100px" colspan="5">';
       ?>
-      <label><input type="radio" name="ShowMenu" value="1" <?php echo ( ON == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-      <label><input type="radio" name="ShowMenu" value="0" <?php echo ( OFF == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+      <label><input type="radio" name="ShowMenu" value="1" <?php echo ( ON == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+      <label><input type="radio" name="ShowMenu" value="0" <?php echo ( OFF == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
       <?php
       echo '</td>';
    echo '</tr>';
@@ -80,8 +80,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="5">';
 		?>
-		<label><input type="radio" name="ShowInFooter" value="1" <?php echo ( ON == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="ShowInFooter" value="0" <?php echo ( OFF == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="ShowInFooter" value="1" <?php echo ( ON == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="ShowInFooter" value="0" <?php echo ( OFF == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -114,8 +114,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
       ?>
-		<label><input type="radio" name="IAUserHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="IAUserHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="IAUserHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="IAUserHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'IAUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -142,8 +142,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="radio" name="URUserHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'URUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="URUserHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'URUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="URUserHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'URUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="URUserHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'URUserHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -170,8 +170,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="radio" name="NUIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'NUIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="NUIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'NUIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="NUIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'NUIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="NUIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'NUIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -198,8 +198,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -248,8 +248,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="radio" name="CTFHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'CTFHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="CTFHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'CTFHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="CTFHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'CTFHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="CTFHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'CTFHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 		
@@ -259,8 +259,8 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="radio" name="OIHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'OIHighlighting' ) ) ? 'checked="checked" ' : ''?>/>Yes</label>
-		<label><input type="radio" name="OIHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'OIHighlighting' ) ) ? 'checked="checked" ' : ''?>/>No</label>
+		<label><input type="radio" name="OIHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'OIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="OIHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'OIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';

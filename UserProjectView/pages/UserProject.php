@@ -265,7 +265,7 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 	{
 		for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 		{
-			$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $t_project_id, '', $statCols[$statColIndex] );
+			$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
 		}
 	}
 	else
@@ -287,7 +287,7 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $subProject, '', $statCols[$statColIndex] );
+					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
 				}
 			}
 		}
@@ -345,7 +345,7 @@ if ( $pluginManager->getUserHasLevel() )
 }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-$dynamicColspan = $amountStatColumns + 6;
+$dynamicColspan = $amountStatColumns + 7;
 
 $sortVal = $sortUserName;
 $sortOrder = 'ASC';
@@ -369,6 +369,7 @@ echo '<td class="form-title" colspan="' . $dynamicColspan .
 echo '</td>';
 echo '</tr>';
 echo '<tr class="row-category">';
+	echo '<th />';
 	echo '<th>';
 	echo plugin_lang_get( 'username' ) . ' ';
 	echo '<a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=ASC">';
@@ -432,51 +433,45 @@ echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-
-
 $sortVal = $_GET['sortVal'];
 $sortOrder = $_GET['sort'];
 
-if ( $sortVal == 'userName' )
+switch ( $sortVal )
 {
-	$sortVal = $sortUserName;
-}
-elseif ( $sortVal == 'realName')
-{
-	$sortVal = $sortUserRealname;
-}
-elseif ( $sortVal == 'mainProject')
-{
-	$sortVal = $sortMainProject;
-}
-elseif ( $sortVal == 'assignedProject')
-{
-	$sortVal = $sortAssignedProject;
-}
-elseif ( $sortVal == 'targetVersion')
-{
-	$sortVal = $sortTargetVersion;
-}
-elseif ( $sortVal == 'specColumn1')
-{
-	$sortVal = $sortSpecColumnFst;
-}
-elseif ( $sortVal == 'specColumn2')
-{
-	$sortVal = $sortSpecColumnScd;
-}
-elseif ( $sortVal == 'specColumn3')
-{
-	$sortVal = $sortSpecColumnThd;
+	case 'userName':
+		$sortVal = $sortUserName;
+		break;
+	case 'realName':
+		$sortVal = $sortUserRealname;
+		break;
+	case 'mainProject':
+		$sortVal = $sortMainProject;
+		break;
+	case 'assignedProject':
+		$sortVal = $sortAssignedProject;
+		break;
+	case 'targetVersion':
+		$sortVal = $sortTargetVersion;
+		break;
+	case 'specColumn1':
+		$sortVal = $sortSpecColumnFst;
+		break;
+	case 'specColumn2':
+		$sortVal = $sortSpecColumnScd;
+		break;
+	case 'specColumn3':
+		$sortVal = $sortSpecColumnThd;
+		break;
 }
 
-if ( $sortOrder == 'ASC' )
+switch ( $sortOrder )
 {
-	$sortOrder = SORT_ASC;
-}
-elseif ( $sortOrder == 'DESC' )
-{
-	$sortOrder = SORT_DESC;
+	case 'ASC':
+		$sortOrder = SORT_ASC;
+		break;
+	case 'DESC':
+		$sortOrder = SORT_DESC;
+		break;
 }
 
 if ( $tableRow != null )
@@ -590,6 +585,13 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	
 	// build row
 	$pluginManager->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
+	
+	
+	// column checkbox
+	echo '<td>';
+	echo '<form action="' . plugin_page( 'UserProject_Option' ) . '" method="post">';
+	echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $t_project_id . '" />';
+	echo '</td>';
 	
 
 	// column user
@@ -705,7 +707,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
 	
 	// column remark
-	echo '<td>';
+	echo '<td style="min-width:320px">';
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{ 
 		if ( $bugAssignedProjectId == null && $mainProjectId == null )
@@ -793,8 +795,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		
 		echo plugin_lang_get( 'noProject' ) . ' [';
 		echo $filterString;
-		echo plugin_lang_get( 'showUnreachIssues') . ']<br>';
-		echo '</a>';
+		echo plugin_lang_get( 'showUnreachIssues');
+		echo '</a>]<br>';
 	}
 	if ( !$inactiveUserFlag )
 	{
@@ -813,12 +815,31 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo '</tr>';
 }
 
-echo '<tr class="spacer"><td colspan="5">';
+echo '<tr class="spacer">';
+echo '<td colspan="2">';
+
+if ( access_has_global_level( $userAccessLevel ) )
+{
+?>
+
+<form name="options" action="" method="get">
+<select id="option" name="option">
+	<option value="remove"><?php echo plugin_lang_get( 'remove_submit' ) ?></option>
+</select>
+<input type="submit" name="formSubmit" class="button" value="<?php echo lang_get( 'ok' ); ?>" />
+</form>
+
+<?php
+}
+
+echo '</td>';
+echo '<td colspan="4">';
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	echo '<td>' . $specColumnIssueAmount[$statColIndex] . '</td>';
 }
 echo '<td/>';
+echo '</tr>';
 echo '</tbody>';
 echo '</table>';
 echo '</div>';

@@ -79,6 +79,22 @@ class PluginManager
 		return $amountOfIssuesByIndividual;
 	}
 	
+	public function getAmountOfIssuesByIndividualWOTV( $userId, $projectId, $status )
+	{
+		$sqlquery = ' SELECT COUNT(*)' .
+				' FROM mantis_bug_table ' .
+				' WHERE mantis_bug_table.handler_id = ' . $userId .
+				' AND mantis_bug_table.status = ' . $status;
+		if ( $projectId != '' || $projectId != 0 )
+		{
+			$sqlquery .= ' AND mantis_bug_table.project_id = ' . $projectId;
+		}
+			
+		$amountOfIssuesByIndividual = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
+	
+		return $amountOfIssuesByIndividual;
+	}
+	
 	public function checkUserIsAssignedToProject( $userId, $projectId )
 	{
 		$sqlquery = ' SELECT mantis_project_user_list_table.user_id' .
@@ -132,6 +148,11 @@ class PluginManager
 		}
 	}
 	
+	public function deleteUsersFromProjects( $projectId, $userId )
+	{
+		project_remove_user( $projectId, $userId );
+	}
+	
 	public function getUserHasLevel()
 	{
 		$projectId = helper_get_current_project();
@@ -158,7 +179,7 @@ class PluginManager
 		echo '<table align="center">';
 			echo '<tr">';
 				echo '<td>';
-				echo '[ <a href="' . plugin_page('PrintUserProject') . '&sortVal=userName&sort=ASC">';
+				echo '[ <a href="' . plugin_page('UserProject_Print') . '&sortVal=userName&sort=ASC">';
 				echo plugin_lang_get( 'print_button' );
 				echo '</a> ]';
 				echo '</td>';

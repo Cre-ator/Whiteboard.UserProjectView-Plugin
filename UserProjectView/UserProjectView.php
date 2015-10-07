@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.1.0';
+      $this->version     = '1.1.2';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'
@@ -47,27 +47,25 @@ class UserProjectViewPlugin extends MantisPlugin
 		   'ShowMenu' => ON,
    			
    		'IAUserHighlighting' => OFF,
-   		'IABGColor' => "#8b0000",
+   		'IABGColor' => '#8b0000',
    			
    		'URUserHighlighting' => OFF,
-   		'URBGColor' => "#8b0000",
+   		'URBGColor' => '#8b0000',
    			
 			'NUIssueHighlighting' => OFF,
-			'NUBGColor' => "#8b0000",
+			'NUBGColor' => '#8b0000',
    			
 			'ZIssueHighlighting' => OFF,
-			'ZIBGColor' => "#8b0000",
+			'ZIBGColor' => '#8b0000',
+   			
+   		'ITBGColor' => '#8b0000',
    			
    		'colAmount' => 1,
    		'CTFHighlighting' => OFF,
    		'OIHighlighting' => OFF,
    			
-			'ITBGColor1' => "#8b0000",
-   			
    		'statselectcol1' => 50,
-   			
    		'issueThreshold1' => 5,
-   			
    		'oldIssueThreshold1' => 30,
    			
    		'UnreachableIssueThreshold' => 50,

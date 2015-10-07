@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 $s_plugin_UserProjectView_title = 'Whiteboard';
 $s_plugin_UserProjectView_print_button = 'Print report';
@@ -17,14 +17,16 @@ $s_plugin_UserProjectView_remark = 'Information';
 
 $s_plugin_UserProjectView_issue = 'Issue';
 $s_plugin_UserProjectView_project = 'Project';
-$s_plugin_UserProjectView_noProject = 'User is not assigned to this project!';
-$s_plugin_UserProjectView_showUnreachIssues = 'Show unreachable Issues';
-$s_plugin_UserProjectView_inactiveUser = 'User is inactive!';
-$s_plugin_UserProjectView_zeroIssues = 'User has no issues!';
-$s_plugin_UserProjectView_noUser = 'Issue has no assigned user!';
+$s_plugin_UserProjectView_noProject = 'No project-Assignment';
+$s_plugin_UserProjectView_showUnreachIssues = 'Unreachable Issues';
+$s_plugin_UserProjectView_inactiveUser = 'User is inactive';
+$s_plugin_UserProjectView_zeroIssues = 'User has no issues';
+$s_plugin_UserProjectView_noUser = 'No User-Assignmend';
 $s_plugin_UserProjectView_since = 'since';
 $s_plugin_UserProjectView_day = 'days';
 
+$s_plugin_UserProjectView_y = 'Yes';
+$s_plugin_UserProjectView_n = 'No';
 $s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
 $s_plugin_UserProjectView_inactiveUserHighlighting = 'Mark inactive users?';
@@ -33,12 +35,12 @@ $s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark issues without assigne
 $s_plugin_UserProjectView_zeroIssueHighlighting = 'Mark users without issues?';
 $s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
 $s_plugin_UserProjectView_columnAmount = 'Amount of columns';
-$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached threshold (amount)?';
-$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark reached threshold (age)?';
+$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached amount?';
+$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark reached age (days)?';
 $s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
 $s_plugin_UserProjectView_issueThreshold = 'Issue amount threshold';
 $s_plugin_UserProjectView_informationThreshold = 'Issue age threshold (days)';
-$s_plugin_UserProjectView_unreachable_issue_threshold = 'Threshold for uneachable issues';
+$s_plugin_UserProjectView_unreachable_issue_threshold = 'Status threshold for view of unreachable issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView access level';
 
 $s_plugin_UserProjectView_config_title = 'Whiteboard Management - Configuration';
@@ -46,3 +48,7 @@ $s_plugin_UserProjectView_config_caption = 'UserProjectView - General configurat
 $s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Configuration for specific row highlighting';
 $s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Configuration for specific columns';
 $s_plugin_UserProjectView_config_information = 'UserProjectView - Configuration for informational column';
+
+$s_plugin_UserProjectView_remove_quest = 'Are you sure you want to remove the following users from the specified project?';
+$s_plugin_UserProjectView_remove_submit = 'Remove user from project';
+$s_plugin_UserProjectView_remove_confirm = 'User removed from project.';
