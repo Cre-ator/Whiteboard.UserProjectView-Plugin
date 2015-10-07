@@ -24,7 +24,7 @@ if ( plugin_config_get( 'ShowMenu' ) != $ShowMenu )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', ON );
+$ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', OFF );
 
 if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting )
 {
@@ -44,7 +44,7 @@ elseif (plugin_config_get( 'IABGColor' ) == '' )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', ON );
+$ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', OFF );
 
 if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighlighting )
 {
@@ -64,7 +64,7 @@ elseif (plugin_config_get( 'URBGColor' ) == '' )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', ON );
+$noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', OFF );
 
 if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
 {
@@ -84,7 +84,14 @@ elseif (plugin_config_get( 'NUBGColor' ) == '' )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$zIssueHighlighting = gpc_get_int( 'ZIssueHighlighting', ON );
+$showZIUsers = gpc_get_int( 'ShowZIUsers', OFF );
+
+if ( plugin_config_get( 'ShowZIUsers' ) != $showZIUsers )
+{
+	plugin_config_set( 'ShowZIUsers', $showZIUsers );
+}
+
+$zIssueHighlighting = gpc_get_int( 'ZIssueHighlighting', OFF );
 
 if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
 {
@@ -116,7 +123,7 @@ elseif (plugin_config_get( 'colAmount' ) == '' )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$cTFHighlighting = gpc_get_int( 'CTFHighlighting', ON );
+$cTFHighlighting = gpc_get_int( 'CTFHighlighting', OFF );
 
 if ( plugin_config_get( 'CTFHighlighting' ) != $cTFHighlighting )
 {
@@ -124,7 +131,7 @@ if ( plugin_config_get( 'CTFHighlighting' ) != $cTFHighlighting )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$oIHighlighting = gpc_get_int( 'OIHighlighting', ON );
+$oIHighlighting = gpc_get_int( 'OIHighlighting', OFF );
 
 if ( plugin_config_get( 'OIHighlighting' ) != $oIHighlighting )
 {

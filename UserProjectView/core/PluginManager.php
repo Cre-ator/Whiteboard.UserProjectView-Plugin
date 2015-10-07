@@ -166,7 +166,7 @@ class PluginManager
 		echo '<table align="center">';
 			echo '<tr">';
 				echo '<td>';
-				echo '[ <a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=ASC">';
+				echo '[ <a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">';
 				echo plugin_lang_get( 'userProject_title' );
 				echo '</a> ]';
 				echo '</td>';
@@ -179,7 +179,7 @@ class PluginManager
 		echo '<table align="center">';
 			echo '<tr">';
 				echo '<td>';
-				echo '[ <a href="' . plugin_page('UserProject_Print') . '&sortVal=userName&sort=ASC">';
+				echo '[ <a href="' . plugin_page( 'UserProject_Print' ) . '&sortVal=userName&sort=ASC">';
 				echo plugin_lang_get( 'print_button' );
 				echo '</a> ]';
 				echo '</td>';

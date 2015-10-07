@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.1.2';
+      $this->version     = '1.1.3';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.1'
@@ -55,6 +55,7 @@ class UserProjectViewPlugin extends MantisPlugin
 			'NUIssueHighlighting' => OFF,
 			'NUBGColor' => '#8b0000',
    			
+   		'ShowZIUsers' => OFF,
 			'ZIssueHighlighting' => OFF,
 			'ZIBGColor' => '#8b0000',
    			
@@ -95,7 +96,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
       {
-      	return '<a href="' . plugin_page( 'plugin_index' ) . '">' . plugin_lang_get( 'title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'title' ) . '</a>';
       }
       return null;
    }

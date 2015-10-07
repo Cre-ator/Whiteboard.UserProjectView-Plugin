@@ -32,6 +32,7 @@ $s_plugin_UserProjectView_menu = 'Plugin Menüeintrag anzeigen?';
 $s_plugin_UserProjectView_inactiveUserHighlighting = 'Hervorhebung inaktiver Nutzer?';
 $s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Hervorhebung bei fehlender Projektzuweisung?';
 $s_plugin_UserProjectView_noUserIssueHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';
+$s_plugin_UserProjectView_showZIUsers = 'Nutzer mit 0 Issues anzeigen?';
 $s_plugin_UserProjectView_zeroIssueHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
 $s_plugin_UserProjectView_backgroundcolor = 'Hintergrundfarbe';
 $s_plugin_UserProjectView_columnAmount = 'Anzahl Spalten';

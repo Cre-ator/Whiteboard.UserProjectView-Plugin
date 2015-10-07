@@ -185,6 +185,7 @@ else
 	echo '</tr>';
 	
 	
+	
 	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 	{
 		echo '<tr ' . helper_alternate_class() . '>';
@@ -194,24 +195,46 @@ else
 		echo '<tr>';
 	}
 		echo '<td class="category" colspan="1">';
-		echo plugin_lang_get( 'zeroIssueHighlighting' );
+		echo plugin_lang_get( 'showZIUsers' );
 		echo '</td>';
-		echo '<td width="100px" colspan="1">';
+		echo '<td width="100px" colspan="5">';
 		?>
-		<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
-		<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
-		<?php
-		echo '</td>';
-		echo '<td class="category" colspan="1">';
-		echo plugin_lang_get( 'backgroundcolor' );
-		echo '</td>';
-		echo '<td width="100px" colspan="3">';
-		?>
-		<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+		<label><input type="radio" name="ShowZIUsers" value="1" <?php echo ( ON == plugin_config_get( 'ShowZIUsers' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="ShowZIUsers" value="0" <?php echo ( OFF == plugin_config_get( 'ShowZIUsers' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
 	
+	if ( plugin_config_get( 'ShowZIUsers' ) )
+	{
+		if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+		{
+			echo '<tr ' . helper_alternate_class() . '>';
+		}
+		else
+		{
+			echo '<tr>';
+		}
+			echo '<td class="category" colspan="1">';
+			echo plugin_lang_get( 'zeroIssueHighlighting' );
+			echo '</td>';
+			echo '<td width="100px" colspan="1">';
+			?>
+			<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+			<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
+			<?php
+			echo '</td>';
+			echo '<td class="category" colspan="1">';
+			echo plugin_lang_get( 'backgroundcolor' );
+			echo '</td>';
+			echo '<td width="100px" colspan="3">';
+			?>
+			<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+			<?php
+			echo '</td>';
+		echo '</tr>';
+	}
+
 	
 	echo '<tr>';
 	echo '<td class="spacer" colspan="6">&nbsp;</td>';

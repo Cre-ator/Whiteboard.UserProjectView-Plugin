@@ -8,6 +8,8 @@ html_page_top2();
 $selectedValues = $_POST['dataRow'];
 $recordCount = count( $selectedValues );
 
+// var_dump($selectedValues);
+
 $select = strtolower( $_POST['option'] );
 
 switch ( $select )
