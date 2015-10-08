@@ -235,43 +235,43 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 	array_shift( $dataRows );
 }
 
-$allUsers = $pluginManager->getAllUsers();
-
-$userRows = array();
-
-while ( $userRow = mysqli_fetch_row( $allUsers ) )
+if ( plugin_config_get( 'ShowZIUsers' ) )
 {
-	$userRows[] = $userRow;
-}
-
-$rowCount = count( $userRows );
-
-for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
-{
-	$userId = $userRows[$userRowIndex][0];
-	$userName = user_get_name( $userId );
-	$userRealname = user_get_realname( $userId );
-	$userIsActive = user_is_enabled( $userId );
+	$allUsers = $pluginManager->getAllUsers();
 	
-	if ( $userIsActive == false )
+	$userRows = array();
+	
+	while ( $userRow = mysqli_fetch_row( $allUsers ) )
 	{
-		continue;
+		$userRows[] = $userRow;
 	}
 	
-	$addRow = $rowIndex + 1 + $userRowIndex;
+	$rowCount = count( $userRows );
+	
+	for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
+	{
+		$userId = $userRows[$userRowIndex][0];
+		$userName = user_get_name( $userId );
+		$userRealname = user_get_realname( $userId );
+		$userIsActive = user_is_enabled( $userId );
+		$userIsAssignedToProjectHierarchy = false;
 		
-	$amountOfIssues = '';
-	if ( $t_project_id == 0 )
-	{
-		for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+		if ( $userIsActive == false )
 		{
-			$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $t_project_id, '', $statCols[$statColIndex] );
+			continue;
 		}
-	}
-	else
-	{
-		$userIsAssignedToProject = mysqli_fetch_row( $pluginManager->checkUserIsAssignedToProject( $userId, $t_project_id ) );
-		if ( $userIsAssignedToProject != null )
+		
+		$addRow = $rowIndex + 1 + $userRowIndex;
+			
+		$amountOfIssues = '';
+		if ( $t_project_id == 0 )
+		{
+			for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+			{
+				$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
+			}
+		}
+		else
 		{
 			$subProjects = array();
 			array_push( $subProjects, $t_project_id );
@@ -282,40 +282,51 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 			{
 				array_push( $subProjects, $tSubProject );
 			}
-					
+			
+			foreach ( $subProjects as $subProject )
+			{
+				$userIsAssignedToProject = mysqli_fetch_row( $pluginManager->checkUserIsAssignedToProject( $userId, $subProject ) );
+				if ( $userIsAssignedToProject != null )
+				{
+					$userIsAssignedToProjectHierarchy = true;
+					break;
+				}
+			}
+			
+			if ( !$userIsAssignedToProjectHierarchy )
+			{
+				continue;
+			}
+			
 			for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $subProject, '', $statCols[$statColIndex] );
+					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
 				}
 			}
 		}
-		else
+	
+		// build row
+		if ( intval( $amountOfIssues ) == 0 )
 		{
-			continue;
+			// fill tablerow with data
+			$tableRow[$addRow]['userId'] = $userId;
+			$tableRow[$addRow]['userName'] = $userName;
+			$tableRow[$addRow]['userRealname'] = $userRealname;
+			$tableRow[$addRow]['mainProjectId'] = '';
+			$tableRow[$addRow]['mainProjectName'] = '';
+			$tableRow[$addRow]['bugAssignedProjectId'] = '';
+			$tableRow[$addRow]['bugAssignedProjectName'] = '';
+			$tableRow[$addRow]['bugTargetVersion'] = '';
+			$tableRow[$addRow]['bugTargetVersionDate'] = '';
+			$tableRow[$addRow]['bugTargetVersionPreparedString'] = '';
+			$tableRow[$addRow]['inactiveUserFlag'] = $userIsActive;
+			$tableRow[$addRow]['zeroIssuesFlag'] = true;
+			$tableRow[$addRow]['specColumn1'] = '0';
+			$tableRow[$addRow]['specColumn2'] = '0';
+			$tableRow[$addRow]['specColumn3'] = '0';
 		}
-	}
-
-	// build row
-	if ( intval( $amountOfIssues ) == 0 )
-	{
-		// fill tablerow with data
-		$tableRow[$addRow]['userId'] = $userId;
-		$tableRow[$addRow]['userName'] = $userName;
-		$tableRow[$addRow]['userRealname'] = $userRealname;
-		$tableRow[$addRow]['mainProjectId'] = '';
-		$tableRow[$addRow]['mainProjectName'] = '';
-		$tableRow[$addRow]['bugAssignedProjectId'] = '';
-		$tableRow[$addRow]['bugAssignedProjectName'] = '';
-		$tableRow[$addRow]['bugTargetVersion'] = '';
-		$tableRow[$addRow]['bugTargetVersionDate'] = '';
-		$tableRow[$addRow]['bugTargetVersionPreparedString'] = '';
-		$tableRow[$addRow]['inactiveUserFlag'] = $userIsActive;
-		$tableRow[$addRow]['zeroIssuesFlag'] = true;
-		$tableRow[$addRow]['specColumn1'] = '0';
-		$tableRow[$addRow]['specColumn2'] = '0';
-		$tableRow[$addRow]['specColumn3'] = '0';
 	}
 }
 
@@ -345,7 +356,7 @@ if ( $pluginManager->getUserHasLevel() )
 }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-$dynamicColspan = $amountStatColumns + 6;
+$dynamicColspan = $amountStatColumns + 7;
 
 $sortVal = $sortUserName;
 $sortOrder = 'ASC';
@@ -369,6 +380,7 @@ echo '<td class="form-title" colspan="' . $dynamicColspan .
 echo '</td>';
 echo '</tr>';
 echo '<tr class="row-category">';
+	echo '<th />';
 	echo '<th>';
 	echo plugin_lang_get( 'username' ) . ' ';
 	echo '<a href="' . plugin_page('UserProject') . '&sortVal=userName&sort=ASC">';
@@ -432,51 +444,45 @@ echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-
-
 $sortVal = $_GET['sortVal'];
 $sortOrder = $_GET['sort'];
 
-if ( $sortVal == 'userName' )
+switch ( $sortVal )
 {
-	$sortVal = $sortUserName;
-}
-elseif ( $sortVal == 'realName')
-{
-	$sortVal = $sortUserRealname;
-}
-elseif ( $sortVal == 'mainProject')
-{
-	$sortVal = $sortMainProject;
-}
-elseif ( $sortVal == 'assignedProject')
-{
-	$sortVal = $sortAssignedProject;
-}
-elseif ( $sortVal == 'targetVersion')
-{
-	$sortVal = $sortTargetVersion;
-}
-elseif ( $sortVal == 'specColumn1')
-{
-	$sortVal = $sortSpecColumnFst;
-}
-elseif ( $sortVal == 'specColumn2')
-{
-	$sortVal = $sortSpecColumnScd;
-}
-elseif ( $sortVal == 'specColumn3')
-{
-	$sortVal = $sortSpecColumnThd;
+	case 'userName':
+		$sortVal = $sortUserName;
+		break;
+	case 'realName':
+		$sortVal = $sortUserRealname;
+		break;
+	case 'mainProject':
+		$sortVal = $sortMainProject;
+		break;
+	case 'assignedProject':
+		$sortVal = $sortAssignedProject;
+		break;
+	case 'targetVersion':
+		$sortVal = $sortTargetVersion;
+		break;
+	case 'specColumn1':
+		$sortVal = $sortSpecColumnFst;
+		break;
+	case 'specColumn2':
+		$sortVal = $sortSpecColumnScd;
+		break;
+	case 'specColumn3':
+		$sortVal = $sortSpecColumnThd;
+		break;
 }
 
-if ( $sortOrder == 'ASC' )
+switch ( $sortOrder )
 {
-	$sortOrder = SORT_ASC;
-}
-elseif ( $sortOrder == 'DESC' )
-{
-	$sortOrder = SORT_DESC;
+	case 'ASC':
+		$sortOrder = SORT_ASC;
+		break;
+	case 'DESC':
+		$sortOrder = SORT_DESC;
+		break;
 }
 
 if ( $tableRow != null )
@@ -530,7 +536,6 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	{
 		$unreachableIssueFlag = true;
 	}
-	
 	
 	
 	$sortVal = $_GET['sortVal'];
@@ -590,6 +595,29 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	
 	// build row
 	$pluginManager->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
+	
+	
+	// prepare valid parent-project
+	$pProject = '';
+	if ( $bugAssignedProjectId == '' && $mainProjectId == '' )
+	{
+		$pProject = $t_project_id;
+	}
+	elseif ( $bugAssignedProjectId == '' && $mainProjectId != '' )
+	{
+		$pProject = $mainProjectId;
+	}
+	elseif ( $bugAssignedProjectId != '' )
+	{
+		$pProject = $bugAssignedProjectId;
+	}
+	
+	
+	// column checkbox
+	echo '<td>';
+	echo '<form action="' . plugin_page( 'UserProject_Option' ) . '" method="post">';
+	echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
+	echo '</td>';
 	
 
 	// column user
@@ -705,7 +733,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
 	
 	// column remark
-	echo '<td>';
+	echo '<td style="white-space:nowrap">';
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{ 
 		if ( $bugAssignedProjectId == null && $mainProjectId == null )
@@ -793,8 +821,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		
 		echo plugin_lang_get( 'noProject' ) . ' [';
 		echo $filterString;
-		echo plugin_lang_get( 'showUnreachIssues') . ']<br>';
-		echo '</a>';
+		echo plugin_lang_get( 'showUnreachIssues');
+		echo '</a>]<br>';
 	}
 	if ( !$inactiveUserFlag )
 	{
@@ -813,12 +841,31 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo '</tr>';
 }
 
-echo '<tr class="spacer"><td colspan="5">';
+echo '<tr class="spacer">';
+echo '<td colspan="6">';
+
+if ( access_has_global_level( $userAccessLevel ) )
+{
+?>
+
+<form name="options" action="" method="get">
+<select id="option" name="option">
+	<option value="removeSingle"><?php echo plugin_lang_get( 'removeSingle' ) ?></option>
+	<option value="removeAll"><?php echo plugin_lang_get( 'removeAll' ) ?></option>
+</select>
+<input type="submit" name="formSubmit" class="button" value="<?php echo lang_get( 'ok' ); ?>" />
+</form>
+
+<?php
+}
+
+echo '</td>';
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	echo '<td>' . $specColumnIssueAmount[$statColIndex] . '</td>';
 }
-echo '<td/>';
+echo '<td />';
+echo '</tr>';
 echo '</tbody>';
 echo '</table>';
 echo '</div>';

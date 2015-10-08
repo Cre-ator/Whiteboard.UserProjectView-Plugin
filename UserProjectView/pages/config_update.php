@@ -24,7 +24,7 @@ if ( plugin_config_get( 'ShowMenu' ) != $ShowMenu )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', ON );
+$ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', OFF );
 
 if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting )
 {
@@ -32,7 +32,7 @@ if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting 
 }
 
 
-$iAbackgroundcolor = gpc_get_string( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+$iAbackgroundcolor = gpc_get_string( 'IABGColor', '#8b0000' );
 
 if ( plugin_config_get( 'IABGColor' ) != $iAbackgroundcolor && plugin_config_get( 'IABGColor' ) != '' )
 {
@@ -40,11 +40,11 @@ if ( plugin_config_get( 'IABGColor' ) != $iAbackgroundcolor && plugin_config_get
 }
 elseif (plugin_config_get( 'IABGColor' ) == '' )
 {
-	plugin_config_set( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+	plugin_config_set( 'IABGColor', '#8b0000' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', ON );
+$ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', OFF );
 
 if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighlighting )
 {
@@ -52,7 +52,7 @@ if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighligh
 }
 
 
-$uRbackgroundcolor = gpc_get_string( 'URBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+$uRbackgroundcolor = gpc_get_string( 'URBGColor', '#8b0000' );
 
 if ( plugin_config_get( 'URBGColor' ) != $uRbackgroundcolor && plugin_config_get( 'URBGColor' ) != '' )
 {
@@ -60,11 +60,11 @@ if ( plugin_config_get( 'URBGColor' ) != $uRbackgroundcolor && plugin_config_get
 }
 elseif (plugin_config_get( 'URBGColor' ) == '' )
 {
-	plugin_config_set( 'URBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+	plugin_config_set( 'URBGColor', '#8b0000' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', ON );
+$noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', OFF );
 
 if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
 {
@@ -72,7 +72,7 @@ if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
 }
 
 
-$nUBackgroundColor = gpc_get_string( 'NUBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+$nUBackgroundColor = gpc_get_string( 'NUBGColor', '#8b0000' );
 
 if ( plugin_config_get( 'NUBGColor' ) != $nUBackgroundColor && plugin_config_get( 'NUBGColor' ) != '' )
 {
@@ -80,11 +80,18 @@ if ( plugin_config_get( 'NUBGColor' ) != $nUBackgroundColor && plugin_config_get
 }
 elseif (plugin_config_get( 'NUBGColor' ) == '' )
 {
-	plugin_config_set( 'NUBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+	plugin_config_set( 'NUBGColor', '#8b0000' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$zIssueHighlighting = gpc_get_int( 'ZIssueHighlighting', ON );
+$showZIUsers = gpc_get_int( 'ShowZIUsers', OFF );
+
+if ( plugin_config_get( 'ShowZIUsers' ) != $showZIUsers )
+{
+	plugin_config_set( 'ShowZIUsers', $showZIUsers );
+}
+
+$zIssueHighlighting = gpc_get_int( 'ZIssueHighlighting', OFF );
 
 if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
 {
@@ -92,7 +99,7 @@ if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
 }
 
 
-$zIBackgroundColor = gpc_get_string( 'ZIBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+$zIBackgroundColor = gpc_get_string( 'ZIBGColor', '#8b0000' );
 
 if ( plugin_config_get( 'ZIBGColor' ) != $zIBackgroundColor && plugin_config_get( 'ZIBGColor' ) != '' )
 {
@@ -100,11 +107,11 @@ if ( plugin_config_get( 'ZIBGColor' ) != $zIBackgroundColor && plugin_config_get
 }
 elseif (plugin_config_get( 'ZIBGColor' ) == '' )
 {
-	plugin_config_set( 'ZIBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+	plugin_config_set( 'ZIBGColor', '#8b0000' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$colAmount = gpc_get_string( 'colAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT_DEFAULT );
+$colAmount = gpc_get_string( 'colAmount', 1 );
 
 if ( plugin_config_get( 'colAmount' ) != $colAmount && plugin_config_get( 'colAmount' ) != '' )
 {
@@ -112,11 +119,11 @@ if ( plugin_config_get( 'colAmount' ) != $colAmount && plugin_config_get( 'colAm
 }
 elseif (plugin_config_get( 'colAmount' ) == '' )
 {
-	plugin_config_set( 'colAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT_DEFAULT );
+	plugin_config_set( 'colAmount', 1 );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$cTFHighlighting = gpc_get_int( 'CTFHighlighting', ON );
+$cTFHighlighting = gpc_get_int( 'CTFHighlighting', OFF );
 
 if ( plugin_config_get( 'CTFHighlighting' ) != $cTFHighlighting )
 {
@@ -124,7 +131,7 @@ if ( plugin_config_get( 'CTFHighlighting' ) != $cTFHighlighting )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$oIHighlighting = gpc_get_int( 'OIHighlighting', ON );
+$oIHighlighting = gpc_get_int( 'OIHighlighting', OFF );
 
 if ( plugin_config_get( 'OIHighlighting' ) != $oIHighlighting )
 {
@@ -166,21 +173,21 @@ foreach ($_POST['UnreachableIssueThreshold'] as $unreachableIssueThresholds)
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$issueThreshold1 = gpc_get_int( 'issueThreshold1', 0 );
+$issueThreshold1 = gpc_get_int( 'issueThreshold1', 5 );
 
 if ( plugin_config_get( 'issueThreshold1' ) != $issueThreshold1 )
 {
 	plugin_config_set( 'issueThreshold1', $issueThreshold1 );
 }
 
-$issueThreshold2 = gpc_get_int( 'issueThreshold2', 0 );
+$issueThreshold2 = gpc_get_int( 'issueThreshold2', 5 );
 
 if ( plugin_config_get( 'issueThreshold2' ) != $issueThreshold2 )
 {
 	plugin_config_set( 'issueThreshold2', $issueThreshold2 );
 }
 
-$issueThreshold3 = gpc_get_int( 'issueThreshold3', 0 );
+$issueThreshold3 = gpc_get_int( 'issueThreshold3', 5 );
 
 if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
 {
@@ -188,7 +195,7 @@ if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$iTBGColor = gpc_get_string( 'ITBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+$iTBGColor = gpc_get_string( 'ITBGColor', '#8b0000' );
 
 if ( plugin_config_get( 'ITBGColor' ) != $iTBGColor && plugin_config_get( 'ITBGColor' ) != '' )
 {
@@ -196,25 +203,25 @@ if ( plugin_config_get( 'ITBGColor' ) != $iTBGColor && plugin_config_get( 'ITBGC
 }
 elseif (plugin_config_get( 'ITBGColor' ) == '' )
 {
-	plugin_config_set( 'ITBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT );
+	plugin_config_set( 'ITBGColor', '#8b0000' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$oldIssueThreshold1 = gpc_get_int( 'oldIssueThreshold1', 0 );
+$oldIssueThreshold1 = gpc_get_int( 'oldIssueThreshold1', 30 );
 
 if ( plugin_config_get( 'oldIssueThreshold1' ) != $oldIssueThreshold1 )
 {
 	plugin_config_set( 'oldIssueThreshold1', $oldIssueThreshold1 );
 }
 
-$oldIssueThreshold2 = gpc_get_int( 'oldIssueThreshold2', 0 );
+$oldIssueThreshold2 = gpc_get_int( 'oldIssueThreshold2', 30 );
 
 if ( plugin_config_get( 'oldIssueThreshold2' ) != $oldIssueThreshold2 )
 {
 	plugin_config_set( 'oldIssueThreshold2', $oldIssueThreshold2 );
 }
 
-$oldIssueThreshold3 = gpc_get_int( 'oldIssueThreshold3', 0 );
+$oldIssueThreshold3 = gpc_get_int( 'oldIssueThreshold3', 30 );
 
 if ( plugin_config_get( 'oldIssueThreshold3' ) != $oldIssueThreshold3 )
 {

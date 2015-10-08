@@ -265,7 +265,7 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 	{
 		for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 		{
-			$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $t_project_id, '', $statCols[$statColIndex] );
+			$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
 		}
 	}
 	else
@@ -287,7 +287,7 @@ for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividual( $userId, $subProject, '', $statCols[$statColIndex] );
+					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
 				}
 			}
 		}
