@@ -530,7 +530,6 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		$unreachableIssueFlag = true;
 	}
 	
-	
 	$sortVal = $_GET['sortVal'];
 	if ( $tableRowIndex > 0 )
 	{
@@ -611,8 +610,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	echo '<form action="' . plugin_page( 'UserProject_Option' ) . '" method="post">';
 	echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
 	echo '</td>';
-	
 
+	
 	// column user
 	echo '<td>';
 	if ( access_has_global_level( $userAccessLevel ) )
@@ -773,7 +772,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 					'&sticky_issues=on&target_version=' . $bugTargetVersion .
 					'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
 					echo MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) )[$specStatus] .
-					' ' . plugin_lang_get( 'since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'day' ) . '<br>';
+					' ' . plugin_lang_get( 'since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'day' ) . '<br/>';
 					echo '</a>';
 				}
 			}
@@ -806,19 +805,19 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		echo plugin_lang_get( 'noProject' ) . ' [';
 		echo $filterString;
 		echo plugin_lang_get( 'showUnreachIssues');
-		echo '</a>]<br>';
+		echo '</a>]<br/>';
 	}
 	if ( !$inactiveUserFlag )
 	{
-		echo plugin_lang_get( 'inactiveUser' ) . '<br>';
+		echo plugin_lang_get( 'inactiveUser' ) . '<br/>';
 	}
 	if ( $zeroIssuesFlag )
 	{
-		echo plugin_lang_get( 'zeroIssues' ) . '<br>';
+		echo plugin_lang_get( 'zeroIssues' ) . '<br/>';
 	}
 	if ( $noUserFlag )
 	{
-		echo plugin_lang_get( 'noUser' ) . '<br>';
+		echo plugin_lang_get( 'noUser' ) . '<br/>';
 	}
 	echo '</td>';
 	

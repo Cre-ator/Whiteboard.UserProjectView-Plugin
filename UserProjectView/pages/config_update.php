@@ -29,7 +29,7 @@ if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting 
 }
 
 
-$iAbackgroundcolor = gpc_get_string( 'IABGColor', '#8b0000' );
+$iAbackgroundcolor = gpc_get_string( 'IABGColor', '#663300' );
 
 if ( plugin_config_get( 'IABGColor' ) != $iAbackgroundcolor && plugin_config_get( 'IABGColor' ) != '' )
 {
@@ -37,7 +37,7 @@ if ( plugin_config_get( 'IABGColor' ) != $iAbackgroundcolor && plugin_config_get
 }
 elseif (plugin_config_get( 'IABGColor' ) == '' )
 {
-	plugin_config_set( 'IABGColor', '#8b0000' );
+	plugin_config_set( 'IABGColor', '#663300' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -49,7 +49,7 @@ if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighligh
 }
 
 
-$uRbackgroundcolor = gpc_get_string( 'URBGColor', '#8b0000' );
+$uRbackgroundcolor = gpc_get_string( 'URBGColor', '#663300' );
 
 if ( plugin_config_get( 'URBGColor' ) != $uRbackgroundcolor && plugin_config_get( 'URBGColor' ) != '' )
 {
@@ -57,7 +57,7 @@ if ( plugin_config_get( 'URBGColor' ) != $uRbackgroundcolor && plugin_config_get
 }
 elseif (plugin_config_get( 'URBGColor' ) == '' )
 {
-	plugin_config_set( 'URBGColor', '#8b0000' );
+	plugin_config_set( 'URBGColor', '#663300' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,7 +69,7 @@ if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
 }
 
 
-$nUBackgroundColor = gpc_get_string( 'NUBGColor', '#8b0000' );
+$nUBackgroundColor = gpc_get_string( 'NUBGColor', '#663300' );
 
 if ( plugin_config_get( 'NUBGColor' ) != $nUBackgroundColor && plugin_config_get( 'NUBGColor' ) != '' )
 {
@@ -77,7 +77,7 @@ if ( plugin_config_get( 'NUBGColor' ) != $nUBackgroundColor && plugin_config_get
 }
 elseif (plugin_config_get( 'NUBGColor' ) == '' )
 {
-	plugin_config_set( 'NUBGColor', '#8b0000' );
+	plugin_config_set( 'NUBGColor', '#663300' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -96,7 +96,7 @@ if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
 }
 
 
-$zIBackgroundColor = gpc_get_string( 'ZIBGColor', '#8b0000' );
+$zIBackgroundColor = gpc_get_string( 'ZIBGColor', '#663300' );
 
 if ( plugin_config_get( 'ZIBGColor' ) != $zIBackgroundColor && plugin_config_get( 'ZIBGColor' ) != '' )
 {
@@ -104,7 +104,7 @@ if ( plugin_config_get( 'ZIBGColor' ) != $zIBackgroundColor && plugin_config_get
 }
 elseif (plugin_config_get( 'ZIBGColor' ) == '' )
 {
-	plugin_config_set( 'ZIBGColor', '#8b0000' );
+	plugin_config_set( 'ZIBGColor', '#663300' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -192,7 +192,7 @@ if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$iTBGColor = gpc_get_string( 'ITBGColor', '#8b0000' );
+$iTBGColor = gpc_get_string( 'ITBGColor', '#663300' );
 
 if ( plugin_config_get( 'ITBGColor' ) != $iTBGColor && plugin_config_get( 'ITBGColor' ) != '' )
 {
@@ -200,7 +200,7 @@ if ( plugin_config_get( 'ITBGColor' ) != $iTBGColor && plugin_config_get( 'ITBGC
 }
 elseif (plugin_config_get( 'ITBGColor' ) == '' )
 {
-	plugin_config_set( 'ITBGColor', '#8b0000' );
+	plugin_config_set( 'ITBGColor', '#663300' );
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

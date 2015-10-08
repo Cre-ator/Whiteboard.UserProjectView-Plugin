@@ -670,7 +670,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 				if ( $specTimeDifference > plugin_config_get( 'oldIssueThreshold' . $statColIndex ) )
 				{
 					echo MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) )[$specStatus] .
-					' ' . plugin_lang_get( 'since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'day' ) . '<br>';
+					' ' . plugin_lang_get( 'since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'day' ) . '<br/>';
 				}
 			}
 		}
@@ -678,19 +678,19 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	
 	if ( $unreachableIssueFlag )
 	{		
-		echo plugin_lang_get( 'noProject' ) . '<br>';
+		echo plugin_lang_get( 'noProject' ) . '<br/>';
 	}
 	if ( !$inactiveUserFlag )
 	{
-		echo plugin_lang_get( 'inactiveUser' ) . '<br>';
+		echo plugin_lang_get( 'inactiveUser' ) . '<br/>';
 	}
 	if ( $zeroIssuesFlag )
 	{
-		echo plugin_lang_get( 'zeroIssues' ) . '<br>';
+		echo plugin_lang_get( 'zeroIssues' ) . '<br/>';
 	}
 	if ( $noUserFlag )
 	{
-		echo plugin_lang_get( 'noUser' ) . '<br>';
+		echo plugin_lang_get( 'noUser' ) . '<br/>';
 	}
 	echo '</td>';
 	

@@ -123,7 +123,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', '#8b0000' ); ?>" /></label>
+		<label><input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -151,7 +151,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', '#8b0000' ); ?>" /></label>
+		<label><input type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -179,7 +179,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', '#8b0000' ); ?>" /></label>
+		<label><input type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -205,37 +205,34 @@ else
 		echo '</td>';
 	echo '</tr>';
 	
-	if ( plugin_config_get( 'ShowZIUsers' ) )
+	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 	{
-		if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
-		{
-			echo '<tr ' . helper_alternate_class() . '>';
-		}
-		else
-		{
-			echo '<tr>';
-		}
-			echo '<td class="category" colspan="1">';
-			echo plugin_lang_get( 'zeroIssueHighlighting' );
-			echo '</td>';
-			echo '<td width="100px" colspan="1">';
-			?>
-			<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
-			<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
-			<?php
-			echo '</td>';
-			echo '<td class="category" colspan="1">';
-			echo plugin_lang_get( 'backgroundcolor' );
-			echo '</td>';
-			echo '<td width="100px" colspan="3">';
-			?>
-			<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', '#8b0000' ); ?>" /></label>
-			<?php
-			echo '</td>';
-		echo '</tr>';
+		echo '<tr ' . helper_alternate_class() . '>';
 	}
+	else
+	{
+		echo '<tr>';
+	}
+		echo '<td class="category" colspan="1">';
+		echo plugin_lang_get( 'zeroIssueHighlighting' ) . '<br/>';
+		echo '<span class="small">' . plugin_lang_get( 'zIUsers_expl' ) . '</span>';
+		echo '</td>';
+		echo '<td width="100px" colspan="1">';
+		?>
+		<label><input type="radio" name="ZIssueHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'y' ) ?></label>
+		<label><input type="radio" name="ZIssueHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIssueHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'n' ) ?></label>
+		<?php
+		echo '</td>';
+		echo '<td class="category" colspan="1">';
+		echo plugin_lang_get( 'backgroundcolor' );
+		echo '</td>';
+		echo '<td width="100px" colspan="3">';
+		?>
+		<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', '#663300' ); ?>" /></label>
+		<?php
+		echo '</td>';
+	echo '</tr>';
 
-	
 	echo '<tr>';
 	echo '<td class="spacer" colspan="6">&nbsp;</td>';
 	echo '</tr>';
@@ -301,7 +298,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , '#8b0000' ); ?>" /></label>
+		<label><input type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';

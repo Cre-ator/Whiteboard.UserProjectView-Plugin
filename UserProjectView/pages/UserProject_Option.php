@@ -23,7 +23,7 @@ switch ( $select )
 		
 		echo '<div align="center">';
 		echo '<hr size="1" width="50%" />';
-		echo plugin_lang_get( 'remove_quest' ) . '<br><br>';
+		echo plugin_lang_get( 'remove_quest' ) . '<br/><br/>';
 		
 		echo '<table class="width50" cellspacing="1">';
 		echo '<tr class="row-category">';
@@ -81,7 +81,7 @@ switch ( $select )
 		
 		echo '<div align="center">';
 		echo '<hr size="1" width="50%" />';
-		echo plugin_lang_get( 'remove_quest' ) . '<br><br>';
+		echo plugin_lang_get( 'remove_quest' ) . '<br/><br/>';
 		
 		echo '<table class="width50" cellspacing="1">';
 		echo '<tr class="row-category">';

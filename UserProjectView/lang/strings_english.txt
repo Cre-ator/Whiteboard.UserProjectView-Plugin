@@ -33,6 +33,7 @@ $s_plugin_UserProjectView_inactiveUserHighlighting = 'Mark inactive users?';
 $s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Mark row if user is not assigned to project?';
 $s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark issues without assigned user?';
 $s_plugin_UserProjectView_showZIUsers = 'Show Users with zero Issues?';
+$s_plugin_UserProjectView_zIUsers_expl = 'The efficacy of this options require "Show Users with zero Issues" enabled.';
 $s_plugin_UserProjectView_zeroIssueHighlighting = 'Mark users without issues?';
 $s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
 $s_plugin_UserProjectView_columnAmount = 'Amount of columns';

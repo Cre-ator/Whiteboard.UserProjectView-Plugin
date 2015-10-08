@@ -130,13 +130,13 @@ class PluginManager
 		{
 			echo '<tr style="background-color:' . $iABackgroundColor . '">';
 		}
-		elseif ( $noUserFlag && plugin_config_get( 'NUIssueHighlighting' ) )
-		{
-			echo '<tr style="background-color:' . $nUBackgroundColor . '">';
-		}
 		elseif ( $zeroIssuesFlag && plugin_config_get( 'ZIssueHighlighting' ) )
 		{
 			echo '<tr style="background-color:' . $zIBackgroundColor . '">';
+		}
+		elseif ( $noUserFlag && plugin_config_get( 'NUIssueHighlighting' ) )
+		{
+			echo '<tr style="background-color:' . $nUBackgroundColor . '">';
 		}
 		elseif ( $unreachableIssueFlag && plugin_config_get( 'URUserHighlighting' ) )
 		{
