@@ -144,7 +144,14 @@ class PluginManager
 		}
 		else
 		{
-			echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
+			if ( $this->getActMantisVersion() == '1.2.' )
+			{
+				echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
+			}
+			else
+			{
+				echo '<tr class="row-' . $rowIndex . '">';
+			}
 		}
 	}
 	

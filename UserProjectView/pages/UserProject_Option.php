@@ -1,5 +1,6 @@
 <?php
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
+include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
 
 auth_reauthenticate();
 
@@ -7,6 +8,9 @@ html_page_top1( plugin_lang_get( 'userProject_title' ) );
 html_page_top2();
 
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
+
+// PluginManager object
+$pluginManager = new PluginManager();
 
 $selectedValues = $_POST['dataRow'];
 $recordCount = count( $selectedValues );
@@ -37,8 +41,15 @@ switch ( $select )
 			echo '<form action="'. plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
 			echo '<input type="hidden" name="records[]" value="' . $selectedValues[$recordIndex] . '"/>';
 			
+			if ( $pluginManager->getActMantisVersion() == '1.2.' )
+			{
+				echo '<tr ' . helper_alternate_class() . '>';
+			}
+			else 
+			{
+				echo '<tr>';
+			}
 			
-			echo '<tr ' . helper_alternate_class() . '>';
 			echo '<td>';
 			echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
 			echo user_get_name( $userId );
@@ -60,7 +71,7 @@ switch ( $select )
 		echo '</td>';
 		echo '</tr>';
 		echo '</table>';
-		
+
 		echo '<hr size="1" width="50%" /></div>';
 		echo '</div>';
 
@@ -101,7 +112,15 @@ switch ( $select )
 				echo '<input type="hidden" name="user[]" value="' . $userId . '"/>';
 				echo '<input type="hidden" name="project[]" value="' . $subProject . '"/>'; 
 				
-				echo '<tr ' . helper_alternate_class() . '>';
+				if ( $pluginManager->getActMantisVersion() == '1.2.' )
+				{
+					echo '<tr ' . helper_alternate_class() . '>';
+				}
+				else 
+				{
+					echo '<tr>';
+				}
+				
 				echo '<td>';
 				echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
 				echo user_get_name( $userId );

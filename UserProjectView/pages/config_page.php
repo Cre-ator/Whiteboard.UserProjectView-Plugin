@@ -123,7 +123,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+		<label><input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', '#8b0000' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -151,7 +151,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+		<label><input type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', '#8b0000' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -179,7 +179,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+		<label><input type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', '#8b0000' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -229,7 +229,7 @@ else
 			echo '</td>';
 			echo '<td width="100px" colspan="3">';
 			?>
-			<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+			<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', '#8b0000' ); ?>" /></label>
 			<?php
 			echo '</td>';
 		echo '</tr>';
@@ -262,7 +262,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1" rowspan="2">';
 		?>
-		<label><input type="number" name="colAmount" value="<?php echo plugin_config_get( 'colAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT_DEFAULT ); ?>" min="1" max="3"/></label>
+		<label><input type="number" name="colAmount" value="<?php echo plugin_config_get( 'colAmount', 1 ); ?>" min="1" max="<?php echo PLUGINS_USERPROJECTVIEW_MAX_SPECCOLUMN_AMOUNT ?>"/></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -301,7 +301,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , PLUGINS_USERPROJECTVIEW_BACKGROUND_COLOR_DEFAULT ); ?>" /></label>
+		<label><input type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , '#8b0000' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -327,7 +327,6 @@ else
 			echo '</td>';
 			echo '<td valign="top" width="100px" colspan="1" rowspan="2">';
 			echo '<select name="statselectcol' . $columnIndex .'">';
-			echo PLUGINS_USERPROJECTVIEW_COL_STAT_DEFAULT;
 			print_enum_string_option_list( 'status', plugin_config_get( 'statselectcol' . $columnIndex ) );
 			echo '</select>';
 			echo '</td>';
@@ -336,7 +335,7 @@ else
 			echo '</td>';
 			echo '<td  colspan="1">';
 			?>
-			<label><input type="number" name="issueThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'issueThreshold' . $columnIndex , PLUGINS_USERPROJECTVIEW_ISSUE_THRESHOLD_DEFAULT ); ?>" min="1"/></label>
+			<label><input type="number" name="issueThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'issueThreshold' . $columnIndex , 5 ); ?>" min="1"/></label>
 			<?php
 			echo '</td>';
 			echo '<td class="category" colspan="1">';
@@ -344,7 +343,7 @@ else
 			echo '</td>';
 			echo '<td  colspan="1">';
 			?>
-			<label><input type="number" name="oldIssueThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'oldIssueThreshold' . $columnIndex , PLUGINS_USERPROJECTVIEW_OLD_ISSUE_THRESHOLD_DEFAULT ); ?>" min="1"/></label>
+			<label><input type="number" name="oldIssueThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'oldIssueThreshold' . $columnIndex , 30 ); ?>" min="1"/></label>
 			<?php
 			echo '</td>';
 		echo '</tr>';
@@ -376,7 +375,7 @@ else
 	echo '</td>';
 	echo '<td valign="top" width="100px" colspan="7">';
 	echo '<select name="UnreachableIssueThreshold[]" multiple="multiple">';
-	print_enum_string_option_list( 'status', plugin_config_get( 'UnreachableIssueThreshold', PLUGINS_USERPROJECTVIEW_UNREACH_ISSUE_THRESHOLD_DEFAULT ) );
+	print_enum_string_option_list( 'status', plugin_config_get( 'UnreachableIssueThreshold', 50 ) );
 	echo '</select>';
 	echo '</td>';
 	echo '</tr>';

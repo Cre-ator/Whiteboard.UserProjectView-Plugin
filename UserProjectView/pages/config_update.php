@@ -1,11 +1,8 @@
 <?php
-
-$reload='<script language="javascript">document.location.reload();</script>';
+auth_reauthenticate();
+access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 
 form_security_validate( 'plugin_UserProjectView_config_update' );
-
-access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
-auth_reauthenticate();
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $ShowInFooter = gpc_get_int( 'ShowInFooter', ON );
@@ -144,7 +141,6 @@ $statselectcol1 = gpc_get_int( 'statselectcol1', 50 );
 if ( plugin_config_get( 'statselectcol1' ) != $statselectcol1 )
 {
 	plugin_config_set( 'statselectcol1', $statselectcol1 );
-	echo $reload;
 }
 
 $statselectcol2 = gpc_get_int( 'statselectcol2', 50 );
@@ -152,7 +148,6 @@ $statselectcol2 = gpc_get_int( 'statselectcol2', 50 );
 if ( plugin_config_get( 'statselectcol2' ) != $statselectcol2 )
 {
 	plugin_config_set( 'statselectcol2', $statselectcol2 );
-	echo $reload;
 }
 
 $statselectcol3 = gpc_get_int( 'statselectcol3', 50 );
@@ -160,15 +155,17 @@ $statselectcol3 = gpc_get_int( 'statselectcol3', 50 );
 if ( plugin_config_get( 'statselectcol3' ) != $statselectcol3 )
 {
 	plugin_config_set( 'statselectcol3', $statselectcol3 );
-	echo $reload;
 }
 
-foreach ($_POST['UnreachableIssueThreshold'] as $unreachableIssueThresholds)
+if ( !empty( $_POST['UnreachableIssueThreshold'] ) )
 {
-	$unreachableIssueThreshold = gpc_get_int_array( 'UnreachableIssueThreshold' );
-	if ( plugin_config_get( 'UnreachableIssueThreshold' ) != $unreachableIssueThreshold )
+	foreach ( $_POST['UnreachableIssueThreshold'] as $unreachableIssueThreshold )
 	{
-		plugin_config_set( 'UnreachableIssueThreshold', $unreachableIssueThreshold );
+		$unreachableIssueThreshold = gpc_get_int_array( 'UnreachableIssueThreshold' );
+		if ( plugin_config_get( 'UnreachableIssueThreshold' ) != $unreachableIssueThreshold )
+		{
+			plugin_config_set( 'UnreachableIssueThreshold', $unreachableIssueThreshold );
+		}
 	}
 }
 

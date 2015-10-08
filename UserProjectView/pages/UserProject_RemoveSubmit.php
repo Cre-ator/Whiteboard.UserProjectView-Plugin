@@ -1,8 +1,21 @@
 <?php
 
-$records = $_POST['records'];
-$userIds = $_POST['user']; 
-$projectIds = $_POST['project'];
+$records = null;
+$userIds = null;
+$projectIds = null;
+
+if ( !empty( $_POST['records'] ) )
+{
+	$records = $_POST['records'];
+}
+if ( !empty( $_POST['user'] ) )
+{
+	$userIds = $_POST['user'];
+}
+if ( !empty( $_POST['project'] ) )
+{
+	$projectIds = $_POST['project'];
+}
 
 if ( $records != null )
 {
