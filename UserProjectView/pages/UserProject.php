@@ -842,7 +842,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 }
 
 echo '<tr class="spacer">';
-echo '<td colspan="2">';
+echo '<td colspan="6">';
 
 if ( access_has_global_level( $userAccessLevel ) )
 {
@@ -850,7 +850,8 @@ if ( access_has_global_level( $userAccessLevel ) )
 
 <form name="options" action="" method="get">
 <select id="option" name="option">
-	<option value="remove"><?php echo plugin_lang_get( 'remove_submit' ) ?></option>
+	<option value="removeSingle"><?php echo plugin_lang_get( 'removeSingle' ) ?></option>
+	<option value="removeAll"><?php echo plugin_lang_get( 'removeAll' ) ?></option>
 </select>
 <input type="submit" name="formSubmit" class="button" value="<?php echo lang_get( 'ok' ); ?>" />
 </form>
@@ -859,12 +860,11 @@ if ( access_has_global_level( $userAccessLevel ) )
 }
 
 echo '</td>';
-echo '<td colspan="4">';
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	echo '<td>' . $specColumnIssueAmount[$statColIndex] . '</td>';
 }
-echo '<td/>';
+echo '<td />';
 echo '</tr>';
 echo '</tbody>';
 echo '</table>';

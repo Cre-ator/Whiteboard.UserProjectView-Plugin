@@ -1,17 +1,39 @@
 <?php
 
 $records = $_POST['records'];
+$userIds = $_POST['user']; 
+$projectIds = $_POST['project'];
 
-$recordCount = count( $records );
-
-for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+if ( $records != null )
 {
-	$record[$recordIndex] = explode( '__', $records[$recordIndex] );
+	$recordCount = count( $records );
+	
+	for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+	{
+		$record[$recordIndex] = explode( '__', $records[$recordIndex] );
+	}
+	
+	for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+	{
+		project_remove_user( $record[$recordIndex][1], $record[$recordIndex][0] );
+	}
 }
-
-for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+elseif ( $userIds != null && $projectIds != null )
 {
-	project_remove_user( $record[$recordIndex][1], $record[$recordIndex][0] );
+	$uCount = count( $userIds );
+	$pCount = count( $projectIds );
+	
+	if ( $uCount == $pCount )
+	{
+		for ( $dIndex = 0; $dIndex < $uCount; $dIndex++ )
+		{
+			project_remove_user( $projectIds[$dIndex], $userIds[$dIndex] );
+		}
+	}
+	else
+	{
+		echo plugin_lang_get( 'remove_failure' );
+	}
 }
 
 $redirectUrl = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';

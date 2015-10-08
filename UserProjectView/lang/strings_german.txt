@@ -21,7 +21,7 @@ $s_plugin_UserProjectView_noProject = 'Projekt-Zuweisung fehlt';
 $s_plugin_UserProjectView_showUnreachIssues = 'Unerreichbare Issues';
 $s_plugin_UserProjectView_inactiveUser = 'Nutzer ist inaktiv';
 $s_plugin_UserProjectView_zeroIssues = 'Nutzer hat keine Issues';
-$s_plugin_UserProjectView_noUser = 'Benutzer-Zuweisung fehlt';
+$s_plugin_UserProjectView_noUser = 'Nutzer-Zuweisung fehlt';
 $s_plugin_UserProjectView_since = 'seit';
 $s_plugin_UserProjectView_day = 'Tagen';
 
@@ -51,5 +51,7 @@ $s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Konfiguration 
 $s_plugin_UserProjectView_config_information = 'UserProjectView - Konfiguration der Informationsspalte';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';
-$s_plugin_UserProjectView_remove_submit = 'Benutzer aus Projekt entfernen';
-$s_plugin_UserProjectView_remove_confirm = 'Benutzer aus Projekt entfernt.';
+$s_plugin_UserProjectView_removeSingle = 'Nutzer aus Projekt entfernen';
+$s_plugin_UserProjectView_removeAll = 'Nutzer aus Projekt/Unterprojekten entfernen';
+$s_plugin_UserProjectView_remove_confirm = 'Nutzer aus Projekt entfernt.';
+$s_plugin_UserProjectView_remove_failure = 'Fehler, Nutzer nicht aus Projekt entfernt.';
