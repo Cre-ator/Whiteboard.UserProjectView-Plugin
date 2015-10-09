@@ -5,6 +5,32 @@ access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+function IncludeLeadingColorIdentifier ( $Color )
+{
+   if ( "#" == $Color [0] )
+      return $Color;
+   else
+      return "#" . $Color;
+}
+
+function UpdateColorConfiguration ( $FieldName, $DefaultColor )
+{
+   $DefaultColor        = IncludeLeadingColorIdentifier ( $DefaultColor );
+   $iAbackgroundcolor   = IncludeLeadingColorIdentifier ( gpc_get_string ( $FieldName, $DefaultColor ) );
+   if (  plugin_config_get ( $FieldName ) != $iAbackgroundcolor
+      && plugin_config_get ( $FieldName ) != ''
+      )
+   {
+      plugin_config_set ( $FieldName, $iAbackgroundcolor );
+   }
+   elseif ( plugin_config_get ( $FieldName ) == '' )
+   {
+      plugin_config_set ( $FieldName, $DefaultColor );
+   }
+}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $ShowInFooter = gpc_get_int( 'ShowInFooter', ON );
 
 if ( plugin_config_get( 'ShowInFooter' ) != $ShowInFooter )
@@ -28,17 +54,7 @@ if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting 
 	plugin_config_set( 'IAUserHighlighting', $ShowInactiveUserHighlighting );
 }
 
-
-$iAbackgroundcolor = gpc_get_string( 'IABGColor', '#663300' );
-
-if ( plugin_config_get( 'IABGColor' ) != $iAbackgroundcolor && plugin_config_get( 'IABGColor' ) != '' )
-{
-	plugin_config_set( 'IABGColor', $iAbackgroundcolor );
-}
-elseif (plugin_config_get( 'IABGColor' ) == '' )
-{
-	plugin_config_set( 'IABGColor', '#663300' );
-}
+UpdateColorConfiguration ( 'IABGColor', '#663300' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', OFF );
@@ -48,17 +64,7 @@ if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighligh
 	plugin_config_set( 'URUserHighlighting', $ShowUnreachableIssuesHighlighting );
 }
 
-
-$uRbackgroundcolor = gpc_get_string( 'URBGColor', '#663300' );
-
-if ( plugin_config_get( 'URBGColor' ) != $uRbackgroundcolor && plugin_config_get( 'URBGColor' ) != '' )
-{
-	plugin_config_set( 'URBGColor', $uRbackgroundcolor );
-}
-elseif (plugin_config_get( 'URBGColor' ) == '' )
-{
-	plugin_config_set( 'URBGColor', '#663300' );
-}
+UpdateColorConfiguration ( 'URBGColor', '#663300' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', OFF );
@@ -68,17 +74,7 @@ if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
 	plugin_config_set( 'NUIssueHighlighting', $noUserIssueHighlighting );
 }
 
-
-$nUBackgroundColor = gpc_get_string( 'NUBGColor', '#663300' );
-
-if ( plugin_config_get( 'NUBGColor' ) != $nUBackgroundColor && plugin_config_get( 'NUBGColor' ) != '' )
-{
-	plugin_config_set( 'NUBGColor', $nUBackgroundColor );
-}
-elseif (plugin_config_get( 'NUBGColor' ) == '' )
-{
-	plugin_config_set( 'NUBGColor', '#663300' );
-}
+UpdateColorConfiguration ( 'NUBGColor', '#663300' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $showZIUsers = gpc_get_int( 'ShowZIUsers', OFF );
@@ -95,17 +91,7 @@ if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
 	plugin_config_set( 'ZIssueHighlighting', $zIssueHighlighting );
 }
 
-
-$zIBackgroundColor = gpc_get_string( 'ZIBGColor', '#663300' );
-
-if ( plugin_config_get( 'ZIBGColor' ) != $zIBackgroundColor && plugin_config_get( 'ZIBGColor' ) != '' )
-{
-	plugin_config_set( 'ZIBGColor', $zIBackgroundColor );
-}
-elseif (plugin_config_get( 'ZIBGColor' ) == '' )
-{
-	plugin_config_set( 'ZIBGColor', '#663300' );
-}
+UpdateColorConfiguration ( 'ZIBGColor', '#663300' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $colAmount = gpc_get_string( 'colAmount', 1 );
@@ -192,16 +178,8 @@ if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$iTBGColor = gpc_get_string( 'ITBGColor', '#663300' );
 
-if ( plugin_config_get( 'ITBGColor' ) != $iTBGColor && plugin_config_get( 'ITBGColor' ) != '' )
-{
-	plugin_config_set( 'ITBGColor', $iTBGColor );
-}
-elseif (plugin_config_get( 'ITBGColor' ) == '' )
-{
-	plugin_config_set( 'ITBGColor', '#663300' );
-}
+UpdateColorConfiguration ( 'ITBGColor', '#663300' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $oldIssueThreshold1 = gpc_get_int( 'oldIssueThreshold1', 30 );
