@@ -8,6 +8,7 @@ html_page_top2();
 
 print_manage_menu();
 
+echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current () . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
 echo '<br/>';
 echo '<form action="' . plugin_page( 'config_update' ) . '" method="post">';
 echo form_security_field( 'plugin_UserProjectView_config_update' );
@@ -123,7 +124,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', '#663300' ); ?>" /></label>
+		<label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="IABGColor" value="<?php echo plugin_config_get( 'IABGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -151,7 +152,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', '#663300' ); ?>" /></label>
+		<label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="URBGColor" value="<?php echo plugin_config_get( 'URBGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -179,7 +180,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', '#663300' ); ?>" /></label>
+		<label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="NUBGColor" value="<?php echo plugin_config_get( 'NUBGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -228,7 +229,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="3">';
 		?>
-		<label><input type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', '#663300' ); ?>" /></label>
+		<label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="ZIBGColor" value="<?php echo plugin_config_get( 'ZIBGColor', '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
@@ -298,7 +299,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1">';
 		?>
-		<label><input type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , '#663300' ); ?>" /></label>
+		<label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="ITBGColor" value="<?php echo plugin_config_get( 'ITBGColor' , '#663300' ); ?>" /></label>
 		<?php
 		echo '</td>';
 	echo '</tr>';
