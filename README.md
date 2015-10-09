@@ -5,6 +5,7 @@ Plugin for MantisBT to display all projects and the amount of assigned issues to
 Features
 
 + Display all users with their projects and amount of issues
++ Specify the status of up to three individual columns
 
 Requirements
 
@@ -12,4 +13,4 @@ Requirements
 
 Installation
 
-Copy the 'UserProjectView' plugin just in the plugins directory of Mantis. A new menu entry "users" should be added.
+Copy the 'UserProjectView' plugin just in the plugins directory of Mantis. A new menu entry "whiteboard" should be added.

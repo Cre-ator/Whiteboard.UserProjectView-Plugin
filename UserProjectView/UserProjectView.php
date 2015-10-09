@@ -5,13 +5,13 @@ class UserProjectViewPlugin extends MantisPlugin
    function register()
    {
       $this->name        = 'UserProjectView';
-      $this->description = 'A view that shows all projects of a specific user.';
+      $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.0.1';
+      $this->version     = '1.1.6';
       $this->requires    = array
       (
-         'MantisCore' => '1.2.0, <= 1.3.1'
+         'MantisCore' => '1.2.0, <= 1.3.99'
       );
 
       $this->author      = 'Stefan Schwarz';
@@ -45,6 +45,32 @@ class UserProjectViewPlugin extends MantisPlugin
    	(
 		   'ShowInFooter' => ON,
 		   'ShowMenu' => ON,
+   			
+   		'IAUserHighlighting' => OFF,
+   		'IABGColor' => '#663300',
+   			
+   		'URUserHighlighting' => OFF,
+   		'URBGColor' => '#663300',
+   			
+			'NUIssueHighlighting' => OFF,
+			'NUBGColor' => '#663300',
+   			
+   		'ShowZIUsers' => OFF,
+			'ZIssueHighlighting' => OFF,
+			'ZIBGColor' => '#663300',
+   			
+   		'ITBGColor' => '#663300',
+   			
+   		'colAmount' => 1,
+   		'CTFHighlighting' => OFF,
+   		'OIHighlighting' => OFF,
+   			
+   		'statselectcol1' => 50,
+   		'issueThreshold1' => 5,
+   		'oldIssueThreshold1' => 30,
+   			
+   		'UnreachableIssueThreshold' => 50,
+   			
 		   'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
@@ -59,9 +85,7 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function footer()
    {
-   	if ( plugin_config_get( 'ShowInFooter' )
-         && $this->getUserHasLevel()
-         )
+   	if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
    	{
    		return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
    	}
@@ -70,11 +94,9 @@ class UserProjectViewPlugin extends MantisPlugin
    
    function menu()
    {
-      if ( plugin_config_get( 'ShowMenu' )
-         && $this->getUserHasLevel()
-         )
+      if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
       {
-      	return '<a href="' . plugin_page( 'UserProject' ) . '">' . plugin_lang_get( 'menu_title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'title' ) . '</a>';
       }
       return null;
    }
