@@ -137,7 +137,12 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 		$tpl_target_version_string = '';
 		$tpl_target_version_string = prepare_version_string( $actBugAssignedProjectId, version_get_id( $actBugTargetVersion, $actBugAssignedProjectId ) , $t_version_rows );
 		
-		$versionDate = date( 'Y-m-d', version_get_field( version_get_id( $actBugTargetVersion, $actBugAssignedProjectId ), 'date_order' ) );
+		$versionId = version_get_id( $actBugTargetVersion, $actBugAssignedProjectId );
+		
+		if ( $versionId != null )
+		{
+			$versionDate = date( 'Y-m-d', version_get_field( $versionId, 'date_order' ) );
+		}
 	}
 	else
 	{
