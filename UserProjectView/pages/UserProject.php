@@ -13,7 +13,7 @@ $unreachIssueStatusCount = count( $unreachIssueStatusValue );
 $amountStatColumns = plugin_config_get( 'colAmount' );
 $statCols = array();
 
-for ( $statColIndex = 1; $statColIndex <= PLUGINS_USERPROJECTVIEW_MAX_SPECCOLUMN_AMOUNT; $statColIndex++ )
+for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	$statCols[$statColIndex] = '';
 }
@@ -74,10 +74,20 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	$aBAUIActivFlag = true;
 	
 	// filter config specific bug status
-	if ( $actBugStatus != $statCols[1]
-		&& $actBugStatus != $statCols[2]
-		&& $actBugStatus != $statCols[3]
-		)
+	$irrelevantFlag = array();
+	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+	{
+		if ( $actBugStatus != $statCols[$statColIndex] )
+		{
+			$irrelevantFlag[$statColIndex] = true;
+		}
+		else
+		{
+			$irrelevantFlag[$statColIndex] = false;
+		}
+	}
+
+	if ( !in_array( false, $irrelevantFlag ) )
 	{
 		continue;
 	}
@@ -197,12 +207,11 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 	$tableRow[$rowIndex]['bugTargetVersionPreparedString'] = $rowVals[9];
 	$tableRow[$rowIndex]['inactiveUserFlag'] = $rowVals[10];
 	$tableRow[$rowIndex]['zeroIssuesFlag'] = false;
-	$tableRow[$rowIndex]['specColumn1'] = '0';
-	$tableRow[$rowIndex]['specColumn2'] = '0';
-	$tableRow[$rowIndex]['specColumn3'] = '0';
 	
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{
+		$tableRow[$rowIndex]['specColumn' . $statColIndex] = '0';
+		
 		$specColumnValue = 'specColumn' . $statColIndex;
 		
 		if ( $statCols[$statColIndex] != null )
@@ -216,14 +225,6 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 				$tableRow[$rowIndex][$specColumnValue] = $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[$statColIndex] );
 			}
 		}
-	}
-	
-	if ( $tableRow[$rowIndex]['specColumn1'] == '0'
-		&& $tableRow[$rowIndex]['specColumn2'] == '0'
-		&& $tableRow[$rowIndex]['specColumn3'] == '0'
-		)
-	{
-		$tableRow[$rowIndex]['zeroIssuesFlag'] = true;
 	}
 	
 	array_shift( $dataRows );
@@ -317,9 +318,11 @@ if ( plugin_config_get( 'ShowZIUsers' ) )
 			$tableRow[$addRow]['bugTargetVersionPreparedString'] = '';
 			$tableRow[$addRow]['inactiveUserFlag'] = $userIsActive;
 			$tableRow[$addRow]['zeroIssuesFlag'] = true;
-			$tableRow[$addRow]['specColumn1'] = '0';
-			$tableRow[$addRow]['specColumn2'] = '0';
-			$tableRow[$addRow]['specColumn3'] = '0';
+			
+			for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+			{
+				$tableRow[$addRow]['specColumn' . $statColIndex] = '0';
+			}
 		}
 	}
 }
@@ -331,9 +334,6 @@ foreach ( $tableRow as $key => $row )
 	$sortMainProject[$key] = $row['mainProjectName'];
 	$sortAssignedProject[$key] = $row['bugAssignedProjectName'];
 	$sortTargetVersion[$key] = $row['bugTargetVersion'];
-	$sortSpecColumnFst[$key] = $row['specColumn1'];
-	$sortSpecColumnScd[$key] = $row['specColumn2'];
-	$sortSpecColumnThd[$key] = $row['specColumn3'];
 }
 
 html_page_top1( plugin_lang_get( 'userProject_title' ) );
@@ -367,8 +367,8 @@ else
 }
 echo '<thead>';
 echo '<tr>';
-echo '<td class="form-title" colspan="' . $dynamicColspan .
-	'">' . plugin_lang_get( 'accounts_title' ) .
+echo '<td class="form-title" colspan="' . $dynamicColspan . '">' . 
+	plugin_lang_get( 'accounts_title' ) .
 	plugin_lang_get( 'projects_title' ) .
 	project_get_name( helper_get_current_project() );
 echo '</td>';
@@ -424,13 +424,7 @@ echo '<tr class="row-category">';
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
 	echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) .'">';
-	echo MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]] . ' ';
-	echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=specColumn' . $headIndex . '&sort=ASC">';
-	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-	echo '</a>';
-	echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=specColumn' . $headIndex . '&sort=DESC">';
-	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-	echo '</a>';
+	echo MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]];
 	echo '</th>';
 }
 echo '<th>' . plugin_lang_get( 'remark' ) . '</th>';
@@ -458,15 +452,6 @@ switch ( $sortVal )
 	case 'targetVersion':
 		$sortVal = $sortTargetVersion;
 		break;
-	case 'specColumn1':
-		$sortVal = $sortSpecColumnFst;
-		break;
-	case 'specColumn2':
-		$sortVal = $sortSpecColumnScd;
-		break;
-	case 'specColumn3':
-		$sortVal = $sortSpecColumnThd;
-		break;
 }
 
 switch ( $sortOrder )
@@ -486,7 +471,7 @@ if ( $tableRow != null )
 $rowVal = false;
 $tableRowCount = count( $tableRow );
 $specColumnIssueAmount = array();
-for ( $statColIndex = 1; $statColIndex <= PLUGINS_USERPROJECTVIEW_MAX_SPECCOLUMN_AMOUNT; $statColIndex++ )
+for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
 	$specColumnIssueAmount[$statColIndex] = '';
 }
@@ -506,9 +491,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	$inactiveUserFlag = $tableRow[$tableRowIndex]['inactiveUserFlag'];
 	$zeroIssuesFlag = $tableRow[$tableRowIndex]['zeroIssuesFlag'];
 	$issueCounter = array();
-	$issueCounter[1] = $tableRow[$tableRowIndex]['specColumn1'];
-	$issueCounter[2] = $tableRow[$tableRowIndex]['specColumn2'];
-	$issueCounter[3] = $tableRow[$tableRowIndex]['specColumn3'];
+	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+	{
+		$issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
+	}
 	$noUserFlag = false;
 	
 	if ( $bugAssignedProjectId == '' )
@@ -538,12 +524,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	$sortVal = $_GET['sortVal'];
 	if ( $tableRowIndex > 0 )
 	{
-		if ( $sortVal == 'userName'
-			|| $sortVal == 'realName'
-			|| $sortVal == 'specColumn1'
-			|| $sortVal == 'specColumn2'
-			|| $sortVal == 'specColumn3'
-			)
+		if ( $sortVal == 'userName' || $sortVal == 'realName' )
 		{
 			$userNameOld = $tableRow[$tableRowIndex-1]['userName'];
 			if ( $userName != $userNameOld )

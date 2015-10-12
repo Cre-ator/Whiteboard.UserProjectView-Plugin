@@ -42,13 +42,14 @@ $s_plugin_UserProjectView_highlightOldIssueThreshold = 'Überschreitung Alter da
 $s_plugin_UserProjectView_columnStatSelect = 'Status für Spalte';
 $s_plugin_UserProjectView_issueThreshold = 'max. Anzahl Issues';
 $s_plugin_UserProjectView_informationThreshold = 'max. Alter Issues (Tage)';
-$s_plugin_UserProjectView_unreachable_issue_threshold = 'Statusauswahl zur Anzeige Issues ohne Projekt';
+$s_plugin_UserProjectView_unreachable_issue_threshold = 'Statusauswahl zur Anzeige unerreichbarer Issues';
 $s_plugin_UserProjectView_accesslevel = 'UserProjectView Zugriffslevel';
 
 $s_plugin_UserProjectView_config_title = 'Whiteboard Management - Konfiguration';
 $s_plugin_UserProjectView_config_caption = 'UserProjectView - Allgemeine Konfiguration';
 $s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Konfiguration der Hervorhebung spezifischer Zeilen';
 $s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Konfiguration spezifischer Spalten';
+$s_plugin_UserProjectView_config_specURIssues = 'UserProjectView - Filter für Status bei unerreichbaren Issues';
 $s_plugin_UserProjectView_config_information = 'UserProjectView - Konfiguration der Informationsspalte';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';

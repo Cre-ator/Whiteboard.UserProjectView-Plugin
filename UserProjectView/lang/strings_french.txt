@@ -1,0 +1,61 @@
+﻿<?php
+
+$s_plugin_UserProjectView_title = "Tableau de bord";
+$s_plugin_UserProjectView_print_button = "Imprimer le rapport";
+$s_plugin_UserProjectView_accounts_title = "Résumé du profil - ";
+$s_plugin_UserProjectView_projects_title = "Projet sélectionné:";
+
+$s_plugin_UserProjectView_userProject_title = "Rapport d'utilisateur";
+
+$s_plugin_UserProjectView_username = "Nom d'utilisateur";
+$s_plugin_UserProjectView_realname = "Nom de famille";
+$s_plugin_UserProjectView_projects = "Projet principal";
+$s_plugin_UserProjectView_subproject = "Projet assigné";
+$s_plugin_UserProjectView_issues = "Problèmes";
+$s_plugin_UserProjectView_next_version = "Version cible";
+$s_plugin_UserProjectView_remark = "Information";
+
+$s_plugin_UserProjectView_issue = "Problème";
+$s_plugin_UserProjectView_project = "Projet";
+$s_plugin_UserProjectView_noProject = "L'utilisateur n'est pas assigné à ce projet ";
+$s_plugin_UserProjectView_showUnreachIssues = "Pas de problèmes accessibles";
+$s_plugin_UserProjectView_inactiveUser = "L'utilisateur est inactif ";
+$s_plugin_UserProjectView_zeroIssues = "L'utilisateur n'a pas de problèmes";
+$s_plugin_UserProjectView_noUser = "Affecter un utilisateur manquant";
+$s_plugin_UserProjectView_since = "depuis";
+$s_plugin_UserProjectView_day = "jours";
+
+$s_plugin_UserProjectView_y = "Oui ";
+$s_plugin_UserProjectView_n = "aucun";
+$s_plugin_UserProjectView_footer = "Montrer les infos du plugin dans le footer?";
+$s_plugin_UserProjectView_menu = "Montrer les entrées menu du plugin?";
+$s_plugin_UserProjectView_inactiveUserHighlighting = "Marquer les utilisateurs inactifs?";
+$s_plugin_UserProjectView_unreachableIssueUserHighlighting = "Marquer la ligne si le projet n’est pas attribué?";
+$s_plugin_UserProjectView_noUserIssueHighlighting = "Soulignant les défis sans son membre correspondant?";
+$s_plugin_UserProjectView_showZIUsers = "Voir voyageur avec 0 problèmes?";
+$s_plugin_UserProjectView_zIUsers_expl = 'Ces options ne sont efficaces que lorsque "Afficher les utilisateurs ayant des problèmes 0" option est activée.';
+$s_plugin_UserProjectView_zeroIssueHighlighting = "Soulignant par les utilisateurs sans problème?";
+$s_plugin_UserProjectView_backgroundcolor = "Couleur du fond";
+$s_plugin_UserProjectView_columnAmount = "Nombre de colonnes";
+$s_plugin_UserProjectView_highlightColumnThreshold = "Représentent le nombre dépassé?";
+$s_plugin_UserProjectView_highlightOldIssueThreshold = "Représenter l'âge dépassé?";
+$s_plugin_UserProjectView_columnStatSelect = "Statut de la colonne";
+$s_plugin_UserProjectView_issueThreshold = "problèmes numériques maximales";
+$s_plugin_UserProjectView_informationThreshold = "problèmes d'âge maximum (jours)";
+$s_plugin_UserProjectView_unreachable_issue_threshold = "Seuil pour les demandes irréalisables";
+$s_plugin_UserProjectView_accesslevel = "Niveau d’accès UserProjectView";
+
+$s_plugin_UserProjectView_config_title = "Management du Whiteboard - Configuration";
+$s_plugin_UserProjectView_config_caption = "UserProjectView – Configuration générale";
+$s_plugin_UserProjectView_config_highlighting = "UserProjectView - Configuration de lignes spécifiques";
+$s_plugin_UserProjectView_config_specColumns = "UserProjectView - Configuration de colonnes spécifiques";
+$s_plugin_UserProjectView_config_specURIssues = "UserProjectView - Filtrez le statut à des problèmes inaccessibles";
+$s_plugin_UserProjectView_config_information = "UserProjectView - Configuration pour les informations sur les colonnes";
+
+$s_plugin_UserProjectView_remove_quest = "Etes-vous sûr que les utilisateurs suivants doivent être retirés du projet spécifié dans chaque cas?";
+$s_plugin_UserProjectView_removeSingle = "Supprimer l'utilisateur du projet";
+$s_plugin_UserProjectView_removeAll = "Supprimer les utilisateurs du projet / sous-projets";
+$s_plugin_UserProjectView_remove_confirm = "Supprimer des utilisateurs du projet.";
+$s_plugin_UserProjectView_remove_failure = "Erreur de ne pas supprimer des utilisateurs du projet.";
+
+?>

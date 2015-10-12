@@ -260,7 +260,7 @@ else
 		echo '</td>';
 		echo '<td width="100px" colspan="1" rowspan="2">';
 		?>
-		<label><input type="number" name="colAmount" value="<?php echo plugin_config_get( 'colAmount', 1 ); ?>" min="1" max="<?php echo PLUGINS_USERPROJECTVIEW_MAX_SPECCOLUMN_AMOUNT ?>"/></label>
+		<label><input type="number" name="colAmount" value="<?php echo plugin_config_get( 'colAmount', 1 ); ?>" min="1"/></label>
 		<?php
 		echo '</td>';
 		echo '<td class="category" colspan="1">';
@@ -355,9 +355,14 @@ else
 
 	
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
 	echo '<tr>';
 	echo '<td class="spacer" colspan="6">&nbsp;</td>';
+	echo '</tr>';	
+	
+	echo '<tr>';
+	echo '<td class="form-title" colspan="8">';
+	echo plugin_lang_get( 'config_specURIssues' );
+	echo '</td>';
 	echo '</tr>';
 	
 	if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )

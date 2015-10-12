@@ -6,7 +6,7 @@ form_security_validate( 'plugin_UserProjectView_config_update' );
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function IncludeLeadingColorIdentifier ( $Color )
+function includeLeadingColorIdentifier( $Color )
 {
    if ( "#" == $Color [0] )
       return $Color;
@@ -14,133 +14,98 @@ function IncludeLeadingColorIdentifier ( $Color )
       return "#" . $Color;
 }
 
-function UpdateColorConfiguration ( $FieldName, $DefaultColor )
+function updateColorConfiguration( $FieldName, $DefaultColor )
 {
-   $DefaultColor        = IncludeLeadingColorIdentifier ( $DefaultColor );
-   $iAbackgroundcolor   = IncludeLeadingColorIdentifier ( gpc_get_string ( $FieldName, $DefaultColor ) );
-   if (  plugin_config_get ( $FieldName ) != $iAbackgroundcolor
-      && plugin_config_get ( $FieldName ) != ''
+   $DefaultColor        = includeLeadingColorIdentifier( $DefaultColor );
+   $iAbackgroundcolor   = includeLeadingColorIdentifier( gpc_get_string( $FieldName, $DefaultColor ) );
+   if (  plugin_config_get( $FieldName ) != $iAbackgroundcolor
+      && plugin_config_get( $FieldName ) != ''
       )
    {
-      plugin_config_set ( $FieldName, $iAbackgroundcolor );
+      plugin_config_set( $FieldName, $iAbackgroundcolor );
    }
-   elseif ( plugin_config_get ( $FieldName ) == '' )
+   elseif ( plugin_config_get( $FieldName ) == '' )
    {
-      plugin_config_set ( $FieldName, $DefaultColor );
+      plugin_config_set( $FieldName, $DefaultColor );
    }
 }
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowInFooter = gpc_get_int( 'ShowInFooter', ON );
-
-if ( plugin_config_get( 'ShowInFooter' ) != $ShowInFooter )
+function updateButtonConfiguration( $config )
 {
-   plugin_config_set( 'ShowInFooter', $ShowInFooter );
+	$button = gpc_get_int( $config );
+	
+	if ( plugin_config_get( $config ) != $button )
+	{
+		plugin_config_set( $config, $button );
+	}
+}
+
+function updateValue( $value, $constant )
+{
+	$actValue = gpc_get_int( $value, $constant );
+
+	if ( plugin_config_get( $value ) != $actValue )
+	{
+		plugin_config_set( $value, $actValue );
+	}
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowMenu = gpc_get_int( 'ShowMenu', ON );
+updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
 
-if ( plugin_config_get( 'ShowMenu' ) != $ShowMenu )
-{
-   plugin_config_set( 'ShowMenu', $ShowMenu );
-}
+updateButtonConfiguration( 'ShowInFooter' );
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowInactiveUserHighlighting = gpc_get_int( 'IAUserHighlighting', OFF );
+updateButtonConfiguration( 'ShowMenu' );
 
-if ( plugin_config_get( 'IAUserHighlighting' ) != $ShowInactiveUserHighlighting )
-{
-	plugin_config_set( 'IAUserHighlighting', $ShowInactiveUserHighlighting );
-}
+updateButtonConfiguration( 'IAUserHighlighting' );
+updateColorConfiguration ( 'IABGColor', '#663300' );
 
-UpdateColorConfiguration ( 'IABGColor', '#663300' );
+updateButtonConfiguration( 'URUserHighlighting' );
+updateColorConfiguration ( 'URBGColor', '#663300' );
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$ShowUnreachableIssuesHighlighting = gpc_get_int( 'URUserHighlighting', OFF );
+updateButtonConfiguration( 'NUIssueHighlighting' );
+updateColorConfiguration ( 'NUBGColor', '#663300' );
 
-if ( plugin_config_get( 'URUserHighlighting' ) != $ShowUnreachableIssuesHighlighting )
-{
-	plugin_config_set( 'URUserHighlighting', $ShowUnreachableIssuesHighlighting );
-}
+updateButtonConfiguration( 'ShowZIUsers' );
+updateButtonConfiguration( 'ZIssueHighlighting' );
+updateColorConfiguration ( 'ZIBGColor', '#663300' );
 
-UpdateColorConfiguration ( 'URBGColor', '#663300' );
+updateButtonConfiguration( 'CTFHighlighting' );
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$noUserIssueHighlighting = gpc_get_int( 'NUIssueHighlighting', OFF );
+updateButtonConfiguration( 'OIHighlighting' );
 
-if ( plugin_config_get( 'NUIssueHighlighting' ) != $noUserIssueHighlighting )
-{
-	plugin_config_set( 'NUIssueHighlighting', $noUserIssueHighlighting );
-}
+updateColorConfiguration ( 'ITBGColor', '#663300' );
 
-UpdateColorConfiguration ( 'NUBGColor', '#663300' );
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$showZIUsers = gpc_get_int( 'ShowZIUsers', OFF );
-
-if ( plugin_config_get( 'ShowZIUsers' ) != $showZIUsers )
-{
-	plugin_config_set( 'ShowZIUsers', $showZIUsers );
-}
-
-$zIssueHighlighting = gpc_get_int( 'ZIssueHighlighting', OFF );
-
-if ( plugin_config_get( 'ZIssueHighlighting' ) != $zIssueHighlighting )
-{
-	plugin_config_set( 'ZIssueHighlighting', $zIssueHighlighting );
-}
-
-UpdateColorConfiguration ( 'ZIBGColor', '#663300' );
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $colAmount = gpc_get_string( 'colAmount', 1 );
 
 if ( plugin_config_get( 'colAmount' ) != $colAmount && plugin_config_get( 'colAmount' ) != '' )
 {
 	plugin_config_set( 'colAmount', $colAmount );
 }
-elseif (plugin_config_get( 'colAmount' ) == '' )
+elseif ( plugin_config_get( 'colAmount' ) == '' )
 {
 	plugin_config_set( 'colAmount', 1 );
 }
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$cTFHighlighting = gpc_get_int( 'CTFHighlighting', OFF );
-
-if ( plugin_config_get( 'CTFHighlighting' ) != $cTFHighlighting )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
 {
-	plugin_config_set( 'CTFHighlighting', $cTFHighlighting );
+	$stat = 'statselectcol' . $columnIndex;
+	
+	updateValue( $stat, 50 );
 }
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$oIHighlighting = gpc_get_int( 'OIHighlighting', OFF );
-
-if ( plugin_config_get( 'OIHighlighting' ) != $oIHighlighting )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
 {
-	plugin_config_set( 'OIHighlighting', $oIHighlighting );
+	$issueThreshold = 'issueThreshold' . $columnIndex;
+	
+	updateValue( $issueThreshold, 5 );
 }
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$statselectcol1 = gpc_get_int( 'statselectcol1', 50 );
-
-if ( plugin_config_get( 'statselectcol1' ) != $statselectcol1 )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
 {
-	plugin_config_set( 'statselectcol1', $statselectcol1 );
-}
-
-$statselectcol2 = gpc_get_int( 'statselectcol2', 50 );
-
-if ( plugin_config_get( 'statselectcol2' ) != $statselectcol2 )
-{
-	plugin_config_set( 'statselectcol2', $statselectcol2 );
-}
-
-$statselectcol3 = gpc_get_int( 'statselectcol3', 50 );
-
-if ( plugin_config_get( 'statselectcol3' ) != $statselectcol3 )
-{
-	plugin_config_set( 'statselectcol3', $statselectcol3 );
+	$oldIssueThreshold = 'oldIssueThreshold' . $columnIndex;
+	
+	updateValue( $oldIssueThreshold, 30 );
 }
 
 if ( !empty( $_POST['UnreachableIssueThreshold'] ) )
@@ -153,62 +118,6 @@ if ( !empty( $_POST['UnreachableIssueThreshold'] ) )
 			plugin_config_set( 'UnreachableIssueThreshold', $unreachableIssueThreshold );
 		}
 	}
-}
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$issueThreshold1 = gpc_get_int( 'issueThreshold1', 5 );
-
-if ( plugin_config_get( 'issueThreshold1' ) != $issueThreshold1 )
-{
-	plugin_config_set( 'issueThreshold1', $issueThreshold1 );
-}
-
-$issueThreshold2 = gpc_get_int( 'issueThreshold2', 5 );
-
-if ( plugin_config_get( 'issueThreshold2' ) != $issueThreshold2 )
-{
-	plugin_config_set( 'issueThreshold2', $issueThreshold2 );
-}
-
-$issueThreshold3 = gpc_get_int( 'issueThreshold3', 5 );
-
-if ( plugin_config_get( 'issueThreshold3' ) != $issueThreshold3 )
-{
-	plugin_config_set( 'issueThreshold3', $issueThreshold3 );
-}
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-UpdateColorConfiguration ( 'ITBGColor', '#663300' );
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$oldIssueThreshold1 = gpc_get_int( 'oldIssueThreshold1', 30 );
-
-if ( plugin_config_get( 'oldIssueThreshold1' ) != $oldIssueThreshold1 )
-{
-	plugin_config_set( 'oldIssueThreshold1', $oldIssueThreshold1 );
-}
-
-$oldIssueThreshold2 = gpc_get_int( 'oldIssueThreshold2', 30 );
-
-if ( plugin_config_get( 'oldIssueThreshold2' ) != $oldIssueThreshold2 )
-{
-	plugin_config_set( 'oldIssueThreshold2', $oldIssueThreshold2 );
-}
-
-$oldIssueThreshold3 = gpc_get_int( 'oldIssueThreshold3', 30 );
-
-if ( plugin_config_get( 'oldIssueThreshold3' ) != $oldIssueThreshold3 )
-{
-	plugin_config_set( 'oldIssueThreshold3', $oldIssueThreshold3 );
-}
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-$UserProjectAccessLevel = gpc_get_int( 'UserProjectAccessLevel' );
-
-if ( plugin_config_get( 'UserProjectAccessLevel' ) != $UserProjectAccessLevel )
-{
-   plugin_config_set( 'UserProjectAccessLevel', $UserProjectAccessLevel );
 }
 
 form_security_purge( 'plugin_UserProjectView_config_update' );

@@ -49,6 +49,7 @@ $s_plugin_UserProjectView_config_title = 'Whiteboard Management - Configuration'
 $s_plugin_UserProjectView_config_caption = 'UserProjectView - General configuration';
 $s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Configuration for specific row highlighting';
 $s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Configuration for specific columns';
+$s_plugin_UserProjectView_config_specURIssues = 'UserProjectView - Filter status for unreachable Issues';
 $s_plugin_UserProjectView_config_information = 'UserProjectView - Configuration for informational column';
 
 $s_plugin_UserProjectView_remove_quest = 'Are you sure you want to remove the following users from the specified project?';
