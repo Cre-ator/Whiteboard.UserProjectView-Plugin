@@ -25,3 +25,10 @@ a:active
    background: transparent;
    text-decoration: none;
 }
+
+.avatar
+{
+   max-width: 25px;
+   width: 100%;
+   height: auto;
+}

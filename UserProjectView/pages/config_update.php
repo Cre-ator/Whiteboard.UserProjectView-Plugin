@@ -4,8 +4,6 @@ access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 function includeLeadingColorIdentifier( $Color )
 {
    if ( "#" == $Color [0] )
@@ -50,72 +48,70 @@ function updateValue( $value, $constant )
 	}
 }
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
 
-updateButtonConfiguration( 'ShowInFooter' );
-
 updateButtonConfiguration( 'ShowMenu' );
+updateButtonConfiguration( 'ShowInFooter' );
+updateButtonConfiguration( 'ShowAvatar' );
 
-updateButtonConfiguration( 'IAUserHighlighting' );
-updateColorConfiguration ( 'IABGColor', '#663300' );
+updateButtonConfiguration( 'IAUHighlighting' );
+updateColorConfiguration ( 'IAUHBGColor', '#663300' );
 
-updateButtonConfiguration( 'URUserHighlighting' );
-updateColorConfiguration ( 'URBGColor', '#663300' );
+updateButtonConfiguration( 'URIUHighlighting' );
+updateColorConfiguration ( 'URIUHBGColor', '#663300' );
 
-updateButtonConfiguration( 'NUIssueHighlighting' );
-updateColorConfiguration ( 'NUBGColor', '#663300' );
+updateButtonConfiguration( 'NUIHighlighting' );
+updateColorConfiguration ( 'NUIHBGColor', '#663300' );
 
-updateButtonConfiguration( 'ShowZIUsers' );
-updateButtonConfiguration( 'ZIssueHighlighting' );
-updateColorConfiguration ( 'ZIBGColor', '#663300' );
+updateButtonConfiguration( 'ShowZIU' );
+updateButtonConfiguration( 'ZIHighlighting' );
+updateColorConfiguration ( 'ZIHBGColor', '#663300' );
 
-updateButtonConfiguration( 'CTFHighlighting' );
+updateButtonConfiguration( 'TAMHighlighting' );
+updateColorConfiguration ( 'TAMHBGColor', '#663300' );
 
-updateButtonConfiguration( 'OIHighlighting' );
+updateButtonConfiguration( 'TAGHighlighting' );
 
-updateColorConfiguration ( 'ITBGColor', '#663300' );
+$colAmount = gpc_get_string( 'CAmount', 1 );
 
-$colAmount = gpc_get_string( 'colAmount', 1 );
-
-if ( plugin_config_get( 'colAmount' ) != $colAmount && plugin_config_get( 'colAmount' ) != '' )
+if ( plugin_config_get( 'CAmount' ) != $colAmount && plugin_config_get( 'CAmount' ) != '' )
 {
-	plugin_config_set( 'colAmount', $colAmount );
+	plugin_config_set( 'CAmount', $colAmount );
 }
-elseif ( plugin_config_get( 'colAmount' ) == '' )
+elseif ( plugin_config_get( 'CAmount' ) == '' )
 {
-	plugin_config_set( 'colAmount', 1 );
+	plugin_config_set( 'CAmount', 1 );
 }
 
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 {
-	$stat = 'statselectcol' . $columnIndex;
+	$stat = 'CStatSelect' . $columnIndex;
 	
 	updateValue( $stat, 50 );
 }
 
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 {
-	$issueThreshold = 'issueThreshold' . $columnIndex;
+	$issueThreshold = 'IAMThreshold' . $columnIndex;
 	
 	updateValue( $issueThreshold, 5 );
 }
 
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'colAmount' ); $columnIndex++ )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 {
-	$oldIssueThreshold = 'oldIssueThreshold' . $columnIndex;
+	$oldIssueThreshold = 'IAGThreshold' . $columnIndex;
 	
 	updateValue( $oldIssueThreshold, 30 );
 }
 
-if ( !empty( $_POST['UnreachableIssueThreshold'] ) )
+if ( !empty( $_POST['URIThreshold'] ) )
 {
-	foreach ( $_POST['UnreachableIssueThreshold'] as $unreachableIssueThreshold )
+	foreach ( $_POST['URIThreshold'] as $unreachableIssueThreshold )
 	{
-		$unreachableIssueThreshold = gpc_get_int_array( 'UnreachableIssueThreshold' );
-		if ( plugin_config_get( 'UnreachableIssueThreshold' ) != $unreachableIssueThreshold )
+		$unreachableIssueThreshold = gpc_get_int_array( 'URIThreshold' );
+		if ( plugin_config_get( 'URIThreshold' ) != $unreachableIssueThreshold )
 		{
-			plugin_config_set( 'UnreachableIssueThreshold', $unreachableIssueThreshold );
+			plugin_config_set( 'URIThreshold', $unreachableIssueThreshold );
 		}
 	}
 }
