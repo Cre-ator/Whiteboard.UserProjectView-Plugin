@@ -435,7 +435,8 @@ $headerColspan = $fixColspan - 6;
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
 	echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) .'">';
-	echo MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]];
+	$assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+	echo $assocArray [$statCols[$headIndex]];
 	echo '</th>';
 }
 echo '<th>' . plugin_lang_get( 'thead_remark' ) . '</th>';
@@ -621,7 +622,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
       if ( config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
       {
-         echo '<img class="avatar" src="' . user_get_avatar( $userId )[0] . '" />';
+         $assocArray = user_get_avatar( $userId );
+         echo '<img class="avatar" src="' . $assocArray [0] . '" />';
       }
 
       if ( access_has_global_level( $userAccessLevel ) )
@@ -761,9 +763,11 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 			$specIssueResult = $pluginManager->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
 			
 			$specIssues = array();
-			while ( $specIssue = mysqli_fetch_row( $specIssueResult )[0] )
+			$assocArray = mysqli_fetch_row( $specIssueResult );
+			while ( $specIssue = $assocArray [0] )
 			{
 				$specIssues[] = $specIssue;
+				$assocArray = mysqli_fetch_row( $specIssueResult );
 			}
 			
 			if ( $specIssues != null )
@@ -790,7 +794,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 					'&handler_id=' . $linkUserId .
 					'&sticky_issues=on&target_version=' . $bugTargetVersion .
 					'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-					echo MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) )[$specStatus] .
+					$assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+					echo $assocArray [$specStatus] .
 					' ' . plugin_lang_get( 'remark_since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'remark_day' ) . '<br/>';
 					echo '</a>';
 				}
