@@ -109,13 +109,13 @@ class PluginManager
 	
 	public function buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag )
 	{
-		$iABackgroundColor = plugin_config_get( 'IABGColor' );
+		$iABackgroundColor = plugin_config_get( 'IAUHBGColor' );
 		
-		$uRBackgroundColor = plugin_config_get( 'URBGColor' );
+		$uRBackgroundColor = plugin_config_get( 'URIUHBGColor' );
 		
-		$nUBackgroundColor =  plugin_config_get( 'NUBGColor' );
+		$nUBackgroundColor =  plugin_config_get( 'NUIHBGColor' );
 		
-		$zIBackgroundColor = plugin_config_get( 'ZIBGColor' );
+		$zIBackgroundColor = plugin_config_get( 'ZIHBGColor' );
 		
 		if ( $rowVal == true )
 		{
@@ -126,19 +126,19 @@ class PluginManager
 			$rowIndex = 2;
 		}
 		
-		if ( $userId != '0' && user_get_field( $userId, 'enabled' ) == '0' && plugin_config_get( 'IAUserHighlighting' ) )
+		if ( $userId != '0' && user_get_field( $userId, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
 		{
 			echo '<tr style="background-color:' . $iABackgroundColor . '">';
 		}
-		elseif ( $zeroIssuesFlag && plugin_config_get( 'ZIssueHighlighting' ) )
+		elseif ( $zeroIssuesFlag && plugin_config_get( 'ZIHighlighting' ) )
 		{
 			echo '<tr style="background-color:' . $zIBackgroundColor . '">';
 		}
-		elseif ( $noUserFlag && plugin_config_get( 'NUIssueHighlighting' ) )
+		elseif ( $noUserFlag && plugin_config_get( 'NUIHighlighting' ) )
 		{
 			echo '<tr style="background-color:' . $nUBackgroundColor . '">';
 		}
-		elseif ( $unreachableIssueFlag && plugin_config_get( 'URUserHighlighting' ) )
+		elseif ( $unreachableIssueFlag && plugin_config_get( 'URIUHighlighting' ) )
 		{
 			echo '<tr style="background-color:' . $uRBackgroundColor . '">';
 		}
@@ -174,7 +174,7 @@ class PluginManager
 			echo '<tr">';
 				echo '<td>';
 				echo '[ <a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">';
-				echo plugin_lang_get( 'userProject_title' );
+				echo plugin_lang_get( 'menu_userprojecttitle' );
 				echo '</a> ]';
 				echo '</td>';
 			echo '</tr>';
@@ -187,7 +187,7 @@ class PluginManager
 			echo '<tr">';
 				echo '<td>';
 				echo '[ <a href="' . plugin_page( 'UserProject_Print' ) . '&sortVal=userName&sort=ASC">';
-				echo plugin_lang_get( 'print_button' );
+				echo plugin_lang_get( 'menu_printbutton' );
 				echo '</a> ]';
 				echo '</td>';
 			echo '</tr>';

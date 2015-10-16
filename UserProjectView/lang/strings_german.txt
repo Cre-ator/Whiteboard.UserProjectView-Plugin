@@ -1,58 +1,55 @@
 ﻿<?php
 
-$s_plugin_UserProjectView_title = 'Whiteboard';
-$s_plugin_UserProjectView_print_button = 'Bericht Drucken';
-$s_plugin_UserProjectView_accounts_title = 'Kontenübersicht - ';
-$s_plugin_UserProjectView_projects_title = 'Ausgewähltes Projekt: ';
+$s_plugin_UserProjectView_menu_title = 'Whiteboard';
+$s_plugin_UserProjectView_menu_printbutton = 'Bericht Drucken';
+$s_plugin_UserProjectView_menu_userprojecttitle = 'Benutzer Bericht';
 
-$s_plugin_UserProjectView_userProject_title = 'Benutzer Bericht';
+$s_plugin_UserProjectView_thead_accounts_title = 'Kontenübersicht - ';
+$s_plugin_UserProjectView_thead_projects_title = 'Ausgewähltes Projekt: ';
+$s_plugin_UserProjectView_thead_username = 'Benutzername';
+$s_plugin_UserProjectView_thead_realname = 'Realer Name';
+$s_plugin_UserProjectView_thead_project = 'Hauptprojekt';
+$s_plugin_UserProjectView_thead_subproject = 'Zugewiesenes Projekt';
+$s_plugin_UserProjectView_thead_targetversion = 'Zielversion';
+$s_plugin_UserProjectView_thead_remark = 'Information';
 
-$s_plugin_UserProjectView_username = 'Benutzername';
-$s_plugin_UserProjectView_realname = 'Realer Name';
-$s_plugin_UserProjectView_projects = 'Hauptprojekt';
-$s_plugin_UserProjectView_subproject = 'Zugewiesenes Projekt';
-$s_plugin_UserProjectView_issues = 'Issues';
-$s_plugin_UserProjectView_next_version = 'Zielversion';
-$s_plugin_UserProjectView_remark = 'Information';
-
-$s_plugin_UserProjectView_issue = 'Issue';
-$s_plugin_UserProjectView_project = 'Projekt';
-$s_plugin_UserProjectView_noProject = 'Projekt-Zuweisung fehlt';
-$s_plugin_UserProjectView_showUnreachIssues = 'Unerreichbare Issues';
-$s_plugin_UserProjectView_inactiveUser = 'Nutzer ist inaktiv';
-$s_plugin_UserProjectView_zeroIssues = 'Nutzer hat keine Issues';
-$s_plugin_UserProjectView_noUser = 'Nutzer-Zuweisung fehlt';
-$s_plugin_UserProjectView_since = 'seit';
-$s_plugin_UserProjectView_day = 'Tagen';
-
-$s_plugin_UserProjectView_y = 'Ja';
-$s_plugin_UserProjectView_n = 'Nein';
-$s_plugin_UserProjectView_footer = 'Plugin Info in Footer anzeigen?';
-$s_plugin_UserProjectView_menu = 'Plugin Menüeintrag anzeigen?';
-$s_plugin_UserProjectView_inactiveUserHighlighting = 'Hervorhebung inaktiver Nutzer?';
-$s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Hervorhebung bei fehlender Projektzuweisung?';
-$s_plugin_UserProjectView_noUserIssueHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';
-$s_plugin_UserProjectView_showZIUsers = 'Nutzer mit 0 Issues anzeigen?';
-$s_plugin_UserProjectView_zIUsers_expl = 'Diese Optionen sind nur dann wirksam, wenn die Option "Nutzer mit 0 Issues anzeigen" aktiviert ist.';
-$s_plugin_UserProjectView_zeroIssueHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
-$s_plugin_UserProjectView_backgroundcolor = 'Hintergrundfarbe';
-$s_plugin_UserProjectView_columnAmount = 'Anzahl Spalten';
-$s_plugin_UserProjectView_highlightColumnThreshold = 'Überschreitung Anzahl darstellen?';
-$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Überschreitung Alter darstellen?';
-$s_plugin_UserProjectView_columnStatSelect = 'Status für Spalte';
-$s_plugin_UserProjectView_issueThreshold = 'max. Anzahl Issues';
-$s_plugin_UserProjectView_informationThreshold = 'max. Alter Issues (Tage)';
-$s_plugin_UserProjectView_unreachable_issue_threshold = 'Statusauswahl zur Anzeige Issues ohne Projekt';
-$s_plugin_UserProjectView_accesslevel = 'UserProjectView Zugriffslevel';
-
-$s_plugin_UserProjectView_config_title = 'Whiteboard Management - Konfiguration';
-$s_plugin_UserProjectView_config_caption = 'UserProjectView - Allgemeine Konfiguration';
-$s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Konfiguration der Hervorhebung spezifischer Zeilen';
-$s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Konfiguration spezifischer Spalten';
-$s_plugin_UserProjectView_config_information = 'UserProjectView - Konfiguration der Informationsspalte';
+$s_plugin_UserProjectView_remark_noProject = 'Projekt-Zuweisung fehlt';
+$s_plugin_UserProjectView_remark_showURIssues = 'Unerreichbare Issues';
+$s_plugin_UserProjectView_remark_IAUser = 'Nutzer ist inaktiv';
+$s_plugin_UserProjectView_remark_ZIssues = 'Nutzer hat keine Issues';
+$s_plugin_UserProjectView_remark_noUser = 'Nutzer-Zuweisung fehlt';
+$s_plugin_UserProjectView_remark_since = 'seit';
+$s_plugin_UserProjectView_remark_day = 'Tagen';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';
-$s_plugin_UserProjectView_removeSingle = 'Nutzer aus Projekt entfernen';
-$s_plugin_UserProjectView_removeAll = 'Nutzer aus Projekt/Unterprojekten entfernen';
+$s_plugin_UserProjectView_remove_selectSingle = 'Nutzer aus Projekt entfernen';
+$s_plugin_UserProjectView_remove_selectAll = 'Nutzer aus Projekt/Unterprojekten entfernen';
 $s_plugin_UserProjectView_remove_confirm = 'Nutzer aus Projekt entfernt.';
 $s_plugin_UserProjectView_remove_failure = 'Fehler, Nutzer nicht aus Projekt entfernt.';
+
+$s_plugin_UserProjectView_config_y = 'Ja';
+$s_plugin_UserProjectView_config_n = 'Nein';
+$s_plugin_UserProjectView_config_showFooter = 'Plugin Info in Footer anzeigen?';
+$s_plugin_UserProjectView_config_showMenu = 'Plugin Menüeintrag anzeigen?';
+$s_plugin_UserProjectView_config_showAvatar = 'Avatar in Übersicht anzeigen?';
+$s_plugin_UserProjectView_config_IAUHighlighting = 'Hervorhebung inaktiver Nutzer?';
+$s_plugin_UserProjectView_config_URIUHighlighting = 'Hervorhebung bei fehlender Projektzuweisung?';
+$s_plugin_UserProjectView_config_NUIHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';
+$s_plugin_UserProjectView_config_showZIU = 'Nutzer ohne Issues anzeigen?';
+$s_plugin_UserProjectView_config_ZIUExpl = 'Diese Optionen sind nur dann wirksam, wenn die Option "Nutzer ohne Issues anzeigen" aktiviert ist.';
+$s_plugin_UserProjectView_config_ZIHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
+$s_plugin_UserProjectView_config_BGColor = 'Hintergrundfarbe';
+$s_plugin_UserProjectView_config_CAmount = 'Anzahl Spalten';
+$s_plugin_UserProjectView_config_TAMHighlighting = 'Überschreitung Anzahl darstellen?';
+$s_plugin_UserProjectView_config_TAGHighlighting = 'Überschreitung Alter darstellen?';
+$s_plugin_UserProjectView_config_CStatSelect = 'Status für Spalte';
+$s_plugin_UserProjectView_config_IAMThreshold = 'max. Anzahl Issues';
+$s_plugin_UserProjectView_config_IAGThreshold = 'max. Alter Issues (Tage)';
+$s_plugin_UserProjectView_config_URIThreshold = 'Statusauswahl zur Anzeige unerreichbarer Issues';
+$s_plugin_UserProjectView_config_accesslevel = 'Zugriffslevel';
+$s_plugin_UserProjectView_config_title = 'UserProjectView - Konfiguration';
+$s_plugin_UserProjectView_config_caption = 'Allgemeine Konfiguration';
+$s_plugin_UserProjectView_config_highlighting = 'Konfiguration der Hervorhebung spezifischer Zeilen';
+$s_plugin_UserProjectView_config_specColumns = 'Konfiguration spezifischer Spalten';
+$s_plugin_UserProjectView_config_URIFilter = 'Filter für Status bei unerreichbaren Issues';
+$s_plugin_UserProjectView_config_information = 'Konfiguration der Informationsspalte';

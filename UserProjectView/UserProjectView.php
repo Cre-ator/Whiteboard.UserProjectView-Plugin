@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.1.6';
+      $this->version     = '1.1.10';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -41,37 +41,48 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function config()
    {
-   	return array
+      return array
    	(
-		   'ShowInFooter' => ON,
-		   'ShowMenu' => ON,
-   			
-   		'IAUserHighlighting' => OFF,
-   		'IABGColor' => '#663300',
-   			
-   		'URUserHighlighting' => OFF,
-   		'URBGColor' => '#663300',
-   			
-			'NUIssueHighlighting' => OFF,
-			'NUBGColor' => '#663300',
-   			
-   		'ShowZIUsers' => OFF,
-			'ZIssueHighlighting' => OFF,
-			'ZIBGColor' => '#663300',
-   			
-   		'ITBGColor' => '#663300',
-   			
-   		'colAmount' => 1,
-   		'CTFHighlighting' => OFF,
-   		'OIHighlighting' => OFF,
-   			
-   		'statselectcol1' => 50,
-   		'issueThreshold1' => 5,
-   		'oldIssueThreshold1' => 30,
-   			
-   		'UnreachableIssueThreshold' => 50,
-   			
-		   'UserProjectAccessLevel' => ADMINISTRATOR
+         'ShowMenu' => ON,
+         'ShowInFooter' => ON,
+         'ShowAvatar' => ON,
+
+         // IAU -> inactive user
+         'IAUHighlighting' => OFF,
+         'IAUHBGColor' => '#663300',
+
+         // URIU -> unreachable issue user (issue isnt reachable by user)
+         'URIUHighlighting' => OFF,
+         'URIUHBGColor' => '#663300',
+
+         // NUI -> no user issue (issues without user)
+         'NUIHighlighting' => OFF,
+         'NUIHBGColor' => '#663300',
+
+         // ZIU -> zero issue user | ZI -> zero issue
+         'ShowZIU' => OFF,
+         'ZIHighlighting' => OFF,
+         'ZIHBGColor' => '#663300',
+
+         // C -> column
+         'CAmount' => 1,
+
+         // TAM -> threshold amount
+         'TAMHighlighting' => OFF,
+         'TAMHBGColor' => '#663300',
+
+         // TAG -> threshold age
+         'TAGHighlighting' => OFF,
+
+         // C -> Column | IAM -> issue amount | IAG -> issue age
+         'CStatSelect1' => 50,
+         'IAMThreshold1' => 5,
+         'IAGThreshold1' => 30,
+
+         // URI -> unreachable issue
+         'URIThreshold' => 50,
+
+         'UserProjectAccessLevel' => ADMINISTRATOR
    	);
    }
    
@@ -96,7 +107,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
       {
-      	return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'title' ) . '</a>';
+      	return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_title' ) . '</a>';
       }
       return null;
    }

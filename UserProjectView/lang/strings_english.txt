@@ -1,58 +1,55 @@
 ﻿<?php
 
-$s_plugin_UserProjectView_title = 'Whiteboard';
-$s_plugin_UserProjectView_print_button = 'Print report';
-$s_plugin_UserProjectView_accounts_title = 'Account overview - ';
-$s_plugin_UserProjectView_projects_title = 'Selected project: ';
+$s_plugin_UserProjectView_menu_title = 'Whiteboard';
+$s_plugin_UserProjectView_menu_printbutton = 'Print report';
+$s_plugin_UserProjectView_menu_userprojecttitle = 'User report';
 
-$s_plugin_UserProjectView_userProject_title = 'User report';
+$s_plugin_UserProjectView_thead_accounts_title = 'Account overview - ';
+$s_plugin_UserProjectView_thead_projects_title = 'Selected project: ';
+$s_plugin_UserProjectView_thead_username = 'Username';
+$s_plugin_UserProjectView_thead_realname = 'Real name';
+$s_plugin_UserProjectView_thead_project = 'Main project';
+$s_plugin_UserProjectView_thead_subproject = 'Assigned project';
+$s_plugin_UserProjectView_thead_targetversion = 'Target version';
+$s_plugin_UserProjectView_thead_remark = 'Information';
 
-$s_plugin_UserProjectView_username = 'Username';
-$s_plugin_UserProjectView_realname = 'Real name';
-$s_plugin_UserProjectView_projects = 'Main project';
-$s_plugin_UserProjectView_subproject = 'Assigned project';
-$s_plugin_UserProjectView_issues = 'Issues';
-$s_plugin_UserProjectView_next_version = 'Target version';
-$s_plugin_UserProjectView_remark = 'Information';
-
-$s_plugin_UserProjectView_issue = 'Issue';
-$s_plugin_UserProjectView_project = 'Project';
-$s_plugin_UserProjectView_noProject = 'No project-Assignment';
-$s_plugin_UserProjectView_showUnreachIssues = 'Unreachable Issues';
-$s_plugin_UserProjectView_inactiveUser = 'User is inactive';
-$s_plugin_UserProjectView_zeroIssues = 'User has no issues';
-$s_plugin_UserProjectView_noUser = 'No User-Assignmend';
-$s_plugin_UserProjectView_since = 'since';
-$s_plugin_UserProjectView_day = 'days';
-
-$s_plugin_UserProjectView_y = 'Yes';
-$s_plugin_UserProjectView_n = 'No';
-$s_plugin_UserProjectView_footer = 'Show plugin info in footer?';
-$s_plugin_UserProjectView_menu = 'Show plugin menu entry?';
-$s_plugin_UserProjectView_inactiveUserHighlighting = 'Mark inactive users?';
-$s_plugin_UserProjectView_unreachableIssueUserHighlighting = 'Mark row if user is not assigned to project?';
-$s_plugin_UserProjectView_noUserIssueHighlighting = 'Mark issues without assigned user?';
-$s_plugin_UserProjectView_showZIUsers = 'Show Users with zero Issues?';
-$s_plugin_UserProjectView_zIUsers_expl = 'The efficacy of this options require "Show Users with zero Issues" enabled.';
-$s_plugin_UserProjectView_zeroIssueHighlighting = 'Mark users without issues?';
-$s_plugin_UserProjectView_backgroundcolor = 'Backgroundcolour';
-$s_plugin_UserProjectView_columnAmount = 'Amount of columns';
-$s_plugin_UserProjectView_highlightColumnThreshold = 'Mark reached amount?';
-$s_plugin_UserProjectView_highlightOldIssueThreshold = 'Mark reached age (days)?';
-$s_plugin_UserProjectView_columnStatSelect = 'Status for this column';
-$s_plugin_UserProjectView_issueThreshold = 'Issue amount threshold';
-$s_plugin_UserProjectView_informationThreshold = 'Issue age threshold (days)';
-$s_plugin_UserProjectView_unreachable_issue_threshold = 'Status threshold for view of unreachable issues';
-$s_plugin_UserProjectView_accesslevel = 'UserProjectView access level';
-
-$s_plugin_UserProjectView_config_title = 'Whiteboard Management - Configuration';
-$s_plugin_UserProjectView_config_caption = 'UserProjectView - General configuration';
-$s_plugin_UserProjectView_config_highlighting = 'UserProjectView - Configuration for specific row highlighting';
-$s_plugin_UserProjectView_config_specColumns = 'UserProjectView - Configuration for specific columns';
-$s_plugin_UserProjectView_config_information = 'UserProjectView - Configuration for informational column';
+$s_plugin_UserProjectView_remark_noProject = 'No project-assignment';
+$s_plugin_UserProjectView_remark_showURIssues = 'Unreachable issues';
+$s_plugin_UserProjectView_remark_IAUser = 'User is inactive';
+$s_plugin_UserProjectView_remark_ZIssues = 'User has no issues';
+$s_plugin_UserProjectView_remark_noUser = 'No user-assignmend';
+$s_plugin_UserProjectView_remark_since = 'since';
+$s_plugin_UserProjectView_remark_day = 'Days';
 
 $s_plugin_UserProjectView_remove_quest = 'Are you sure you want to remove the following users from the specified project?';
-$s_plugin_UserProjectView_removeSingle = 'Remove User from Project';
-$s_plugin_UserProjectView_removeAll = 'Remove User from Project/Subprojects';
+$s_plugin_UserProjectView_remove_selectSingle = 'Remove User from Project';
+$s_plugin_UserProjectView_remove_selectAll = 'Remove User from Project/Subprojects';
 $s_plugin_UserProjectView_remove_confirm = 'User removed from project.';
-$s_plugin_UserProjectView_remove_failure = 'Failure, User not removed from project.';
+$s_plugin_UserProjectView_remove_failure = 'Error, user not removed from project.';
+
+$s_plugin_UserProjectView_config_y = 'Yes';
+$s_plugin_UserProjectView_config_n = 'No';
+$s_plugin_UserProjectView_config_showFooter = 'Show plugin info in footer?';
+$s_plugin_UserProjectView_config_showMenu = 'Show plugin menu entry?';
+$s_plugin_UserProjectView_config_showAvatar = 'Show avatar in user report?';
+$s_plugin_UserProjectView_config_IAUHighlighting = 'Mark inactive users?';
+$s_plugin_UserProjectView_config_URIUHighlighting = 'Mark row if user is not assigned to project?';
+$s_plugin_UserProjectView_config_NUIHighlighting = 'Mark issues without assigned user?';
+$s_plugin_UserProjectView_config_showZIU = 'Show Users with zero Issues?';
+$s_plugin_UserProjectView_config_ZIUExpl = 'The efficacy of this options require "Show Users with zero Issues" enabled.';
+$s_plugin_UserProjectView_config_ZIHighlighting = 'Mark users without issues?';
+$s_plugin_UserProjectView_config_BGColor = 'Backgroundcolour';
+$s_plugin_UserProjectView_config_CAmount = 'Amount of columns';
+$s_plugin_UserProjectView_config_TAMHighlighting = 'Mark reached amount?';
+$s_plugin_UserProjectView_config_TAGHighlighting = 'Mark reached age (days)?';
+$s_plugin_UserProjectView_config_CStatSelect = 'Status for this column';
+$s_plugin_UserProjectView_config_IAMThreshold = 'Issue amount threshold';
+$s_plugin_UserProjectView_config_IAGThreshold = 'Issue age threshold (days)';
+$s_plugin_UserProjectView_config_URIThreshold = 'Status threshold for view of unreachable issues';
+$s_plugin_UserProjectView_config_accesslevel = 'Access level';
+$s_plugin_UserProjectView_config_title = 'Configuration';
+$s_plugin_UserProjectView_config_caption = 'General configuration';
+$s_plugin_UserProjectView_config_highlighting = 'Configuration for specific row highlighting';
+$s_plugin_UserProjectView_config_specColumns = 'Configuration for specific columns';
+$s_plugin_UserProjectView_config_URIFilter = 'Filter status for unreachable issues';
+$s_plugin_UserProjectView_config_information = 'Configuration for informational column';
