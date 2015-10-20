@@ -40,12 +40,32 @@ function updateButtonConfiguration( $config )
 
 function updateValue( $value, $constant )
 {
-	$actValue = gpc_get_int( $value, $constant );
+   if ( is_int( $value ) )
+   {
+	   $actValue = gpc_get_int( $value, $constant );
+   }
+
+   if ( is_string( $value) )
+   {
+      $actValue = gpc_get_string( $value, $constant );
+   }
 
 	if ( plugin_config_get( $value ) != $actValue )
 	{
 		plugin_config_set( $value, $actValue );
 	}
+}
+
+function updateDynamicValues( $value, $constant )
+{
+   $cAmount = plugin_config_get( 'CAmount' );
+
+   for ( $columnIndex = 1; $columnIndex <= $cAmount; $columnIndex++ )
+   {
+      $actValue = $value . $columnIndex;
+
+      updateValue( $actValue, $constant );
+   }
 }
 
 updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
@@ -67,10 +87,12 @@ updateButtonConfiguration( 'ShowZIU' );
 updateButtonConfiguration( 'ZIHighlighting' );
 updateColorConfiguration ( 'ZIHBGColor', '#663300' );
 
-updateButtonConfiguration( 'TAMHighlighting' );
-updateColorConfiguration ( 'TAMHBGColor', '#663300' );
+updateColorConfiguration( 'TAMHBGColor', '#663300' );
 
-updateButtonConfiguration( 'TAGHighlighting' );
+updateDynamicValues( 'CStatSelect', 50 );
+updateDynamicValues( 'IAMThreshold', 5 );
+updateDynamicValues( 'IAGThreshold', 30 );
+
 
 $colAmount = gpc_get_string( 'CAmount', 1 );
 
@@ -81,27 +103,6 @@ if ( plugin_config_get( 'CAmount' ) != $colAmount && plugin_config_get( 'CAmount
 elseif ( plugin_config_get( 'CAmount' ) == '' )
 {
 	plugin_config_set( 'CAmount', 1 );
-}
-
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
-{
-	$stat = 'CStatSelect' . $columnIndex;
-	
-	updateValue( $stat, 50 );
-}
-
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
-{
-	$issueThreshold = 'IAMThreshold' . $columnIndex;
-	
-	updateValue( $issueThreshold, 5 );
-}
-
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
-{
-	$oldIssueThreshold = 'IAGThreshold' . $columnIndex;
-	
-	updateValue( $oldIssueThreshold, 30 );
 }
 
 if ( !empty( $_POST['URIThreshold'] ) )

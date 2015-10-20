@@ -1,0 +1,56 @@
+﻿<?php
+
+$s_plugin_UserProjectView_menu_title = '白板';
+$s_plugin_UserProjectView_menu_printbutton = '打印报表';
+$s_plugin_UserProjectView_menu_userprojecttitle = '用户报表';
+
+$s_plugin_UserProjectView_thead_accounts_title = '帐户概况- ';
+$s_plugin_UserProjectView_thead_projects_title = '已选项目: ';
+$s_plugin_UserProjectView_thead_username = '用户名：';
+$s_plugin_UserProjectView_thead_realname = '真实姓名';
+$s_plugin_UserProjectView_thead_project = '主项目';
+$s_plugin_UserProjectView_thead_subproject = '已分配项目';
+$s_plugin_UserProjectView_thead_targetversion = '目标版本';
+$s_plugin_UserProjectView_thead_remark = '相关信息';
+
+$s_plugin_UserProjectView_remark_noProject = '没有项目分配';
+$s_plugin_UserProjectView_remark_showURIssues = '不可得项';
+$s_plugin_UserProjectView_remark_IAUser = '用户处于非激活状态';
+$s_plugin_UserProjectView_remark_ZIssues = '用户没有任何项';
+$s_plugin_UserProjectView_remark_noUser = '没有用户分配';
+$s_plugin_UserProjectView_remark_since = '自';
+$s_plugin_UserProjectView_remark_day = '天';
+
+$s_plugin_UserProjectView_remove_quest = '确实要将以下用户从指定的项目移除吗?';
+$s_plugin_UserProjectView_remove_selectSingle = '从项目中删除用户';
+$s_plugin_UserProjectView_remove_selectAll = '从项目/子项目中删除用户';
+$s_plugin_UserProjectView_remove_confirm = '从项目中移除的用户。';
+$s_plugin_UserProjectView_remove_failure = '错误，不能从项目中移除的用户。';
+
+$s_plugin_UserProjectView_config_y = '是';
+$s_plugin_UserProjectView_config_n = '否';
+$s_plugin_UserProjectView_config_showFooter = '在页脚中显示插件信息吗?';
+$s_plugin_UserProjectView_config_showMenu = '在菜单显示插件吗?';
+$s_plugin_UserProjectView_config_showAvatar = '在用户报表中显示"Avatar" 吗?';
+$s_plugin_UserProjectView_config_IAUHighlighting = '标记非活跃用户吗?';
+$s_plugin_UserProjectView_config_URIUHighlighting = '是否标记用户未分配项目行?';
+$s_plugin_UserProjectView_config_NUIHighlighting = '是否标记没有分配用户的项?';
+$s_plugin_UserProjectView_config_showZIU = '是否显示没有任何项的用户?';
+$s_plugin_UserProjectView_config_ZIUExpl = '这个选项的起效需要起用"显示没有任何项的用户"选项.';
+$s_plugin_UserProjectView_config_ZIHighlighting = '是否标记没任何项的用户?';
+$s_plugin_UserProjectView_config_BGColor = '背景色';
+$s_plugin_UserProjectView_config_CAmount = '列数';
+$s_plugin_UserProjectView_config_TAMHighlighting = '是否标记到达量?';
+$s_plugin_UserProjectView_config_TAGHighlighting = '是否标记到达时间(天)?';
+$s_plugin_UserProjectView_config_CStatSelect = '此列的状态';
+$s_plugin_UserProjectView_config_IAMThreshold = '项值门槛';
+$s_plugin_UserProjectView_config_IAGThreshold = '项时间界限 (天)';
+$s_plugin_UserProjectView_config_IAGMThresholdExpl = '值0禁用此功能.';
+$s_plugin_UserProjectView_config_URIThreshold = '不可获项视图状态阈值';
+$s_plugin_UserProjectView_config_accesslevel = '访问级别';
+$s_plugin_UserProjectView_config_title = '配置';
+$s_plugin_UserProjectView_config_caption = '常规配置';
+$s_plugin_UserProjectView_config_highlighting = '特定行高亮设置';
+$s_plugin_UserProjectView_config_specColumns = '特定列设置';
+$s_plugin_UserProjectView_config_URIFilter = '不可获取项过滤器状态';
+$s_plugin_UserProjectView_config_information = '信息列设置';

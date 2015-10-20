@@ -45,6 +45,7 @@ $s_plugin_UserProjectView_config_TAGHighlighting = 'Überschreitung Alter darste
 $s_plugin_UserProjectView_config_CStatSelect = 'Status für Spalte';
 $s_plugin_UserProjectView_config_IAMThreshold = 'max. Anzahl Issues';
 $s_plugin_UserProjectView_config_IAGThreshold = 'max. Alter Issues (Tage)';
+$s_plugin_UserProjectView_config_IAGMThresholdExpl = 'Der Wert 0 deaktiviert die Funktion.';
 $s_plugin_UserProjectView_config_URIThreshold = 'Statusauswahl zur Anzeige unerreichbarer Issues';
 $s_plugin_UserProjectView_config_accesslevel = 'Zugriffslevel';
 $s_plugin_UserProjectView_config_title = 'UserProjectView - Konfiguration';

@@ -45,6 +45,7 @@ $s_plugin_UserProjectView_config_TAGHighlighting = 'Mark reached age (days)?';
 $s_plugin_UserProjectView_config_CStatSelect = 'Status for this column';
 $s_plugin_UserProjectView_config_IAMThreshold = 'Issue amount threshold';
 $s_plugin_UserProjectView_config_IAGThreshold = 'Issue age threshold (days)';
+$s_plugin_UserProjectView_config_IAGMThresholdExpl = 'Value 0 disables this function.';
 $s_plugin_UserProjectView_config_URIThreshold = 'Status threshold for view of unreachable issues';
 $s_plugin_UserProjectView_config_accesslevel = 'Access level';
 $s_plugin_UserProjectView_config_title = 'Configuration';

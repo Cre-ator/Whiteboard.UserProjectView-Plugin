@@ -10,13 +10,9 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 
 html_page_top2();
 
-
-// user configuration area ++++++++++++++++++++++++++++++++++++++++++++++++++++
 if ( $pluginManager->getUserHasLevel() )
 {
 	$pluginManager->printPluginMenu();
 }
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 html_page_bottom();

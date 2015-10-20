@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.1.10';
+      $this->version     = '1.2.2';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -67,17 +67,11 @@ class UserProjectViewPlugin extends MantisPlugin
          // C -> column
          'CAmount' => 1,
 
-         // TAM -> threshold amount
-         'TAMHighlighting' => OFF,
-         'TAMHBGColor' => '#663300',
-
-         // TAG -> threshold age
-         'TAGHighlighting' => OFF,
-
-         // C -> Column | IAM -> issue amount | IAG -> issue age
+         // C -> Column | IAM -> issue amount | IAG -> issue age | TAM -> threshold amount
          'CStatSelect1' => 50,
          'IAMThreshold1' => 5,
          'IAGThreshold1' => 30,
+         'TAMHBGColor' => '#663300',
 
          // URI -> unreachable issue
          'URIThreshold' => 50,
