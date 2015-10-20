@@ -622,8 +622,11 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
       if ( config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
       {
-         $assocArray = user_get_avatar( $userId );
-         echo '<img class="avatar" src="' . $assocArray [0] . '" />';
+         if ($userId > 0)
+         {
+            $assocArray = user_get_avatar( $userId );
+            echo '<img class="avatar" src="' . $assocArray [0] . '" />';
+         }
       }
 
       if ( access_has_global_level( $userAccessLevel ) )
