@@ -344,7 +344,7 @@ else
 			echo '<span class="required">*</span>' . plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
 			echo '</td>';
 			echo '<td valign="top" width="100px" colspan="1" rowspan="2">';
-			echo '<select name="cstatselect' . $columnIndex .'">';
+			echo '<select name="CStatSelect' . $columnIndex .'">';
 			print_enum_string_option_list( 'status', plugin_config_get( 'CStatSelect' . $columnIndex ) );
 			echo '</select>';
 			echo '</td>';

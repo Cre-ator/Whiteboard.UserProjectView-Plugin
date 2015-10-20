@@ -40,7 +40,8 @@ class PluginManager
 				' FROM mantis_project_version_table' .
 				' WHERE mantis_project_version_table.version = \'' . $version . '\'';
 				
-		$mainProjectByVersion = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
+		$assocArray = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) );
+		$mainProjectByVersion = $assocArray [0];
 		
 		return $mainProjectByVersion;
 	}
@@ -74,7 +75,8 @@ class PluginManager
 				$sqlquery .= ' AND mantis_bug_table.project_id = ' . $projectId;
 			}
 			
-		$amountOfIssuesByIndividual = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
+		$assocArray = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) );
+		$amountOfIssuesByIndividual = $assocArray [0];
 
 		return $amountOfIssuesByIndividual;
 	}
@@ -90,7 +92,8 @@ class PluginManager
 			$sqlquery .= ' AND mantis_bug_table.project_id = ' . $projectId;
 		}
 			
-		$amountOfIssuesByIndividual = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) )[0];
+		$assocArray = mysqli_fetch_row( $this->mysqli->query( $sqlquery ) );
+		$amountOfIssuesByIndividual = $assocArray [0];
 	
 		return $amountOfIssuesByIndividual;
 	}
