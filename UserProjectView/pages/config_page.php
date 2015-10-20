@@ -229,33 +229,33 @@ else
 	for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 	{
       $pluginManager->printConfigTableRow();
-      echo '<td class="category" colspan="1" rowspan="1">';
+      echo '<td class="category" colspan="1" rowspan="2">';
       echo '<span class="required">*</span>' . plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
       echo '</td>';
-      echo '<td valign="top" width="100px" colspan="1" rowspan="1">';
+      echo '<td valign="top" width="100px" colspan="1" rowspan="2">';
       echo '<select name="CStatSelect' . $columnIndex .'">';
       print_enum_string_option_list( 'status', plugin_config_get( 'CStatSelect' . $columnIndex ) );
       echo '</select>';
       echo '</td>';
       echo '<td class="category" colspan="1">';
       echo plugin_lang_get('config_IAMThreshold');
-      echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
       echo '</td>';
       echo '<td  colspan="1">';
       ?>
-      <label><input type="number" name="IAMThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAMThreshold' . $columnIndex , 5 ); ?>" min="0"/></label>
+      <label><input type="number" name="IAMThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAMThreshold' . $columnIndex , 5 ); ?>" min="1"/></label>
       <?php
       echo '</td>';
       echo '<td class="category" colspan="1">';
       echo plugin_lang_get('config_IAGThreshold');
-      echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
       echo '</td>';
       echo '<td  colspan="1">';
       ?>
-      <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex , 30 ); ?>" min="0"/></label>
+      <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex , 30 ); ?>" min="1"/></label>
       <?php
       echo '</td>';
 		echo '</tr>';
+
+      $pluginManager->printConfigSpacer( 6 );
 	}
 
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
