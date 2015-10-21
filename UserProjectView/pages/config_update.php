@@ -4,6 +4,12 @@ access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
+require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
+include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+
+// PluginManager object
+$pluginManager = new PluginManager();
+
 $option_reset = gpc_get_bool( 'reset', false );
 $option_change = gpc_get_bool( 'change', false );
 
@@ -85,30 +91,7 @@ function deleteDynamicValues( $value )
 
 if ( $option_reset )
 {
-   plugin_config_delete( 'ShowMenu' );
-   plugin_config_delete( 'ShowInFooter' );
-   plugin_config_delete( 'ShowAvatar' );
-   plugin_config_delete( 'IAUHighlighting' );
-   plugin_config_delete( 'URIUHighlighting' );
-   plugin_config_delete( 'NUIHighlighting' );
-   plugin_config_delete( 'ShowZIU' );
-   plugin_config_delete( 'ZIHighlighting' );
-
-   plugin_config_delete( 'IAUHBGColor' );
-   plugin_config_delete( 'URIUHBGColor' );
-   plugin_config_delete( 'NUIHBGColor' );
-   plugin_config_delete( 'ZIHBGColor' );
-   plugin_config_delete( 'TAMHBGColor' );
-
-   plugin_config_delete( 'ShowMenu' );
-   plugin_config_delete( 'ShowInFooter' );
-
-   deleteDynamicValues( 'CStatSelect' );
-   deleteDynamicValues( 'IAMThreshold' );
-   deleteDynamicValues( 'IAGThreshold' );
-
-   plugin_config_delete( 'CAmount' );
-   plugin_config_delete( 'URIThreshold' );
+   $pluginManager->resetPluginConfig();
 }
 elseif ( $option_change )
 {

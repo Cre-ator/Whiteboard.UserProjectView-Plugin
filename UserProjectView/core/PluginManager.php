@@ -21,8 +21,17 @@ class PluginManager
 	public function getActMantisVersion()
 	{
 		return substr( MANTIS_VERSION, 0, 4 );
-	}	
-	
+	}
+
+   public function resetPluginConfig()
+   {
+      $sqlquery = ' DELETE FROM mantis_config_table' .
+         ' WHERE config_id' .
+         ' LIKE \'plugin_UserProjectView_%\' ';
+
+      $this->mysqli->query( $sqlquery );
+   }
+
 	public function getAllUsers()
 	{
 		$sqlquery = ' SELECT mantis_user_table.id' .
@@ -36,7 +45,7 @@ class PluginManager
 
 	public function getMainProjectByVersion( $version )
 	{
-		$sqlquery = 'SELECT mantis_project_version_table.project_id' .
+		$sqlquery = ' SELECT mantis_project_version_table.project_id' .
 				' FROM mantis_project_version_table' .
 				' WHERE mantis_project_version_table.version = \'' . $version . '\'';
 
