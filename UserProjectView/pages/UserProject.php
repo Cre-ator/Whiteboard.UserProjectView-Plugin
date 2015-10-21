@@ -11,6 +11,11 @@ $unreachIssueStatusValue = plugin_config_get( 'URIThreshold' );
 $unreachIssueStatusCount = count( $unreachIssueStatusValue );
 
 $amountStatColumns = plugin_config_get( 'CAmount' );
+if ( $amountStatColumns > PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )
+{
+	$amountStatColumns = PLUGINS_USERPROJECTVIEW_MAX_COLUMNS;
+}
+
 $statCols = array();
 
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
@@ -405,8 +410,8 @@ echo '<tr class="row-category">';
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
 	echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) .'">';
-	$assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
-	echo $assocArray [$statCols[$headIndex]];
+   $assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+   echo $assocArray [$statCols[$headIndex]];
 	echo '</th>';
 }
 echo '<th>' . plugin_lang_get( 'thead_remark' ) . '</th>';
@@ -682,11 +687,11 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 			$specIssueResult = $pluginManager->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
          $assocArray = mysqli_fetch_row( $specIssueResult );
 			$specIssues = array();
-			$assocArray = mysqli_fetch_row( $specIssueResult );
-			while ( $specIssue = $assocArray [0] )
+
+         while ( $specIssue = $assocArray [0] )
 			{
-				$specIssues[] = $specIssue;
-				$assocArray = mysqli_fetch_row( $specIssueResult );
+            $specIssues[] = $specIssue;
+            $assocArray = mysqli_fetch_row( $specIssueResult );
 			}
 			
 			if ( $specIssues != null )
@@ -702,8 +707,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 					'&handler_id=' . $linkUserId .
 					'&sticky_issues=on&target_version=' . $bugTargetVersion .
 					'&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-					$assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
-					echo $assocArray [$specStatus] .
+               $assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+               echo $assocArray [$specStatus] .
 					' ' . plugin_lang_get( 'remark_since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'remark_day' ) . '<br/>';
 					echo '</a>';
 				}

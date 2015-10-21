@@ -4,6 +4,9 @@ access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
+$option_reset = gpc_get_bool( 'reset', false );
+$option_change = gpc_get_bool( 'change', false );
+
 function includeLeadingColorIdentifier( $Color )
 {
    if ( "#" == $Color [0] )
@@ -40,6 +43,8 @@ function updateButtonConfiguration( $config )
 
 function updateValue( $value, $constant )
 {
+   $actValue = null;
+
    if ( is_int( $value ) )
    {
 	   $actValue = gpc_get_int( $value, $constant );
@@ -68,53 +73,86 @@ function updateDynamicValues( $value, $constant )
    }
 }
 
-updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
-
-updateButtonConfiguration( 'ShowMenu' );
-updateButtonConfiguration( 'ShowInFooter' );
-updateButtonConfiguration( 'ShowAvatar' );
-
-updateButtonConfiguration( 'IAUHighlighting' );
-updateColorConfiguration ( 'IAUHBGColor', '#663300' );
-
-updateButtonConfiguration( 'URIUHighlighting' );
-updateColorConfiguration ( 'URIUHBGColor', '#663300' );
-
-updateButtonConfiguration( 'NUIHighlighting' );
-updateColorConfiguration ( 'NUIHBGColor', '#663300' );
-
-updateButtonConfiguration( 'ShowZIU' );
-updateButtonConfiguration( 'ZIHighlighting' );
-updateColorConfiguration ( 'ZIHBGColor', '#663300' );
-
-updateColorConfiguration( 'TAMHBGColor', '#663300' );
-
-updateDynamicValues( 'CStatSelect', 50 );
-updateDynamicValues( 'IAMThreshold', 5 );
-updateDynamicValues( 'IAGThreshold', 30 );
-
-
-$colAmount = gpc_get_string( 'CAmount', 1 );
-
-if ( plugin_config_get( 'CAmount' ) != $colAmount && plugin_config_get( 'CAmount' ) != '' )
+function deleteDynamicValues( $value )
 {
-	plugin_config_set( 'CAmount', $colAmount );
-}
-elseif ( plugin_config_get( 'CAmount' ) == '' )
-{
-	plugin_config_set( 'CAmount', 1 );
+   for ( $columnIndex = 1; $columnIndex <= PLUGINS_USERPROJECTVIEW_MAX_COLUMNS; $columnIndex++ )
+   {
+      $actValue = $value . $columnIndex;
+
+      plugin_config_delete( $actValue );
+   }
 }
 
-if ( !empty( $_POST['URIThreshold'] ) )
+if ( $option_reset )
 {
-	foreach ( $_POST['URIThreshold'] as $unreachableIssueThreshold )
-	{
-		$unreachableIssueThreshold = gpc_get_int_array( 'URIThreshold' );
-		if ( plugin_config_get( 'URIThreshold' ) != $unreachableIssueThreshold )
-		{
-			plugin_config_set( 'URIThreshold', $unreachableIssueThreshold );
-		}
-	}
+   plugin_config_delete( 'ShowMenu' );
+   plugin_config_delete( 'ShowInFooter' );
+   plugin_config_delete( 'ShowAvatar' );
+   plugin_config_delete( 'IAUHighlighting' );
+   plugin_config_delete( 'URIUHighlighting' );
+   plugin_config_delete( 'NUIHighlighting' );
+   plugin_config_delete( 'ShowZIU' );
+   plugin_config_delete( 'ZIHighlighting' );
+
+   plugin_config_delete( 'IAUHBGColor' );
+   plugin_config_delete( 'URIUHBGColor' );
+   plugin_config_delete( 'NUIHBGColor' );
+   plugin_config_delete( 'ZIHBGColor' );
+   plugin_config_delete( 'TAMHBGColor' );
+
+   plugin_config_delete( 'ShowMenu' );
+   plugin_config_delete( 'ShowInFooter' );
+
+   deleteDynamicValues( 'CStatSelect' );
+   deleteDynamicValues( 'IAMThreshold' );
+   deleteDynamicValues( 'IAGThreshold' );
+
+   plugin_config_delete( 'CAmount' );
+   plugin_config_delete( 'URIThreshold' );
+}
+elseif ( $option_change )
+{
+   updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
+
+   updateButtonConfiguration( 'ShowMenu' );
+   updateButtonConfiguration( 'ShowInFooter' );
+   updateButtonConfiguration( 'ShowAvatar' );
+
+   updateButtonConfiguration( 'IAUHighlighting' );
+   updateColorConfiguration( 'IAUHBGColor', '#663300' );
+
+   updateButtonConfiguration( 'URIUHighlighting' );
+   updateColorConfiguration( 'URIUHBGColor', '#663300' );
+
+   updateButtonConfiguration( 'NUIHighlighting' );
+   updateColorConfiguration( 'NUIHBGColor', '#663300' );
+
+   updateButtonConfiguration( 'ShowZIU' );
+   updateButtonConfiguration( 'ZIHighlighting' );
+   updateColorConfiguration( 'ZIHBGColor', '#663300' );
+
+   updateColorConfiguration( 'TAMHBGColor', '#663300' );
+
+   $colAmount = gpc_get_int( 'CAmount', 1 );
+   if ( plugin_config_get( 'CAmount' ) != $colAmount && plugin_config_get( 'CAmount' ) != '' && $colAmount <= 20 ) {
+      plugin_config_set( 'CAmount', $colAmount );
+   }
+   elseif ( plugin_config_get( 'CAmount' ) == '' ) {
+      plugin_config_set( 'CAmount', 1 );
+   }
+
+   if ( !empty( $_POST['URIThreshold'] ) ) {
+      foreach ( $_POST['URIThreshold'] as $unreachableIssueThreshold ) {
+         $unreachableIssueThreshold = gpc_get_int_array( 'URIThreshold' );
+         if ( plugin_config_get( 'URIThreshold' ) != $unreachableIssueThreshold ) {
+            plugin_config_set( 'URIThreshold', $unreachableIssueThreshold );
+         }
+      }
+   }
+
+   updateDynamicValues( 'CStatSelect', 50 );
+   updateDynamicValues( 'IAMThreshold', 5 );
+   updateDynamicValues( 'IAGThreshold', 30 );
 }
 
 form_security_purge( 'plugin_UserProjectView_config_update' );

@@ -210,7 +210,7 @@ else
    echo '</td>';
    echo '<td width="100px" colspan="1" rowspan="1">';
    ?>
-   <label><input type="number" name="CAmount" value="<?php echo plugin_config_get( 'CAmount', 1 ); ?>" min="1"/></label>
+   <label><input type="number" name="CAmount" value="<?php echo plugin_config_get( 'CAmount', 1 ); ?>" min="1" max="20"/></label>
    <?php
    echo '</td>';
 
@@ -229,33 +229,33 @@ else
 	for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 	{
       $pluginManager->printConfigTableRow();
-      echo '<td class="category" colspan="1" rowspan="2">';
+      echo '<td class="category" colspan="1" rowspan="1">';
       echo '<span class="required">*</span>' . plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
       echo '</td>';
-      echo '<td valign="top" width="100px" colspan="1" rowspan="2">';
+      echo '<td valign="top" width="100px" colspan="1" rowspan="1">';
       echo '<select name="CStatSelect' . $columnIndex .'">';
       print_enum_string_option_list( 'status', plugin_config_get( 'CStatSelect' . $columnIndex ) );
       echo '</select>';
       echo '</td>';
       echo '<td class="category" colspan="1">';
-      echo plugin_lang_get('config_IAMThreshold');
+      echo plugin_lang_get('config_IAMThreshold') . '<br>';
+      echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
       echo '</td>';
       echo '<td  colspan="1">';
       ?>
-      <label><input type="number" name="IAMThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAMThreshold' . $columnIndex , 5 ); ?>" min="1"/></label>
+      <label><input type="number" name="IAMThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAMThreshold' . $columnIndex , 5 ); ?>" min="0"/></label>
       <?php
       echo '</td>';
       echo '<td class="category" colspan="1">';
-      echo plugin_lang_get('config_IAGThreshold');
+      echo plugin_lang_get('config_IAGThreshold') . '<br>';
+      echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
       echo '</td>';
       echo '<td  colspan="1">';
       ?>
-      <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex , 30 ); ?>" min="1"/></label>
+      <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex , 30 ); ?>" min="0"/></label>
       <?php
       echo '</td>';
 		echo '</tr>';
-
-      $pluginManager->printConfigSpacer( 6 );
 	}
 
 	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -281,18 +281,20 @@ else
    $pluginManager->printConfigSpacer( 6 );
 
 	echo '<tr>';
-		echo '<td class="center" colspan="8">';
-		  echo '<input type="submit" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
-		echo '</td>';
+		echo '<td class="center" colspan="6">';
+      echo '<label><input type="checkbox" name="change" checked/>' . plugin_lang_get( 'config_change' ) . '</label>';
+      echo '<label><input type="checkbox" name="reset"/>' . plugin_lang_get( 'config_reset' ) . '</label>';
+      echo '</td>';
 	echo '</tr>';
+   echo '<tr>';
+      echo '<td class="center" colspan="6">';
+      echo '<input type="submit" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
+      echo '</td>';
+   echo '</tr>';
 
 echo '</table>';
 
-if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
-{
-
-}
-else
+if ( substr( MANTIS_VERSION, 0, 4 ) != '1.2.' )
 {
    echo '</div>';
 }
