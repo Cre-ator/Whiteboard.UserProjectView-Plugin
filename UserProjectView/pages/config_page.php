@@ -280,15 +280,10 @@ else
 
    $pluginManager->printConfigSpacer( 6 );
 
-	echo '<tr>';
-		echo '<td class="center" colspan="6">';
-      echo '<label><input type="checkbox" name="change" checked/>' . plugin_lang_get( 'config_change' ) . '</label>';
-      echo '<label><input type="checkbox" name="reset"/>' . plugin_lang_get( 'config_reset' ) . '</label>';
-      echo '</td>';
-	echo '</tr>';
    echo '<tr>';
       echo '<td class="center" colspan="6">';
-      echo '<input type="submit" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
+      echo '<input type="submit" name="change" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
+      echo '<input type="submit" name="reset" class="button" value="' . plugin_lang_get( 'config_reset' ) . '"/>';
       echo '</td>';
    echo '</tr>';
 
