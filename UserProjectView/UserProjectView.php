@@ -41,10 +41,10 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function uninstall()
    {
-      include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR. 'PluginManager.php';
+      include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR. 'UserProjectView_api.php';
 
-      $pluginManager = new PluginManager();
-      $pluginManager->resetPluginConfig();
+      $upv_api = new UserProjectView_api();
+      $upv_api->resetPluginConfig();
    }
 
    function config()

@@ -1,6 +1,6 @@
 <?php
 
-class PluginManager
+class UserProjectView_api
 {
    private $mysqli;
    private $dbPath;
@@ -401,10 +401,5 @@ class PluginManager
       $result[1] = $oldestSpecIssue;
 
       return $result;
-   }
-
-   public function createTableRow()
-   {
-
    }
 }

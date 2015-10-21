@@ -1,9 +1,9 @@
 <?php
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 auth_reauthenticate();
 access_ensure_global_level( plugin_config_get( 'UserProjectAccessLevel' ) );
@@ -32,9 +32,8 @@ else
 		echo plugin_lang_get( 'config_caption' );
 		echo '</td>';
 	echo '</tr>';
-	
-	
-	$pluginManager->printConfigTableRow();
+
+	$upv_api->printConfigTableRow();
 	echo '<td class="category" colspan="1">';
 	echo '<span class="required">*</span>' . plugin_lang_get( 'config_accesslevel' );
 	echo '</td>';
@@ -45,8 +44,7 @@ else
 	echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_showMenu' );
    echo '</td>';
@@ -58,8 +56,7 @@ else
    echo '</td>';
    echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
       echo plugin_lang_get( 'config_showFooter' );
    echo '</td>';
@@ -71,8 +68,7 @@ else
    echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_showAvatar' );
    echo '</td>';
@@ -84,19 +80,14 @@ else
    echo '</td>';
    echo '</tr>';
 
-	$pluginManager->printConfigSpacer( 6 );
-	
-	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	
+	$upv_api->printConfigSpacer( 6 );
 	echo '<tr>';
 	echo '<td class="form-title" colspan="6">';
 	echo plugin_lang_get( 'config_highlighting' );
 	echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_IAUHighlighting' );
    echo '</td>';
@@ -116,8 +107,7 @@ else
    echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_URIUHighlighting' );
    echo '</td>';
@@ -137,8 +127,7 @@ else
    echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_NUIHighlighting' );
    echo '</td>';
@@ -158,9 +147,7 @@ else
    echo '</td>';
 	echo '</tr>';
 
-
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_showZIU' );
    echo '</td>';
@@ -172,7 +159,7 @@ else
    echo '</td>';
 	echo '</tr>';
 
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_ZIHighlighting' ) . '<br/>';
    echo '<span class="small">' . plugin_lang_get( 'config_ZIUExpl' ) . '</span>';
@@ -193,18 +180,14 @@ else
    echo '</td>';
 	echo '</tr>';
 
-   $pluginManager->printConfigSpacer( 6 );
-
-	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
+   $upv_api->printConfigSpacer( 6 );
 	echo '<tr>';
 	echo '<td class="form-title" colspan="8">';
 	echo plugin_lang_get( 'config_specColumns' );
 	echo '</td>';
 	echo '</tr>';
 
-
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
    echo '<td class="category" colspan="1" rowspan="1">';
    echo plugin_lang_get( 'config_CAmount' );
    echo '</td>';
@@ -214,7 +197,6 @@ else
    <?php
    echo '</td>';
 
-
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_BGColor' );
    echo '</td>';
@@ -223,14 +205,13 @@ else
       <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="TAMHBGColor" value="<?php echo plugin_config_get( 'TAMHBGColor', '#663300' ); ?>" /></label>
    <?php
    echo '</td>';
-
    echo '</tr>';
 
 	for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 	{
-      $pluginManager->printConfigTableRow();
+      $upv_api->printConfigTableRow();
       echo '<td class="category" colspan="1" rowspan="1">';
-      echo '<span class="required">*</span>' . plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
+      echo plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
       echo '</td>';
       echo '<td valign="top" width="100px" colspan="1" rowspan="1">';
       echo '<select name="CStatSelect' . $columnIndex .'">';
@@ -258,16 +239,14 @@ else
 		echo '</tr>';
 	}
 
-	# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   $pluginManager->printConfigSpacer( 6 );
-
+   $upv_api->printConfigSpacer( 6 );
 	echo '<tr>';
 	echo '<td class="form-title" colspan="8">';
 	echo plugin_lang_get( 'config_URIFilter' );
 	echo '</td>';
 	echo '</tr>';
 
-   $pluginManager->printConfigTableRow();
+   $upv_api->printConfigTableRow();
 	echo '<td class="category" width="30%" colspan="1">';
 	echo plugin_lang_get( 'config_URIThreshold' );
 	echo '</td>';
@@ -278,8 +257,7 @@ else
 	echo '</td>';
 	echo '</tr>';
 
-   $pluginManager->printConfigSpacer( 6 );
-
+   $upv_api->printConfigSpacer( 6 );
    echo '<tr>';
       echo '<td class="center" colspan="6">';
       echo '<input type="submit" name="change" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';

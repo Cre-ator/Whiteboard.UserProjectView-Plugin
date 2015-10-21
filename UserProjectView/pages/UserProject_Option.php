@@ -1,6 +1,6 @@
 <?php
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
 auth_reauthenticate();
 
@@ -9,8 +9,8 @@ html_page_top2();
 
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 $selectedValues = $_POST['dataRow'];
 $recordCount = count( $selectedValues );
@@ -41,7 +41,7 @@ switch ( $select )
 			echo '<form action="'. plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
 			echo '<input type="hidden" name="records[]" value="' . $selectedValues[$recordIndex] . '"/>';
 			
-			if ( $pluginManager->getActMantisVersion() == '1.2.' )
+			if ( $upv_api->getActMantisVersion() == '1.2.' )
 			{
 				echo '<tr ' . helper_alternate_class() . '>';
 			}
@@ -112,7 +112,7 @@ switch ( $select )
 				echo '<input type="hidden" name="user[]" value="' . $userId . '"/>';
 				echo '<input type="hidden" name="project[]" value="' . $subProject . '"/>'; 
 				
-				if ( $pluginManager->getActMantisVersion() == '1.2.' )
+				if ( $upv_api->getActMantisVersion() == '1.2.' )
 				{
 					echo '<tr ' . helper_alternate_class() . '>';
 				}

@@ -1,9 +1,9 @@
 <?php
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
 
@@ -76,7 +76,7 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	$aBAUIActivFlag = true;
 
 	// filter config specific bug status
-	$irrelevantFlag = $pluginManager->setIrrelevantFlag( $amountStatColumns, $actBugStatus, $statCols );
+	$irrelevantFlag = $upv_api->setIrrelevantFlag( $amountStatColumns, $actBugStatus, $statCols );
 	if ( !in_array( false, $irrelevantFlag ) )
 	{
 		continue;
@@ -102,12 +102,12 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	if ( $actBugTargetVersion == '' )
 	{
 		// no target version available -> get main project by project hierarchy
-		$actBugMainProjectId = $pluginManager->getMainProjectByHierarchy( $actBugAssignedProjectId );
+		$actBugMainProjectId = $upv_api->getMainProjectByHierarchy( $actBugAssignedProjectId );
 	}
 	else
 	{
 		// identify main project by target version of selected issue
-		$actBugMainProjectId = $pluginManager->getMainProjectByVersion( $actBugTargetVersion );
+		$actBugMainProjectId = $upv_api->getMainProjectByVersion( $actBugTargetVersion );
 	}
 
 	$actBugMainProjectName = project_get_name( $actBugMainProjectId );
@@ -186,11 +186,11 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 		{
 			if ( $rowVals[5] == '' )
 			{
-				$tableRow[$rowIndex][$specColumnValue] = $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[$statColIndex] );
+				$tableRow[$rowIndex][$specColumnValue] = $upv_api->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[$statColIndex] );
 			}
 			else
 			{
-				$tableRow[$rowIndex][$specColumnValue] = $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[$statColIndex] );
+				$tableRow[$rowIndex][$specColumnValue] = $upv_api->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[$statColIndex] );
 			}
 		}
 	}
@@ -200,7 +200,7 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 
 if ( plugin_config_get( 'ShowZIU' ) )
 {
-	$allUsers = $pluginManager->getAllUsers();
+	$allUsers = $upv_api->getAllUsers();
 	
 	$userRows = array();
 	while ( $userRow = mysqli_fetch_row( $allUsers ) )
@@ -229,7 +229,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 		{
 			for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 			{
-				$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
+				$amountOfIssues .= $upv_api->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
 			}
 		}
 		else
@@ -246,7 +246,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 			
 			foreach ( $subProjects as $subProject )
 			{
-				$userIsAssignedToProject = mysqli_fetch_row( $pluginManager->checkUserIsAssignedToProject( $userId, $subProject ) );
+				$userIsAssignedToProject = mysqli_fetch_row( $upv_api->checkUserIsAssignedToProject( $userId, $subProject ) );
 				if ( $userIsAssignedToProject != null )
 				{
 					$userIsAssignedToProjectHierarchy = true;
@@ -263,7 +263,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
+					$amountOfIssues .= $upv_api->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
 				}
 			}
 		}
@@ -317,7 +317,7 @@ $sortOrder = 'ASC';
 
 echo '<div id="manage-user-div" class="form-container">';
 
-if ( $pluginManager->getActMantisVersion() == '1.2.' )
+if ( $upv_api->getActMantisVersion() == '1.2.' )
 {
 	echo '<table class="width100" cellspacing="1">';
 }
@@ -457,12 +457,12 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 		$issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
 	}
 
-	$bugAssignedProjectId = $pluginManager->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
-	$linkUserId           = $pluginManager->generateLinkUserId( $userId );
-	$isAssignedToProject  = $pluginManager->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
-	$unreachableIssueFlag = $pluginManager->setUnreachableIssueFlag( $isAssignedToProject );
-	$pProject             = $pluginManager->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
-	$noUserFlag           = $pluginManager->setUserflag( $amountStatColumns, $statCols, $userId );
+	$bugAssignedProjectId = $upv_api->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
+	$linkUserId           = $upv_api->generateLinkUserId( $userId );
+	$isAssignedToProject  = $upv_api->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
+	$unreachableIssueFlag = $upv_api->setUnreachableIssueFlag( $isAssignedToProject );
+	$pProject             = $upv_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
+	$noUserFlag           = $upv_api->setUserflag( $amountStatColumns, $statCols, $userId );
 
    $sortVal = $_GET['sortVal'];
    if ( $tableRowIndex > 0 )
@@ -472,28 +472,28 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
          case 'realName':
          case 'userName':
             $userNameOld = $tableRow[$tableRowIndex-1]['userName'];
-            $rowVal = $pluginManager->compareValues( $userName, $userNameOld, $rowVal );
+            $rowVal = $upv_api->compareValues( $userName, $userNameOld, $rowVal );
             break;
 
          case 'mainProject':
             $mainProjectNameOld = $tableRow[$tableRowIndex-1]['mainProjectName'];
-            $rowVal = $pluginManager->compareValues( $mainProjectName, $mainProjectNameOld, $rowVal );
+            $rowVal = $upv_api->compareValues( $mainProjectName, $mainProjectNameOld, $rowVal );
             break;
 
          case 'assignedProject':
             $bugAssignedProjectNameOld = $tableRow[$tableRowIndex-1]['bugAssignedProjectName'];
-            $rowVal = $pluginManager->compareValues( $bugAssignedProjectName, $bugAssignedProjectNameOld, $rowVal );
+            $rowVal = $upv_api->compareValues( $bugAssignedProjectName, $bugAssignedProjectNameOld, $rowVal );
             break;
 
          case 'targetVersion':
             $bugTargetVersionOld = $tableRow[$tableRowIndex-1]['bugTargetVersion'];
-            $rowVal = $pluginManager->compareValues( $bugTargetVersion, $bugTargetVersionOld, $rowVal );
+            $rowVal = $upv_api->compareValues( $bugTargetVersion, $bugTargetVersionOld, $rowVal );
             break;
       }
    }
 
    // build row
-   $pluginManager->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
+   $upv_api->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
 
    // column user
 	echo '<td>';
@@ -563,7 +563,7 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
          || $specStatus == 40 && $issueAgeThreshold > 0
          )
 		{
-         $specIssueResult = $pluginManager->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
+         $specIssueResult = $upv_api->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
          $assocArray = mysqli_fetch_row( $specIssueResult );
          $specIssues = array();
 
@@ -575,8 +575,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
          if ( $specIssues != null )
          {
-            $specTimeDifference = $pluginManager->calculateTimeDifference( $specIssues )[0];
-            $oldestSpecIssue    = $pluginManager->calculateTimeDifference( $specIssues )[1];
+            $specTimeDifference = $upv_api->calculateTimeDifference( $specIssues )[0];
+            $oldestSpecIssue    = $upv_api->calculateTimeDifference( $specIssues )[1];
 
             if ( $specTimeDifference > $issueAgeThreshold )
 				{

@@ -5,10 +5,10 @@ access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 $option_reset = gpc_get_bool( 'reset', false );
 $option_change = gpc_get_bool( 'change', false );
@@ -91,7 +91,7 @@ function deleteDynamicValues( $value )
 
 if ( $option_reset )
 {
-   $pluginManager->resetPluginConfig();
+   $upv_api->resetPluginConfig();
 }
 elseif ( $option_change )
 {
