@@ -326,59 +326,13 @@ else
    echo '<table>';
 }
 echo '<thead>';
-echo '<tr>';
-echo '<td class="form-title" colspan="' . $dynamicColspan . '">' . 
-   plugin_lang_get( 'thead_accounts_title' ) .
-   plugin_lang_get( 'thead_projects_title' ) .
-   project_get_name( helper_get_current_project() );
-echo '</td>';
-echo '</tr>';
+$upv_api->system_TableHeadRow( $dynamicColspan );
 echo '<tr class="spacer">';
-   echo '<td class="print">';
-   echo plugin_lang_get( 'thead_username' ) . ' ';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=userName&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-   echo '</a>';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=userName&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-   echo '</a>';
-   echo '</td>';
-   echo '<td class="print">';
-   echo plugin_lang_get( 'thead_realname' ) . ' ';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=realName&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-   echo '</a>';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=realName&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-   echo '</a>';
-   echo '</td>';
-   echo '<td class="print">';
-   echo plugin_lang_get( 'thead_project' ) . ' ';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=mainProject&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-   echo '</a>';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=mainProject&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-   echo '</a>';
-   echo '</td>';
-   echo '<td class="print">';
-   echo plugin_lang_get( 'thead_subproject' ) . ' ';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=assignedProject&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-   echo '</a>';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=assignedProject&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-   echo '</a>';
-   echo '</td>';
-   echo '<td class="print">';
-   echo plugin_lang_get( 'thead_targetversion' ) . ' ';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=targetVersion&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-   echo '</a>';
-   echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=targetVersion&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-   echo '</a>';
-   echo '</td>';
+$upv_api->system_printTableHead( 'thead_username', 'userName');
+$upv_api->system_printTableHead( 'thead_realname', 'realName');
+$upv_api->system_printTableHead( 'thead_project', 'mainProject');
+$upv_api->system_printTableHead( 'thead_subproject', 'assignedProject');
+$upv_api->system_printTableHead( 'thead_targetversion', 'targetVersion');
 
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
@@ -391,43 +345,44 @@ echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-
-
 $sortVal = $_GET['sortVal'];
 $sortOrder = $_GET['sort'];
+
+$sortCol = null;
+$sortOrd = null;
 
 switch ( $sortVal )
 {
    case 'userName':
-      $sortVal = $sortUserName;
+      $sortCol = $sortUserName;
       break;
    case 'realName':
-      $sortVal = $sortUserRealname;
+      $sortCol = $sortUserRealname;
       break;
    case 'mainProject':
-      $sortVal = $sortMainProject;
+      $sortCol = $sortMainProject;
       break;
    case 'assignedProject':
-      $sortVal = $sortAssignedProject;
+      $sortCol = $sortAssignedProject;
       break;
    case 'targetVersion':
-      $sortVal = $sortTargetVersion;
+      $sortCol = $sortTargetVersion;
       break;
 }
 
 switch ( $sortOrder )
 {
    case 'ASC':
-      $sortOrder = SORT_ASC;
+      $sortOrd = SORT_ASC;
       break;
    case 'DESC':
-      $sortOrder = SORT_DESC;
+      $sortOrd = SORT_DESC;
       break;
 }
 
 if ( $tableRow != null )
 {
-   array_multisort( $sortVal, $sortOrder, SORT_NATURAL|SORT_FLAG_CASE, $tableRow );
+   array_multisort( $sortCol, $sortOrd, SORT_NATURAL|SORT_FLAG_CASE, $tableRow );
 }
 $rowVal = false;
 $tableRowCount = count( $tableRow );
@@ -464,7 +419,6 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    $pProject             = $upv_api->system_prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
    $noUserFlag           = $upv_api->system_setUserflag( $amountStatColumns, $statCols, $userId );
 
-   $sortVal = $_GET['sortVal'];
    if ( $tableRowIndex > 0 )
    {
       switch ( $sortVal )

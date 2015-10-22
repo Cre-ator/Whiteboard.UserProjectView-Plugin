@@ -292,6 +292,59 @@ class UserProjectView_api
       return $result;
    }
 
+   public function system_printTableHead( $langString, $sortVal )
+   {
+      echo '<td class="print">';
+      echo plugin_lang_get( $langString ) . ' ';
+      echo '<a href="' . plugin_page( 'UserProject_Print' ) . '&sortVal=' . $sortVal . '&sort=ASC">';
+      echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+      echo '</a>';
+      echo '<a href="' . plugin_page( 'UserProject_Print' ) . '&sortVal=' . $sortVal . '&sort=DESC">';
+      echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+      echo '</a>';
+      echo '</td>';
+   }
+
+   public function system_TableHead( $langString, $sortVal, $colspan )
+   {
+      if ( $colspan != null )
+      {
+         echo '<th />';
+         echo '<th colspan="' . $colspan . '">';
+         echo plugin_lang_get( $langString ) . ' ';
+         echo '<a href="' . plugin_page('UserProject') . '&sortVal=' . $sortVal . '&sort=ASC">';
+         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+         echo '</a>';
+         echo '<a href="' . plugin_page('UserProject') . '&sortVal=' . $sortVal . '&sort=DESC">';
+         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+         echo '</a>';
+         echo '</th>';
+      }
+      else
+      {
+         echo '<th>';
+         echo plugin_lang_get( $langString ) . ' ';
+         echo '<a href="' . plugin_page('UserProject') . '&sortVal=' . $sortVal . '&sort=ASC">';
+         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+         echo '</a>';
+         echo '<a href="' . plugin_page('UserProject') . '&sortVal=' . $sortVal . '&sort=DESC">';
+         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+         echo '</a>';
+         echo '</th>';
+      }
+   }
+
+   public function system_TableHeadRow( $colspan )
+   {
+      echo '<tr>';
+      echo '<td class="form-title" colspan="' . $colspan . '">' .
+         plugin_lang_get( 'thead_accounts_title' ) .
+         plugin_lang_get( 'thead_projects_title' ) .
+         project_get_name( helper_get_current_project() );
+      echo '</td>';
+      echo '</tr>';
+   }
+
    /* ------------------------------------------------------------------------------------------------- */
    /* Database functions */
    public function database_getAllUsers()
