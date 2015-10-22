@@ -27,189 +27,90 @@ else
    echo '<div class="form-container">';
    echo '<table>';
 }
-	echo '<tr>';
-		echo '<td class="form-title" colspan="6">';
-		echo plugin_lang_get( 'config_caption' );
-		echo '</td>';
-	echo '</tr>';
-
-	$upv_api->printConfigTableRow();
-	echo '<td class="category" colspan="1">';
-	echo '<span class="required">*</span>' . plugin_lang_get( 'config_accesslevel' );
-	echo '</td>';
-	echo '<td width="100px" colspan="5">';
-	echo '<select name="UserProjectAccessLevel">';
-	print_enum_string_option_list( 'access_levels', plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT ) );
-	echo '</select>';
-	echo '</td>';
-	echo '</tr>';
-
-   $upv_api->printConfigTableRow();
+   $upv_api->config_printFormTitle( 6, 'config_caption' );
+   $upv_api->config_printTableRow();
    echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_showMenu' );
+   echo '<span class="required">*</span>' . plugin_lang_get( 'config_accesslevel' );
    echo '</td>';
    echo '<td width="100px" colspan="5">';
-   ?>
-   <label><input type="radio" name="ShowMenu" value="1" <?php echo ( ON == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="ShowMenu" value="0" <?php echo ( OFF == plugin_config_get( 'ShowMenu' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
+   echo '<select name="UserProjectAccessLevel">';
+   print_enum_string_option_list( 'access_levels', plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT ) );
+   echo '</select>';
    echo '</td>';
    echo '</tr>';
 
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-      echo plugin_lang_get( 'config_showFooter' );
-   echo '</td>';
-   echo '<td width="100px" colspan="5">';
-   ?>
-   <label><input type="radio" name="ShowInFooter" value="1" <?php echo ( ON == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="ShowInFooter" value="0" <?php echo ( OFF == plugin_config_get( 'ShowInFooter' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
-
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_showAvatar' );
-   echo '</td>';
-   echo '<td width="100px" colspan="5">';
-   ?>
-   <label><input type="radio" name="ShowAvatar" value="1" <?php echo ( ON == plugin_config_get( 'ShowAvatar' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="ShowAvatar" value="0" <?php echo ( OFF == plugin_config_get( 'ShowAvatar' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_showMenu' );
+   $upv_api->config_printRadioButton( 5, 'ShowMenu' );
    echo '</tr>';
 
-	$upv_api->printConfigSpacer( 6 );
-	echo '<tr>';
-	echo '<td class="form-title" colspan="6">';
-	echo plugin_lang_get( 'config_highlighting' );
-	echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_showFooter' );
+   $upv_api->config_printRadioButton( 5, 'ShowInFooter' );
+   echo '</tr>';
 
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_IAUHighlighting' );
-   echo '</td>';
-   echo '<td width="100px" colspan="1">';
-   ?>
-   <label><input type="radio" name="IAUHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'IAUHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="IAUHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'IAUHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_BGColor' );
-   echo '</td>';
-   echo '<td width="100px" colspan="3">';
-   ?>
-   <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="IAUHBGColor" value="<?php echo plugin_config_get( 'IAUHBGColor', '#663300' ); ?>" /></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_showAvatar' );
+   $upv_api->config_printRadioButton( 5, 'ShowAvatar' );
+   echo '</tr>';
 
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_URIUHighlighting' );
-   echo '</td>';
-   echo '<td width="100px" colspan="1">';
-   ?>
-   <label><input type="radio" name="URIUHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'URIUHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="URIUHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'URIUHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_BGColor' );
-   echo '</td>';
-   echo '<td width="100px" colspan="3">';
-   ?>
-   <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="URIUHBGColor" value="<?php echo plugin_config_get( 'URIUHBGColor', '#663300' ); ?>" /></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printSpacer( 6 );
+   $upv_api->config_printFormTitle( 6, 'config_highlighting' );
 
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_NUIHighlighting' );
-   echo '</td>';
-   echo '<td width="100px" colspan="1">';
-   ?>
-   <label><input type="radio" name="NUIHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'NUIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="NUIHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'NUIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_BGColor' );
-   echo '</td>';
-   echo '<td width="100px" colspan="3">';
-   ?>
-   <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="NUIHBGColor" value="<?php echo plugin_config_get( 'NUIHBGColor', '#663300' ); ?>" /></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_IAUHighlighting' );
+   $upv_api->config_printRadioButton( 1, 'IAUHighlighting' );
+   $upv_api->config_printCategoryField( 1, 1, 'config_BGColor' );
+   $upv_api->config_printColorPicker( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+   echo '</tr>';
 
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_showZIU' );
-   echo '</td>';
-   echo '<td width="100px" colspan="5">';
-   ?>
-   <label><input type="radio" name="ShowZIU" value="1" <?php echo ( ON == plugin_config_get( 'ShowZIU' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="ShowZIU" value="0" <?php echo ( OFF == plugin_config_get( 'ShowZIU' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_URIUHighlighting' );
+   $upv_api->config_printRadioButton( 1, 'URIUHighlighting' );
+   $upv_api->config_printCategoryField( 1, 1, 'config_BGColor' );
+   $upv_api->config_printColorPicker( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+   echo '</tr>';
 
-   $upv_api->printConfigTableRow();
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_NUIHighlighting' );
+   $upv_api->config_printRadioButton( 1, 'NUIHighlighting' );
+   $upv_api->config_printCategoryField( 1, 1, 'config_BGColor' );
+   $upv_api->config_printColorPicker( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+   echo '</tr>';
+
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_showZIU' );
+   $upv_api->config_printRadioButton( 5, 'ShowZIU' );
+   echo '</tr>';
+
+   $upv_api->config_printTableRow();
    echo '<td class="category" colspan="1">';
    echo plugin_lang_get( 'config_ZIHighlighting' ) . '<br/>';
    echo '<span class="small">' . plugin_lang_get( 'config_ZIUExpl' ) . '</span>';
    echo '</td>';
-   echo '<td width="100px" colspan="1">';
-   ?>
-   <label><input type="radio" name="ZIHighlighting" value="1" <?php echo ( ON == plugin_config_get( 'ZIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_y' ) ?></label>
-   <label><input type="radio" name="ZIHighlighting" value="0" <?php echo ( OFF == plugin_config_get( 'ZIHighlighting' ) ) ? 'checked="checked" ' : ''?>/><?php echo plugin_lang_get( 'config_n' ) ?></label>
-   <?php
-   echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_BGColor' );
-   echo '</td>';
-   echo '<td width="100px" colspan="3">';
-   ?>
-   <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="ZIHBGColor" value="<?php echo plugin_config_get( 'ZIHBGColor', '#663300' ); ?>" /></label>
-   <?php
-   echo '</td>';
-	echo '</tr>';
-
-   $upv_api->printConfigSpacer( 6 );
-	echo '<tr>';
-	echo '<td class="form-title" colspan="8">';
-	echo plugin_lang_get( 'config_specColumns' );
-	echo '</td>';
-	echo '</tr>';
-
-   $upv_api->printConfigTableRow();
-   echo '<td class="category" colspan="1" rowspan="1">';
-   echo plugin_lang_get( 'config_CAmount' );
-   echo '</td>';
-   echo '<td width="100px" colspan="1" rowspan="1">';
-   ?>
-   <label><input type="number" name="CAmount" value="<?php echo plugin_config_get( 'CAmount', 1 ); ?>" min="1" max="20"/></label>
-   <?php
-   echo '</td>';
-
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_BGColor' );
-   echo '</td>';
-   echo '<td width="100px" colspan="1">';
-   ?>
-      <label><input class="color {pickerFace:4,pickerClosable:true}" type="text" name="TAMHBGColor" value="<?php echo plugin_config_get( 'TAMHBGColor', '#663300' ); ?>" /></label>
-   <?php
-   echo '</td>';
+   $upv_api->config_printRadioButton( 1, 'ZIHighlighting' );
+   $upv_api->config_printCategoryField( 1, 1, 'config_BGColor' );
+   $upv_api->config_printColorPicker( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
    echo '</tr>';
 
-	for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
-	{
-      $upv_api->printConfigTableRow();
+   $upv_api->config_printSpacer( 6 );
+   $upv_api->config_printFormTitle( 6, 'config_specColumns' );
+
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_CAmount' );
+   echo '<td width="100px" colspan="1" rowspan="1">';
+   ?>
+   <label><input type="number" name="CAmount" value="<?php echo plugin_config_get( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT ); ?>" min="1" max="20"/></label>
+   <?php
+   echo '</td>';
+
+   $upv_api->config_printCategoryField( 1, 1, 'config_BGColor' );
+   $upv_api->config_printColorPicker( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+   echo '</tr>';
+
+   for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
+   {
+      $upv_api->config_printTableRow();
       echo '<td class="category" colspan="1" rowspan="1">';
       echo plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
       echo '</td>';
@@ -236,31 +137,25 @@ else
       <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>" value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex , 30 ); ?>" min="0"/></label>
       <?php
       echo '</td>';
-		echo '</tr>';
-	}
+      echo '</tr>';
+   }
 
-   $upv_api->printConfigSpacer( 6 );
-	echo '<tr>';
-	echo '<td class="form-title" colspan="8">';
-	echo plugin_lang_get( 'config_URIFilter' );
-	echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printSpacer( 6 );
+   $upv_api->config_printFormTitle( 6, 'config_URIFilter' );
 
-   $upv_api->printConfigTableRow();
-	echo '<td class="category" width="30%" colspan="1">';
-	echo plugin_lang_get( 'config_URIThreshold' );
-	echo '</td>';
-	echo '<td valign="top" width="100px" colspan="7">';
-	echo '<select name="URIThreshold[]" multiple="multiple">';
-	print_enum_string_option_list( 'status', plugin_config_get( 'URIThreshold', 50 ) );
-	echo '</select>';
-	echo '</td>';
-	echo '</tr>';
+   $upv_api->config_printTableRow();
+   $upv_api->config_printCategoryField( 1, 1, 'config_URIThreshold' );
+   echo '<td valign="top" width="100px" colspan="7">';
+   echo '<select name="URIThreshold[]" multiple="multiple">';
+   print_enum_string_option_list( 'status', plugin_config_get( 'URIThreshold', 50 ) );
+   echo '</select>';
+   echo '</td>';
+   echo '</tr>';
 
-   $upv_api->printConfigSpacer( 6 );
+   $upv_api->config_printSpacer( 6 );
    echo '<tr>';
       echo '<td class="center" colspan="6">';
-      echo '<input type="submit" name="change" class="button" value="' . lang_get( 'change_configuration' ) . '"/>';
+      echo '<input type="submit" name="change" class="button" value="' . lang_get( 'change_configuration' ) . '"/>' . ' ';
       echo '<input type="submit" name="reset" class="button" value="' . plugin_lang_get( 'config_reset' ) . '"/>';
       echo '</td>';
    echo '</tr>';

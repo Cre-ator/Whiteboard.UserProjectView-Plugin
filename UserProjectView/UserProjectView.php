@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.2.5';
+      $this->version     = '1.2.6';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -44,51 +44,61 @@ class UserProjectViewPlugin extends MantisPlugin
       include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR. 'UserProjectView_api.php';
 
       $upv_api = new UserProjectView_api();
-      $upv_api->resetPluginConfig();
+      $upv_api->config_resetPlugin();
    }
 
    function config()
    {
+      require_once( config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constant_api.php' );
+
       return array
-   	(
+      (
          'ShowMenu' => ON,
          'ShowInFooter' => ON,
          'ShowAvatar' => ON,
 
          // IAU -> inactive user
-         'IAUHighlighting' => OFF,
-         'IAUHBGColor' => '#663300',
+         'IAUHighlighting' => ON,
+         'IAUHBGColor' => PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR,
 
          // URIU -> unreachable issue user (issue isnt reachable by user)
-         'URIUHighlighting' => OFF,
-         'URIUHBGColor' => '#663300',
+         'URIUHighlighting' => ON,
+         'URIUHBGColor' => PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR,
 
          // NUI -> no user issue (issues without user)
-         'NUIHighlighting' => OFF,
-         'NUIHBGColor' => '#663300',
+         'NUIHighlighting' => ON,
+         'NUIHBGColor' => PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR,
 
          // ZIU -> zero issue user | ZI -> zero issue
-         'ShowZIU' => OFF,
-         'ZIHighlighting' => OFF,
-         'ZIHBGColor' => '#663300',
+         'ShowZIU' => ON,
+         'ZIHighlighting' => ON,
+         'ZIHBGColor' => PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR,
 
-         // C -> column
-         'CAmount' => 1,
+         // C -> column | TAMH -> threshold amount highlighting
+         'CAmount' => PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT,
+         'TAMHBGColor' => PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR,
 
-         // C -> Column | IAM -> issue amount | IAG -> issue age | TAMH -> threshold amount highlighting
-         'CStatSelect1' => 50,
-         'IAMThreshold1' => 5,
-         'IAGThreshold1' => 30,
-
-         'TAMHBGColor' => '#663300',
+         // C -> Column | IAM -> issue amount | IAG -> issue age
+         'CStatSelect1' => 10,
+         'IAMThreshold1' => 0,
+         'IAGThreshold1' => 60,
+         'CStatSelect2' => PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT,
+         'IAMThreshold2' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
+         'IAGThreshold2' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
+         'CStatSelect3' => 20,
+         'IAMThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
+         'IAGThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
 
          // URI -> unreachable issue
-         'URIThreshold' => 50,
+         'URIThreshold' => array(
+            '0' => 20,
+            '1' => 30,
+            '2' => 40,
+            '3' => 50
+            ),
 
          'UserProjectAccessLevel' => ADMINISTRATOR
-   	);
-
-
+      );
    }
    
    function getUserHasLevel()
@@ -103,7 +113,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
    	if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
    	{
-   		return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
+         return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
    	}
    	return null;
    }
@@ -112,7 +122,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
       {
-      	return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_title' ) . '</a>';
+         return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_title' ) . '</a>';
       }
       return null;
    }

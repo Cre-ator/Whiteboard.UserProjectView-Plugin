@@ -10,9 +10,9 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 
 html_page_top2();
 
-if ( $upv_api->getUserHasLevel() )
+if ( $upv_api->system_getUserHasLevel() )
 {
-	$upv_api->printPluginMenu();
+	$upv_api->menu_printPlugin();
 }
 
 html_page_bottom();
