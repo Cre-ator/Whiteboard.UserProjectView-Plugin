@@ -20,3 +20,8 @@ Libraries
 Installation
 
   Copy the 'UserProjectView' plugin just in the plugins directory of Mantis. After installing a new menu entry "whiteboard" is added.
+
+Available Translations
+  - english, french, german, chinese simplified
+  - You are welcome to translate this plugin, in a different language:
+    https://crowdin.com/project/UserProjectView
