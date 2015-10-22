@@ -1,8 +1,8 @@
 <?php
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 html_page_top1( plugin_lang_get( 'title' ) );
 
@@ -10,13 +10,9 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 
 html_page_top2();
 
-
-// user configuration area ++++++++++++++++++++++++++++++++++++++++++++++++++++
-if ( $pluginManager->getUserHasLevel() )
+if ( $upv_api->getUserHasLevel() )
 {
-	$pluginManager->printPluginMenu();
+	$upv_api->printPluginMenu();
 }
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 html_page_bottom();

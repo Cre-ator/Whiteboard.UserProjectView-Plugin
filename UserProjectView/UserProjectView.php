@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page        = 'config_page';
 
-      $this->version     = '1.1.10';
+      $this->version     = '1.2.5';
       $this->requires    = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -39,6 +39,14 @@ class UserProjectViewPlugin extends MantisPlugin
       require_once( $t_core_path . 'constant_api.php' );
    }
 
+   function uninstall()
+   {
+      include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR. 'UserProjectView_api.php';
+
+      $upv_api = new UserProjectView_api();
+      $upv_api->resetPluginConfig();
+   }
+
    function config()
    {
       return array
@@ -67,23 +75,20 @@ class UserProjectViewPlugin extends MantisPlugin
          // C -> column
          'CAmount' => 1,
 
-         // TAM -> threshold amount
-         'TAMHighlighting' => OFF,
-         'TAMHBGColor' => '#663300',
-
-         // TAG -> threshold age
-         'TAGHighlighting' => OFF,
-
-         // C -> Column | IAM -> issue amount | IAG -> issue age
+         // C -> Column | IAM -> issue amount | IAG -> issue age | TAMH -> threshold amount highlighting
          'CStatSelect1' => 50,
          'IAMThreshold1' => 5,
          'IAGThreshold1' => 30,
+
+         'TAMHBGColor' => '#663300',
 
          // URI -> unreachable issue
          'URIThreshold' => 50,
 
          'UserProjectAccessLevel' => ADMINISTRATOR
    	);
+
+
    }
    
    function getUserHasLevel()

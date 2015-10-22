@@ -1,9 +1,9 @@
 <?php
 require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'PluginManager.php';
+include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
 
-// PluginManager object
-$pluginManager = new PluginManager();
+// UserProjectView_api object
+$upv_api = new UserProjectView_api();
 
 $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
 
@@ -19,11 +19,13 @@ for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 }
 
 $issueThresholds = array();
+$issueAgeThresholds = array();
 
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
-	$statCols[$statColIndex] = plugin_config_get( 'CStatSelect' . $statColIndex );
-	$issueThresholds[$statColIndex] = plugin_config_get( 'IAMThreshold' . $statColIndex );
+	$statCols[$statColIndex]                = plugin_config_get( 'CStatSelect' . $statColIndex );
+	$issueThresholds[$statColIndex]         = plugin_config_get( 'IAMThreshold' . $statColIndex );
+	$issueAgeThresholds[$statColIndex]      = plugin_config_get( 'IAGThreshold' . $statColIndex );
 }
 
 # Get Project Id and set it as current
@@ -45,7 +47,7 @@ $t_page_count = null;
 
 $rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, unserialize( '' ), null, null, true );
 
-$t_bugslist = Array();
+$t_bugslist = array();
 
 $t_row_count = count( $rows );
 
@@ -60,33 +62,21 @@ $checkEquivalentBugs = false;
    
 // calculate page content
 for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
-{	
+{
 	// bug information
-	$actBugId = $t_bugslist[$bugIndex];
-	$actBugTargetVersion = bug_get_field( $actBugId, 'target_version' );
-	$actBugStatus = bug_get_field( $actBugId, 'status' );
+	$actBugId                = $t_bugslist[$bugIndex];
+	$actBugTargetVersion     = bug_get_field( $actBugId, 'target_version' );
+	$actBugStatus            = bug_get_field( $actBugId, 'status' );
 	$actBugAssignedProjectId = bug_get_field( $actBugId, 'project_id' );
-	$actBugAssignedUserId = bug_get_field( $actBugId, 'handler_id' );
-	
+	$actBugAssignedUserId    = bug_get_field( $actBugId, 'handler_id' );
+
 	// user information
 	$aBAUIUsername  = '';
 	$aBAUIRealname  = '';
 	$aBAUIActivFlag = true;
-	
-	// filter config specific bug status
-	$irrelevantFlag = array();
-	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-	{
-		if ( $actBugStatus != $statCols[$statColIndex] )
-		{
-			$irrelevantFlag[$statColIndex] = true;
-		}
-		else
-		{
-			$irrelevantFlag[$statColIndex] = false;
-		}
-	}
 
+	// filter config specific bug status
+	$irrelevantFlag = $upv_api->setIrrelevantFlag( $amountStatColumns, $actBugStatus, $statCols );
 	if ( !in_array( false, $irrelevantFlag ) )
 	{
 		continue;
@@ -108,47 +98,25 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	
 	// prepare main project
 	$actBugMainProjectId = '';
-	
+
 	if ( $actBugTargetVersion == '' )
 	{
 		// no target version available -> get main project by project hierarchy
-		$parentProject = project_hierarchy_get_parent( $actBugAssignedProjectId, false );
-		if ( project_hierarchy_is_toplevel( $actBugAssignedProjectId ) )
-		{
-			$actBugMainProjectId = $actBugAssignedProjectId;
-		}
-		else
-		{
-			// selected project is subproject
-			while ( project_hierarchy_is_toplevel( $parentProject, false ) == false )
-			{
-				$parentProject = project_hierarchy_get_parent( $parentProject, false );
-	
-				if ( project_hierarchy_is_toplevel( $parentProject ) )
-				{
-					break;
-				}
-			}
-			$actBugMainProjectId = $parentProject;
-		}
+		$actBugMainProjectId = $upv_api->getMainProjectByHierarchy( $actBugAssignedProjectId );
 	}
 	else
 	{
 		// identify main project by target version of selected issue
-		$actBugMainProjectId = $pluginManager->getMainProjectByVersion( $actBugTargetVersion );
+		$actBugMainProjectId = $upv_api->getMainProjectByVersion( $actBugTargetVersion );
 	}
-	
+
 	$actBugMainProjectName = project_get_name( $actBugMainProjectId );
-	
+
 	// prepare target version string
 	if ( $actBugTargetVersion != '' )
 	{
-		$t_version_rows = version_get_all_rows( $actBugAssignedProjectId );
-		$tpl_target_version_string = '';
-		$tpl_target_version_string = prepare_version_string( $actBugAssignedProjectId, version_get_id( $actBugTargetVersion, $actBugAssignedProjectId ) , $t_version_rows );
-		
 		$versionId = version_get_id( $actBugTargetVersion, $actBugAssignedProjectId );
-		
+		$targetVersionString = prepare_version_string( $actBugAssignedProjectId, $versionId );
 		if ( $versionId != null )
 		{
 			$versionDate = date( 'Y-m-d', version_get_field( $versionId, 'date_order' ) );
@@ -156,10 +124,10 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
 	}
 	else
 	{
-		$tpl_target_version_string = '';
+		$targetVersionString = '';
 		$versionDate = '';
 	}
-	
+
 	if ( $actBugAssignedProjectId == $actBugMainProjectId )
 	{
 		$actBugAssignedProjectId = '';
@@ -218,11 +186,11 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 		{
 			if ( $rowVals[5] == '' )
 			{
-				$tableRow[$rowIndex][$specColumnValue] = $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[$statColIndex] );
+				$tableRow[$rowIndex][$specColumnValue] = $upv_api->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[3], $rowVals[7], $statCols[$statColIndex] );
 			}
 			else
 			{
-				$tableRow[$rowIndex][$specColumnValue] = $pluginManager->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[$statColIndex] );
+				$tableRow[$rowIndex][$specColumnValue] = $upv_api->getAmountOfIssuesByIndividual( $rowVals[0], $rowVals[5], $rowVals[7], $statCols[$statColIndex] );
 			}
 		}
 	}
@@ -232,38 +200,36 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 
 if ( plugin_config_get( 'ShowZIU' ) )
 {
-	$allUsers = $pluginManager->getAllUsers();
+	$allUsers = $upv_api->getAllUsers();
 	
 	$userRows = array();
-	
 	while ( $userRow = mysqli_fetch_row( $allUsers ) )
 	{
 		$userRows[] = $userRow;
 	}
 	
 	$rowCount = count( $userRows );
-	
 	for ( $userRowIndex = 0; $userRowIndex < $rowCount; $userRowIndex++ )
 	{
-		$userId = $userRows[$userRowIndex][0];
-		$userName = user_get_name( $userId );
+		$userId       = $userRows[$userRowIndex][0];
+		$userName     = user_get_name( $userId );
 		$userRealname = user_get_realname( $userId );
 		$userIsActive = user_is_enabled( $userId );
 		$userIsAssignedToProjectHierarchy = false;
-		
+
 		if ( $userIsActive == false )
 		{
 			continue;
 		}
-		
+
 		$addRow = $rowIndex + 1 + $userRowIndex;
-			
+
 		$amountOfIssues = '';
 		if ( $t_project_id == 0 )
 		{
 			for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 			{
-				$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
+				$amountOfIssues .= $upv_api->getAmountOfIssuesByIndividualWOTV( $userId, $t_project_id, $statCols[$statColIndex] );
 			}
 		}
 		else
@@ -280,7 +246,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 			
 			foreach ( $subProjects as $subProject )
 			{
-				$userIsAssignedToProject = mysqli_fetch_row( $pluginManager->checkUserIsAssignedToProject( $userId, $subProject ) );
+				$userIsAssignedToProject = mysqli_fetch_row( $upv_api->checkUserIsAssignedToProject( $userId, $subProject ) );
 				if ( $userIsAssignedToProject != null )
 				{
 					$userIsAssignedToProjectHierarchy = true;
@@ -297,7 +263,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 			{
 				foreach ( $subProjects as $subProject )
 				{
-					$amountOfIssues .= $pluginManager->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
+					$amountOfIssues .= $upv_api->getAmountOfIssuesByIndividualWOTV( $userId, $subProject, $statCols[$statColIndex] );
 				}
 			}
 		}
@@ -329,11 +295,11 @@ if ( plugin_config_get( 'ShowZIU' ) )
 
 foreach ( $tableRow as $key => $row )
 {
-	$sortUserName[$key] = $row['userName'];
-	$sortUserRealname[$key] = $row['userRealname'];
-	$sortMainProject[$key] = $row['mainProjectName'];
+	$sortUserName[$key]        = $row['userName'];
+	$sortUserRealname[$key]    = $row['userRealname'];
+	$sortMainProject[$key]     = $row['mainProjectName'];
 	$sortAssignedProject[$key] = $row['bugAssignedProjectName'];
-	$sortTargetVersion[$key] = $row['bugTargetVersion'];
+	$sortTargetVersion[$key]   = $row['bugTargetVersion'];
 }
 
 html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
@@ -351,7 +317,7 @@ $sortOrder = 'ASC';
 
 echo '<div id="manage-user-div" class="form-container">';
 
-if ( $pluginManager->getActMantisVersion() == '1.2.' )
+if ( $upv_api->getActMantisVersion() == '1.2.' )
 {
 	echo '<table class="width100" cellspacing="1">';
 }
@@ -370,46 +336,46 @@ echo '</tr>';
 echo '<tr class="spacer">';
 	echo '<td class="print">';
 	echo plugin_lang_get( 'thead_username' ) . ' ';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=userName&sort=ASC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=userName&sort=ASC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
 	echo '</a>';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=userName&sort=DESC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=userName&sort=DESC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
 	echo '</a>';		
 	echo '</td>';
 	echo '<td class="print">';
 	echo plugin_lang_get( 'thead_realname' ) . ' ';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=realName&sort=ASC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=realName&sort=ASC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
 	echo '</a>';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=realName&sort=DESC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=realName&sort=DESC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
 	echo '</a>';
 	echo '</td>';
 	echo '<td class="print">';
 	echo plugin_lang_get( 'thead_project' ) . ' ';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=mainProject&sort=ASC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=mainProject&sort=ASC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
 	echo '</a>';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=mainProject&sort=DESC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=mainProject&sort=DESC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
 	echo '</a>';
 	echo '</td>';
 	echo '<td class="print">';
 	echo plugin_lang_get( 'thead_subproject' ) . ' ';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=assignedProject&sort=ASC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=assignedProject&sort=ASC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
 	echo '</a>';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=assignedProject&sort=DESC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=assignedProject&sort=DESC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
 	echo '</a>';
 	echo '</td>';
 	echo '<td class="print">';
 	echo plugin_lang_get( 'thead_targetversion' ) . ' ';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=targetVersion&sort=ASC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=targetVersion&sort=ASC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
 	echo '</a>';
-	echo '<a href="' . plugin_page('PrintUserProject') . '&sortVal=targetVersion&sort=DESC">';
+	echo '<a href="' . plugin_page( 'PrintUserProject' ) . '&sortVal=targetVersion&sort=DESC">';
 	echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
 	echo '</a>';
 	echo '</td>';
@@ -417,7 +383,7 @@ echo '<tr class="spacer">';
 for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
 {
 	echo '<td class="print">';
-	echo MantisEnum::getAssocArrayIndexedByValues( lang_get('status_enum_string' ) )[$statCols[$headIndex]];
+	echo MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) )[$statCols[$headIndex]];
 	echo '</td>';
 }
 echo '<td class="print">' . plugin_lang_get( 'thead_remark' ) . '</td>';
@@ -490,97 +456,46 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	{
 		$issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
 	}
-	$noUserFlag = false;
-	
-	if ( $bugAssignedProjectId == '' )
-	{
-		$bugAssignedProjectId = $mainProjectId;
-	}
-	$linkUserId = $userId;
-	if ( $userId == '0' )
-	{
-		$linkUserId = '-2';
-	}
-	
-	$isAssignedToProject = '0';
-	if ( $userId != '0' && $bugAssignedProjectId != '' )
-	{
-		if ( !user_is_administrator( $userId ) )
-		{
-			$isAssignedToProject = mysqli_fetch_row( $pluginManager->checkUserIsAssignedToProject( $userId, $bugAssignedProjectId ) );
-		}
-	}
-	$unreachableIssueFlag = false;
-	if ( $isAssignedToProject == null || $isAssignedToProject == '' )
-	{
-		$unreachableIssueFlag = true;
-	}
-	
-	
-	
-	$sortVal = $_GET['sortVal'];
-	if ( $tableRowIndex > 0 )
-	{
-		if ( $sortVal == 'userName' || $sortVal == 'realName' )
-		{
-			$userNameOld = $tableRow[$tableRowIndex-1]['userName'];
-			if ( $userName != $userNameOld )
-			{
-				$rowVal = !$rowVal;
-			}
-		}
-		elseif ( $sortVal == 'mainProject' )
-		{
-			$mainProjectNameOld = $tableRow[$tableRowIndex-1]['mainProjectName'];
-			if ( $mainProjectName != $mainProjectNameOld )
-			{
-				$rowVal = !$rowVal;
-			}
-		}
-		elseif ( $sortVal == 'assignedProject')
-		{
-			$bugAssignedProjectNameOld = $tableRow[$tableRowIndex-1]['bugAssignedProjectName'];
-			if ( $bugAssignedProjectName != $bugAssignedProjectNameOld )
-			{
-				$rowVal = !$rowVal;
-			}
-		}
-		elseif ( $sortVal == 'targetVersion')
-		{
-			$bugTargetVersionOld = $tableRow[$tableRowIndex-1]['bugTargetVersion'];
-			if ( $bugTargetVersion != $bugTargetVersionOld )
-			{
-				$rowVal = !$rowVal;
-			}
-		}
-	}
-	
-	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-	{
-		$specStatus = $statCols[$statColIndex];
-		if ( $userId == '0' && $specStatus == config_get( 'bug_assigned_status' )
-			|| $userId == '0' && $specStatus == config_get( 'bug_feedback_status' )
- 			|| $userId == '0' && $specStatus == 80
- 			|| $userId == '0' && $specStatus == 90
-			)
-		{
-			$noUserFlag = true;
-		}
-	}
-	
-	// build row
-	if ( $rowVal == true )
-	{
-		$rowIndex = 1;
-	}
-	else
-	{
-		$rowIndex = 2;
-	}
-	echo '<tr ' . helper_alternate_class( $rowIndex ) . '">';
-	
 
-	// column user
+	$bugAssignedProjectId = $upv_api->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
+	$linkUserId           = $upv_api->generateLinkUserId( $userId );
+	$isAssignedToProject  = $upv_api->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
+	$unreachableIssueFlag = $upv_api->setUnreachableIssueFlag( $isAssignedToProject );
+	$pProject             = $upv_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
+	$noUserFlag           = $upv_api->setUserflag( $amountStatColumns, $statCols, $userId );
+
+   $sortVal = $_GET['sortVal'];
+   if ( $tableRowIndex > 0 )
+   {
+      switch ( $sortVal )
+      {
+         case 'realName':
+         case 'userName':
+            $userNameOld = $tableRow[$tableRowIndex-1]['userName'];
+            $rowVal = $upv_api->compareValues( $userName, $userNameOld, $rowVal );
+            break;
+
+         case 'mainProject':
+            $mainProjectNameOld = $tableRow[$tableRowIndex-1]['mainProjectName'];
+            $rowVal = $upv_api->compareValues( $mainProjectName, $mainProjectNameOld, $rowVal );
+            break;
+
+         case 'assignedProject':
+            $bugAssignedProjectNameOld = $tableRow[$tableRowIndex-1]['bugAssignedProjectName'];
+            $rowVal = $upv_api->compareValues( $bugAssignedProjectName, $bugAssignedProjectNameOld, $rowVal );
+            break;
+
+         case 'targetVersion':
+            $bugTargetVersionOld = $tableRow[$tableRowIndex-1]['bugTargetVersion'];
+            $rowVal = $upv_api->compareValues( $bugTargetVersion, $bugTargetVersionOld, $rowVal );
+            break;
+      }
+   }
+
+   // build row
+   $upv_api->buildSpecificRow( $userId, $rowVal, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
+
+   // column user
 	echo '<td>';
 	echo $userName;
 	echo '</td>';
@@ -613,12 +528,12 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	// Column(s) amount of issues
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 	{
-		$issueThreshold = $issueThresholds[$statColIndex];
-		$specStatus = $statCols[$statColIndex];
-		$issueAmount = $issueCounter[$statColIndex];
-		
-		if ( $issueThreshold < $issueAmount && plugin_config_get( 'TAMHighlighting' ) )
-		{
+      $issueThreshold = $issueThresholds[$statColIndex];
+      $specStatus     = $statCols[$statColIndex];
+      $issueAmount    = $issueCounter[$statColIndex];
+
+      if ( $issueThreshold < $issueAmount && $issueThreshold > 0 )
+      {
 			echo '<td style="background-color:#555555">';
 		}
 		else
@@ -634,43 +549,36 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 	// column remark
 	echo '<td>';
 	for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-	{ 
+	{
+      $issueAgeThreshold = $issueAgeThresholds[$statColIndex];
+
 		if ( $bugAssignedProjectId == null && $mainProjectId == null )
 		{
 			continue;
 		}
 		
 		$specStatus = $statCols[$statColIndex];
-		if ( $specStatus == config_get( 'bug_assigned_status') && plugin_config_get( 'TAGHighlighting' )
-			|| $specStatus == config_get( 'bug_feedback_status' ) && plugin_config_get( 'TAGHighlighting' )
-			|| $specStatus == 40 && plugin_config_get( 'TAGHighlighting' )
-			)
+      if ( $specStatus == config_get( 'bug_assigned_status') && $issueAgeThreshold > 0
+         || $specStatus == config_get( 'bug_feedback_status' ) && $issueAgeThreshold > 0
+         || $specStatus == 40 && $issueAgeThreshold > 0
+         )
 		{
-			$specIssueResult = $pluginManager->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
-			
-			$specIssues = array();
-			while ( $specIssue = mysqli_fetch_row( $specIssueResult )[0] )
-			{
-				$specIssues[] = $specIssue;
-			}
-			
-			if ( $specIssues != null )
-			{
-				$actTime = time();
-				$oldestSpecIssueDate = time();
-				$oldestSpecIssue = null;
-				foreach ( $specIssues as $specIssue )
-				{
-					$specIssueLastUpdate = intval( bug_get_field( $specIssue, 'last_updated' ) );
-					if ( $specIssueLastUpdate < $oldestSpecIssueDate )
-					{
-						$oldestSpecIssueDate = $specIssueLastUpdate;
-						$oldestSpecIssue = $specIssue;
-					}
-				}
-				$specTimeDifference = round ( ( ( $actTime - $oldestSpecIssueDate ) / 86400 ), 0 );
-				
-				if ( $specTimeDifference > plugin_config_get( 'IAGThreshold' . $statColIndex ) )
+         $specIssueResult = $upv_api->getIssuesByIndividual( $userId, $bugAssignedProjectId, $bugTargetVersion, $specStatus );
+         $assocArray = mysqli_fetch_row( $specIssueResult );
+         $specIssues = array();
+
+         while ( $specIssue = $assocArray [0] )
+         {
+            $specIssues[] = $specIssue;
+            $assocArray = mysqli_fetch_row( $specIssueResult );
+         }
+
+         if ( $specIssues != null )
+         {
+            $specTimeDifference = $upv_api->calculateTimeDifference( $specIssues )[0];
+            $oldestSpecIssue    = $upv_api->calculateTimeDifference( $specIssues )[1];
+
+            if ( $specTimeDifference > $issueAgeThreshold )
 				{
 					echo MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) )[$specStatus] .
 					' ' . plugin_lang_get( 'remark_since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'remark_day' ) . '<br/>';
