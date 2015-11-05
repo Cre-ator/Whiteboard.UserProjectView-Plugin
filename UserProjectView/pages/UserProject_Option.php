@@ -1,6 +1,6 @@
 <?php
-require_once ( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UserProjectView_api.php';
+require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
+include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
 
 auth_reauthenticate();
 
@@ -10,10 +10,15 @@ html_page_top2();
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
 
 // UserProjectView_api object
-$upv_api = new UserProjectView_api();
+$upv_api = new UPSystem_api();
+$selected_values = null;
 
-$selectedValues = $_POST['dataRow'];
-$recordCount = count( $selectedValues );
+if ( $_POST['dataRow'] != null )
+{
+   $selected_values = $_POST['dataRow'];
+}
+
+$record_count = count( $selected_values );
 
 $select = strtolower( $_POST['option'] );
 
@@ -31,17 +36,17 @@ switch ( $select )
       echo '<th>' . plugin_lang_get( 'thead_project' ) . '</th>';
       echo '</tr>';
 
-      for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+      for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
       {
-         $record[$recordIndex] = explode( '__', $selectedValues[$recordIndex] );
+         $record[$recordIndex] = explode( '__', $selected_values[$recordIndex] );
 
-         $userId = $record[$recordIndex][0];
-         $projectId = $record[$recordIndex][1];
+         $user_id = $record[$recordIndex][0];
+         $project_id = $record[$recordIndex][1];
 
-         echo '<form action="'. plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
-         echo '<input type="hidden" name="records[]" value="' . $selectedValues[$recordIndex] . '"/>';
+         echo '<form action="' . plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
+         echo '<input type="hidden" name="recordSet[]" value="' . $selected_values[$recordIndex] . '"/>';
 
-         if ( $upv_api->system_getMantisVersion() == '1.2.' )
+         if ( $upv_api->getMantisVersion() == '1.2.' )
          {
             echo '<tr ' . helper_alternate_class() . '>';
          }
@@ -51,13 +56,13 @@ switch ( $select )
          }
 
          echo '<td>';
-         echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
-         echo user_get_name( $userId );
+         echo '<a href="manage_user_edit_page.php?user_id=' . $user_id . '">';
+         echo user_get_name( $user_id );
          echo '</a>';
          echo '</td>';
          echo '<td>';
-         echo '<a href="manage_proj_edit_page.php?project_id=' . $projectId . '">';
-         echo project_get_name( $projectId );
+         echo '<a href="manage_proj_edit_page.php?project_id=' . $project_id . '">';
+         echo project_get_name( $project_id );
          echo '</a>';
          echo '</td>';
          echo '</tr>';
@@ -66,7 +71,8 @@ switch ( $select )
       echo '<tr>';
       echo '<td class="center" colspan="2">';
       ?>
-      <input type="submit" name="formSubmit" class="button" value="<?php echo plugin_lang_get( 'remove_selectSingle' ); ?>" />
+      <input type="submit" name="formSubmit" class="button"
+             value="<?php echo plugin_lang_get( 'remove_selectSingle' ); ?>"/>
       <?php
       echo '</td>';
       echo '</tr>';
@@ -89,30 +95,30 @@ switch ( $select )
       echo '<th>' . plugin_lang_get( 'thead_project' ) . '</th>';
       echo '</tr>';
 
-      for ( $recordIndex = 0; $recordIndex < $recordCount; $recordIndex++ )
+      for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
       {
-         $record[$recordIndex] = explode( '__', $selectedValues[$recordIndex] );
+         $record[$recordIndex] = explode( '__', $selected_values[$recordIndex] );
 
-         $userId = $record[$recordIndex][0];
-         $projectId = $record[$recordIndex][1];
+         $user_id = $record[$recordIndex][0];
+         $project_id = $record[$recordIndex][1];
 
-         $subProjects = array();
-         array_push( $subProjects, $projectId );
-         $tSubProjects = array();
-         $tSubProjects = project_hierarchy_get_all_subprojects( $projectId );
+         $sub_projects = array();
+         array_push( $sub_projects, $project_id );
+         $t_sub_projects = array();
+         $t_sub_projects = project_hierarchy_get_all_subprojects( $project_id );
 
-         foreach ( $tSubProjects as $tSubProject )
+         foreach ( $t_sub_projects as $t_sub_project )
          {
-            array_push( $subProjects, $tSubProject );
+            array_push( $sub_projects, $t_sub_project );
          }
 
-         foreach ( $subProjects as $subProject )
+         foreach ( $sub_projects as $sub_project )
          {
-            echo '<form action="'. plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
-            echo '<input type="hidden" name="user[]" value="' . $userId . '"/>';
-            echo '<input type="hidden" name="project[]" value="' . $subProject . '"/>';
+            echo '<form action="' . plugin_page( 'UserProject_RemoveSubmit' ) . '" method="post">';
+            echo '<input type="hidden" name="user[]" value="' . $user_id . '"/>';
+            echo '<input type="hidden" name="project[]" value="' . $sub_project . '"/>';
 
-            if ( $upv_api->system_getMantisVersion() == '1.2.' )
+            if ( $upv_api->getMantisVersion() == '1.2.' )
             {
                echo '<tr ' . helper_alternate_class() . '>';
             }
@@ -122,13 +128,13 @@ switch ( $select )
             }
 
             echo '<td>';
-            echo '<a href="manage_user_edit_page.php?user_id=' . $userId . '">';
-            echo user_get_name( $userId );
+            echo '<a href="manage_user_edit_page.php?user_id=' . $user_id . '">';
+            echo user_get_name( $user_id );
             echo '</a>';
             echo '</td>';
             echo '<td>';
-            echo '<a href="manage_proj_edit_page.php?project_id=' . $subProject . '">';
-            echo project_get_name( $subProject );
+            echo '<a href="manage_proj_edit_page.php?project_id=' . $sub_project . '">';
+            echo project_get_name( $sub_project );
             echo '</a>';
             echo '</td>';
             echo '</tr>';
@@ -141,7 +147,8 @@ switch ( $select )
       echo '<tr>';
       echo '<td class="center" colspan="2">';
       ?>
-      <input type="submit" name="formSubmit" class="button" value="<?php echo plugin_lang_get( 'remove_selectAll' ); ?>" />
+      <input type="submit" name="formSubmit" class="button"
+             value="<?php echo plugin_lang_get( 'remove_selectAll' ); ?>"/>
       <?php
       echo '</td>';
       echo '</tr>';

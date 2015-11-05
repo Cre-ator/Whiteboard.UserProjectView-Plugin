@@ -4,47 +4,47 @@ class UserProjectViewPlugin extends MantisPlugin
 {
    function register()
    {
-      $this->name        = 'UserProjectView';
+      $this->name = 'UserProjectView';
       $this->description = 'Shows detailed information about each user and his assigned issues';
-      $this->page        = 'config_page';
+      $this->page = 'config_page';
 
-      $this->version     = '1.2.7';
-      $this->requires    = array
+      $this->version = '1.2.8';
+      $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
       );
 
-      $this->author      = 'Stefan Schwarz';
-      $this->contact     = '';
-      $this->url         = '';
+      $this->author = 'Stefan Schwarz';
+      $this->contact = '';
+      $this->url = '';
    }
-   
+
    function hooks()
    {
       $hooks = array
       (
          'EVENT_LAYOUT_PAGE_FOOTER' => 'footer',
-         'EVENT_MENU_MAIN'          => 'menu'
+         'EVENT_MENU_MAIN' => 'menu'
       );
       return $hooks;
    }
-   
+
    function init()
    {
       $t_core_path = config_get_global( 'plugin_path' )
-                   . plugin_get_current()
-                   . DIRECTORY_SEPARATOR
-                   . 'core'
-                   . DIRECTORY_SEPARATOR;
+         . plugin_get_current()
+         . DIRECTORY_SEPARATOR
+         . 'core'
+         . DIRECTORY_SEPARATOR;
       require_once( $t_core_path . 'constant_api.php' );
    }
 
    function uninstall()
    {
-      include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR. 'UserProjectView_api.php';
+      include config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'UPDatabase_api.php';
 
-      $upv_api = new UserProjectView_api();
-      $upv_api->config_resetPlugin();
+      $upd_api = new UPDatabase_api();
+      $upd_api->resetPlugin();
    }
 
    function config()
@@ -95,29 +95,29 @@ class UserProjectViewPlugin extends MantisPlugin
             '1' => 30,
             '2' => 40,
             '3' => 50
-            ),
+         ),
 
          'UserProjectAccessLevel' => ADMINISTRATOR
       );
    }
-   
+
    function getUserHasLevel()
    {
-   	$projectId = helper_get_current_project();
-   	$userId = auth_get_current_user_id();
-   	
-   	return user_get_access_level( $userId, $projectId ) >= plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
+      $project_id = helper_get_current_project();
+      $user_id = auth_get_current_user_id();
+
+      return user_get_access_level( $user_id, $project_id ) >= plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
    }
-   
+
    function footer()
    {
-   	if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
-   	{
+      if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
+      {
          return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
-   	}
-   	return null;
+      }
+      return null;
    }
-   
+
    function menu()
    {
       if ( plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
