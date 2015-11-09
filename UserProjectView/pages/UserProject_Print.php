@@ -516,8 +516,8 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
       }
 
       $specStatus = $statCols[$statColIndex];
-      if ( $specStatus == config_get( 'bug_assigned_status' ) && $issueAgeThreshold > 0
-         || $specStatus == config_get( 'bug_feedback_status' ) && $issueAgeThreshold > 0
+      if ( $specStatus == USERPROJECTVIEW_ASSIGNED_STATUS && $issueAgeThreshold > 0
+         || $specStatus == USERPROJECTVIEW_FEEDBACK_STATUS && $issueAgeThreshold > 0
          || $specStatus == 40 && $issueAgeThreshold > 0
       )
       {

@@ -27,8 +27,6 @@ $s_plugin_UserProjectView_remove_selectAll = 'Remove User from Project/Subprojec
 $s_plugin_UserProjectView_remove_confirm = 'User removed from project.';
 $s_plugin_UserProjectView_remove_failure = 'Error, user not removed from project.';
 
-$s_plugin_UserProjectView_config_y = 'Yes';
-$s_plugin_UserProjectView_config_n = 'No';
 $s_plugin_UserProjectView_config_showFooter = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_config_showMenu = 'Show plugin menu entry?';
 $s_plugin_UserProjectView_config_showAvatar = 'Show avatar in user report?';
@@ -55,4 +53,3 @@ $s_plugin_UserProjectView_config_caption = 'General configuration';
 $s_plugin_UserProjectView_config_highlighting = 'Configuration for specific row highlighting';
 $s_plugin_UserProjectView_config_specColumns = 'Configuration for specific columns';
 $s_plugin_UserProjectView_config_URIFilter = 'Filter status for unreachable issues';
-$s_plugin_UserProjectView_config_information = 'Configuration for informational column';

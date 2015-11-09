@@ -46,27 +46,20 @@ class UPPrint_api
       {
          echo '<th />';
          echo '<th colspan="' . $colspan . '">';
-         echo plugin_lang_get( $lang_string ) . ' ';
-         echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=ASC">';
-         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-         echo '</a>';
-         echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=DESC">';
-         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-         echo '</a>';
-         echo '</th>';
       }
       else
       {
          echo '<th>';
-         echo plugin_lang_get( $lang_string ) . ' ';
-         echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=ASC">';
-         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
-         echo '</a>';
-         echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=DESC">';
-         echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
-         echo '</a>';
-         echo '</th>';
       }
+
+      echo plugin_lang_get( $lang_string ) . ' ';
+      echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=ASC">';
+      echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+      echo '</a>';
+      echo '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=DESC">';
+      echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+      echo '</a>';
+      echo '</th>';
    }
 
    public function printTHRow( $colspan )
@@ -83,11 +76,8 @@ class UPPrint_api
    public function printTDRow( $user_id, $row_val, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag )
    {
       $iA_background_color = plugin_config_get( 'IAUHBGColor' );
-
       $uR_background_color = plugin_config_get( 'URIUHBGColor' );
-
       $nU_background_color = plugin_config_get( 'NUIHBGColor' );
-
       $zI_background_color = plugin_config_get( 'ZIHBGColor' );
 
       if ( $row_val == true )
@@ -169,12 +159,12 @@ class UPPrint_api
       echo '<label>';
       echo '<input type="radio" name="' . $name . '" value="1"';
       echo ( ON == plugin_config_get( $name ) ) ? 'checked="checked"' : '';
-      echo '/>' . plugin_lang_get( 'config_y' );
+      echo '/>' . lang_get( 'yes' );
       echo '</label>';
       echo '<label>';
       echo '<input type="radio" name="' . $name . '" value="0"';
       echo ( OFF == plugin_config_get( $name ) ) ? 'checked="checked"' : '';
-      echo '/>' . plugin_lang_get( 'config_n' );
+      echo '/>' . lang_get( 'no' );
       echo '</label>';
       echo '</td>';
    }

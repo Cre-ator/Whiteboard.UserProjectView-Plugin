@@ -4,7 +4,7 @@ class UPConfig_api
 {
    public function includeLeadingColorIdentifier( $color )
    {
-      if ( "#" == $color [0] )
+      if ( "#" == $color[0] )
       {
          return $color;
       }
@@ -18,6 +18,7 @@ class UPConfig_api
    {
       $default_color = $this->includeLeadingColorIdentifier( $default_color );
       $iA_background_color = $this->includeLeadingColorIdentifier( gpc_get_string( $field_name, $default_color ) );
+
       if ( plugin_config_get( $field_name ) != $iA_background_color
          && plugin_config_get( $field_name ) != ''
       )

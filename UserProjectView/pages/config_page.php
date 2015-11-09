@@ -163,8 +163,8 @@ echo '</tr>';
 $upp_api->printSpacer( 6 );
 echo '<tr>';
 echo '<td class="center" colspan="6">';
-echo '<input type="submit" name="change" class="button" value="' . lang_get( 'change_configuration' ) . '"/>' . ' ';
-echo '<input type="submit" name="reset" class="button" value="' . plugin_lang_get( 'config_reset' ) . '"/>';
+echo '<input type="submit" name="change" class="button" value="' . lang_get( 'update_prefs_button' ) . '"/>' . ' ';
+echo '<input type="submit" name="reset" class="button" value="' . lang_get( 'reset_prefs_button' ) . '"/>';
 echo '</td>';
 echo '</tr>';
 
