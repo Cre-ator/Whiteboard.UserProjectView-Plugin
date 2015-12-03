@@ -1,6 +1,4 @@
 ﻿<?php
-
-$s_plugin_UserProjectView_menu_title = 'Whiteboard';
 $s_plugin_UserProjectView_menu_printbutton = 'Print report';
 $s_plugin_UserProjectView_menu_userprojecttitle = 'User report';
 
@@ -38,8 +36,6 @@ $s_plugin_UserProjectView_config_ZIUExpl = 'The efficacy of this options require
 $s_plugin_UserProjectView_config_ZIHighlighting = 'Mark users without issues?';
 $s_plugin_UserProjectView_config_BGColor = 'Backgroundcolour';
 $s_plugin_UserProjectView_config_CAmount = 'Amount of columns';
-$s_plugin_UserProjectView_config_TAMHighlighting = 'Mark reached amount?';
-$s_plugin_UserProjectView_config_TAGHighlighting = 'Mark reached age (days)?';
 $s_plugin_UserProjectView_config_CStatSelect = 'Status for this column';
 $s_plugin_UserProjectView_config_IAMThreshold = 'Issue amount threshold';
 $s_plugin_UserProjectView_config_IAGThreshold = 'Issue age threshold (days)';

@@ -1,6 +1,4 @@
 ﻿<?php
-
-$s_plugin_UserProjectView_menu_title = 'Tableau de bord';
 $s_plugin_UserProjectView_menu_printbutton = 'Imprimer le rapport';
 $s_plugin_UserProjectView_menu_userprojecttitle = 'Rapport d´utilisateur';
 
@@ -38,8 +36,6 @@ $s_plugin_UserProjectView_config_ZIUExpl = 'L´efficacité de cette option néce
 $s_plugin_UserProjectView_config_ZIHighlighting = 'Marquer les utilisateurs sans problèmes?';
 $s_plugin_UserProjectView_config_BGColor = 'Couleur du fond';
 $s_plugin_UserProjectView_config_CAmount = 'Nombre de colonnes';
-$s_plugin_UserProjectView_config_TAMHighlighting = 'Marque atteint le montant?';
-$s_plugin_UserProjectView_config_TAGHighlighting = 'Marque atteint l´âge (jours)?';
 $s_plugin_UserProjectView_config_CStatSelect = 'Statut pour cette colonne';
 $s_plugin_UserProjectView_config_IAMThreshold = 'Seuil de Montant de l´émission';
 $s_plugin_UserProjectView_config_IAGThreshold = 'Problème seuil d´âge (jours)';
