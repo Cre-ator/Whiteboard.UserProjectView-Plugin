@@ -4,7 +4,6 @@ include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
 include USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
 include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
-// UserProjectView_api object
 $upd_api = new UPDatabase_api();
 $upv_api = new UPSystem_api();
 $upp_api = new UPPrint_api();
@@ -15,13 +14,8 @@ $unreachIssueStatusValue = plugin_config_get( 'URIThreshold' );
 $unreachIssueStatusCount = count( $unreachIssueStatusValue );
 
 $amountStatColumns = plugin_config_get( 'CAmount' );
+
 $statCols = array();
-
-for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-{
-   $statCols[$statColIndex] = '';
-}
-
 $issueThresholds = array();
 $issueAgeThresholds = array();
 

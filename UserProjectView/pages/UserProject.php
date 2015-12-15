@@ -4,7 +4,6 @@ include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
 include USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
 include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
-// UserProjectView_api object
 $upd_api = new UPDatabase_api();
 $upv_api = new UPSystem_api();
 $upp_api = new UPPrint_api();
@@ -21,12 +20,6 @@ if ( $amountStatColumns > PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )
 }
 
 $statCols = array();
-
-for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-{
-   $statCols[$statColIndex] = '';
-}
-
 $issueThresholds = array();
 $issueAgeThresholds = array();
 
@@ -323,10 +316,14 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 
 html_page_top2();
 
+if ( plugin_is_installed( 'WhiteboardMenu' ) )
+{
+   $upp_api->print_whiteboardplugin_menu();
+}
+
 // user configuration area ++++++++++++++++++++++++++++++++++++++++++++++++++++
 if ( $upv_api->userHasLevel() )
 {
-   $upp_api->printWBMMenu();
    $upp_api->printUPMenu();
 }
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -485,15 +482,15 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
    echo '</td>';
 
-
    // column avatar
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
       echo '<td align="center" width="25px">';
       if ( access_has_global_level( $userAccessLevel ) )
       {
-         echo '<a href="search.php?&handler_id=' . $linkUserId .
-            '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+         echo $filterString;
       }
 
       if ( config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
@@ -516,8 +513,9 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) )
    {
-      echo '<a href="search.php?&handler_id=' . $linkUserId .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo $filterString;
       echo $userName;
       echo '</a>';
    }
@@ -532,8 +530,9 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) )
    {
-      echo '<a href="search.php?&handler_id=' . $linkUserId .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo $filterString;
       echo $userRealname;
       echo '</a>';
    }
@@ -548,9 +547,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) )
    {
-      echo '<a href="search.php?project_id=' . $mainProjectId .
-         '&handler_id=' . $linkUserId .
+      $filterString = '<a href="search.php?project_id=' . $mainProjectId . '&handler_id=' . $linkUserId .
          '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo $filterString;
       echo $mainProjectName;
       echo '</a>';
    }
@@ -565,9 +565,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) )
    {
-      echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
-         '&handler_id=' . $linkUserId .
+      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&handler_id=' . $linkUserId .
          '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo $filterString;
       echo $bugAssignedProjectName;
       echo '</a>';
    }
@@ -583,10 +584,10 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
    echo $bugTargetVersionDate . ' ';
    if ( access_has_global_level( $userAccessLevel ) )
    {
-      echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
-         '&handler_id=' . $linkUserId .
-         '&sticky_issues=on&target_version=' . $bugTargetVersion .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&handler_id=' . $linkUserId .
+         '&sticky_issues=on&target_version=' . $bugTargetVersion . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo$filterString;
       echo $bugTargetVersionPreparedString;
       echo '</a>';
    }
@@ -613,11 +614,12 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
       {
          echo '<td bgcolor="' . get_status_color( $statCols[$statColIndex], null, null ) . '">';
       }
-      echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
-         '&status_id=' . $specStatus .
-         '&handler_id=' . $linkUserId .
-         '&sticky_issues=on&target_version=' . $bugTargetVersion .
+
+      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&status_id=' . $specStatus .
+         '&handler_id=' . $linkUserId . '&sticky_issues=on&target_version=' . $bugTargetVersion .
          '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+      echo $filterString;
       $specColumnIssueAmount[$statColIndex] += $issueAmount;
       echo $issueAmount;
       echo '</a>';
@@ -659,12 +661,11 @@ for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
 
             if ( $specTimeDifference > $issueAgeThreshold )
             {
-               echo '<a href="search.php?project_id=' . $bugAssignedProjectId .
-                  '&search=' . $oldestSpecIssue .
-                  '&status_id=' . $specStatus .
-                  '&handler_id=' . $linkUserId .
-                  '&sticky_issues=on&target_version=' . $bugTargetVersion .
+               $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&search=' . $oldestSpecIssue .
+                  '&status_id=' . $specStatus . '&handler_id=' . $linkUserId . '&sticky_issues=on&target_version=' . $bugTargetVersion .
                   '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
+               echo $filterString;
                $assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
                echo $assocArray [$specStatus] .
                   ' ' . plugin_lang_get( 'remark_since' ) . ' ' . $specTimeDifference . ' ' . plugin_lang_get( 'remark_day' ) . '<br/>';

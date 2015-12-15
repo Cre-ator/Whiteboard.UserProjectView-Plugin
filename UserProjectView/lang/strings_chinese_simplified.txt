@@ -1,6 +1,4 @@
 ﻿<?php
-
-$s_plugin_UserProjectView_menu_title = '白板';
 $s_plugin_UserProjectView_menu_printbutton = '打印报表';
 $s_plugin_UserProjectView_menu_userprojecttitle = '用户报表';
 
@@ -38,8 +36,6 @@ $s_plugin_UserProjectView_config_ZIUExpl = '这个选项的起效需要起用"�
 $s_plugin_UserProjectView_config_ZIHighlighting = '是否标记没任何项的用户?';
 $s_plugin_UserProjectView_config_BGColor = '背景色';
 $s_plugin_UserProjectView_config_CAmount = '列数';
-$s_plugin_UserProjectView_config_TAMHighlighting = '是否标记到达量?';
-$s_plugin_UserProjectView_config_TAGHighlighting = '是否标记到达时间(天)?';
 $s_plugin_UserProjectView_config_CStatSelect = '此列的状态';
 $s_plugin_UserProjectView_config_IAMThreshold = '项值门槛';
 $s_plugin_UserProjectView_config_IAGThreshold = '项时间界限 (天)';

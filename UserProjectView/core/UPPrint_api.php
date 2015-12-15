@@ -2,31 +2,6 @@
 
 class UPPrint_api
 {
-   public function printWBMMenu()
-   {
-      echo '<table align="center">';
-      echo '<tr">';
-      echo '<td>';
-      echo '[ <a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">';
-      echo plugin_lang_get( 'menu_userprojecttitle' );
-      echo '</a> ]';
-      echo '</td>';
-
-      /* Area where other related plugins are accessible from */
-      if ( plugin_is_installed( 'SpecificationManagement' ) )
-      {
-         echo '<td>';
-         echo '[ <a href="' . plugin_page( 'SpecManagement', true, 'SpecificationManagement' ) . '">';
-         echo plugin_lang_get( 'menu_title', 'SpecificationManagement' );
-         echo '</a> ]';
-         echo '</td>';
-      }
-      /* ---------------------------------------------------- */
-
-      echo '</tr>';
-      echo '</table>';
-   }
-
    public function printUPMenu()
    {
       echo '<table align="center">';
@@ -36,6 +11,38 @@ class UPPrint_api
       echo plugin_lang_get( 'menu_printbutton' );
       echo '</a> ]';
       echo '</td>';
+      echo '</tr>';
+      echo '</table>';
+   }
+
+   /**
+    * Prints the whiteboardmenu plugin specific menu
+    */
+   public function print_whiteboardplugin_menu()
+   {
+      echo '<table align="center">';
+      echo '<tr">';
+
+      if ( plugin_is_installed( 'UserProjectView' ) )
+      {
+         echo '<td>';
+         echo '| ';
+         echo '<a href="' . plugin_page( 'UserProject', false, 'UserProjectView' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_userprojecttitle', 'UserProjectView' ) . '</a>';
+         echo '</td>';
+      }
+
+      if ( plugin_is_installed( 'SpecManagement' ) )
+      {
+         echo '<td>';
+         echo '| ';
+         echo '<a href="' . plugin_page( 'choose_document', false, 'SpecManagement' ) . '">' . plugin_lang_get( 'menu_title', 'SpecManagement' ) . '</a>';
+         echo '</td>';
+      }
+
+      echo '<td>';
+      echo ' |';
+      echo '</td>';
+
       echo '</tr>';
       echo '</table>';
    }

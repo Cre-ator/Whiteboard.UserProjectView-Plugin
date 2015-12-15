@@ -1,6 +1,4 @@
 ﻿<?php
-
-$s_plugin_UserProjectView_menu_title = 'Whiteboard';
 $s_plugin_UserProjectView_menu_printbutton = 'Bericht Drucken';
 $s_plugin_UserProjectView_menu_userprojecttitle = 'Benutzer Bericht';
 
@@ -38,8 +36,6 @@ $s_plugin_UserProjectView_config_ZIUExpl = 'Diese Optionen sind nur dann wirksam
 $s_plugin_UserProjectView_config_ZIHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
 $s_plugin_UserProjectView_config_BGColor = 'Hintergrundfarbe';
 $s_plugin_UserProjectView_config_CAmount = 'Anzahl Spalten';
-$s_plugin_UserProjectView_config_TAMHighlighting = 'Überschreitung Anzahl darstellen?';
-$s_plugin_UserProjectView_config_TAGHighlighting = 'Überschreitung Alter darstellen?';
 $s_plugin_UserProjectView_config_CStatSelect = 'Status für Spalte';
 $s_plugin_UserProjectView_config_IAMThreshold = 'max. Anzahl Issues';
 $s_plugin_UserProjectView_config_IAGThreshold = 'max. Alter Issues (Tage)';

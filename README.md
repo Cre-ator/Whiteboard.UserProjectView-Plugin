@@ -19,7 +19,7 @@ Libraries
 
 Installation
 
-  Copy the 'UserProjectView' plugin just in the plugins directory of Mantis. After installing a new menu entry "whiteboard" is added.
+  Copy the 'UserProjectView' plugin just in the plugins directory of Mantis. After installing a new menu entry "User report" is added.
 
 Available Translations
   - english, french, german, chinese simplified
