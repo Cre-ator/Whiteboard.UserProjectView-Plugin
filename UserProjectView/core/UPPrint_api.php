@@ -2,6 +2,31 @@
 
 class UPPrint_api
 {
+   public function printWBMMenu()
+   {
+      echo '<table align="center">';
+      echo '<tr">';
+      echo '<td>';
+      echo '[ <a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">';
+      echo plugin_lang_get( 'menu_userprojecttitle' );
+      echo '</a> ]';
+      echo '</td>';
+
+      /* Area where other related plugins are accessible from */
+      if ( plugin_is_installed( 'SpecificationManagement' ) )
+      {
+         echo '<td>';
+         echo '[ <a href="' . plugin_page( 'SpecManagement', true, 'SpecificationManagement' ) . '">';
+         echo plugin_lang_get( 'menu_title', 'SpecificationManagement' );
+         echo '</a> ]';
+         echo '</td>';
+      }
+      /* ---------------------------------------------------- */
+
+      echo '</tr>';
+      echo '</table>';
+   }
+
    public function printUPMenu()
    {
       echo '<table align="center">';
