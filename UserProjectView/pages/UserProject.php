@@ -316,6 +316,11 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 
 html_page_top2();
 
+if ( plugin_is_installed( 'WhiteboardMenu' ) )
+{
+   $upp_api->print_whiteboardplugin_menu();
+}
+
 // user configuration area ++++++++++++++++++++++++++++++++++++++++++++++++++++
 if ( $upv_api->userHasLevel() )
 {
