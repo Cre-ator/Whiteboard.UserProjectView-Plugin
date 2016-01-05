@@ -8,7 +8,7 @@ $upp_api = new UPPrint_api();
 
 auth_reauthenticate();
 
-html_page_top1( plugin_lang_get( 'menu_title' ) );
+html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
 html_page_top2();
 
 if ( plugin_is_installed( 'WhiteboardMenu' ) )
@@ -22,7 +22,7 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 $upv_api = new UPSystem_api();
 $selected_values = null;
 
-if ( $_POST['dataRow'] != null )
+if ( !empty( $_POST['dataRow'] ) )
 {
    $selected_values = $_POST['dataRow'];
 }
