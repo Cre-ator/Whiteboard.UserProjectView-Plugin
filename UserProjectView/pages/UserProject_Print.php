@@ -142,7 +142,7 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
       . '__' . $aBAPIname
       . '__' . $actBugTargetVersion
       . '__' . $versionDate
-      . '__' . $tpl_target_version_string
+      . '__' . $targetVersionString
       . '__' . $aBAUIActivFlag;
 }
 
