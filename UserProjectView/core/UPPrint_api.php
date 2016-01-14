@@ -23,7 +23,9 @@ class UPPrint_api
       echo '<table align="center">';
       echo '<tr">';
 
-      if ( plugin_is_installed( 'UserProjectView' ) )
+      if (  plugin_is_installed( 'UserProjectView' )
+         && file_exists ( config_get_global ( 'plugin_path' ) . 'UserProjectView' )
+         )
       {
          echo '<td>';
          echo '| ';
@@ -31,7 +33,9 @@ class UPPrint_api
          echo '</td>';
       }
 
-      if ( plugin_is_installed( 'SpecManagement' ) )
+      if (  plugin_is_installed( 'SpecManagement' )
+         && file_exists ( config_get_global ( 'plugin_path' ) . 'SpecManagement' )
+         )
       {
          echo '<td>';
          echo '| ';
