@@ -1,10 +1,8 @@
 <?php
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
 
-// UserProjectView_api object
 $upv_api = new UPSystem_api();
-
 $record_set = null;
 $user_id = null;
 $project_id = null;
