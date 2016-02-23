@@ -1,13 +1,8 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'UPConfig_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_print_api.php';
 
-// UserProjectView_api object
-$upc_api = new UPConfig_api();
-$upp_api = new UPPrint_api();
-$upv_api = new UPSystem_api();
+$userprojectview_print_api = new userprojectview_print_api();
 
 auth_reauthenticate();
 access_ensure_global_level( plugin_config_get( 'UserProjectAccessLevel' ) );
@@ -31,8 +26,8 @@ else
    echo '<div class="form-container">';
    echo '<table>';
 }
-$upp_api->printConfigTitle( 6, 'config_caption' );
-$upp_api->printConfigRow();
+$userprojectview_print_api->printConfigTitle( 6, 'config_caption' );
+$userprojectview_print_api->printConfigRow();
 echo '<td class="category" colspan="1">';
 echo '<span class="required">*</span>' . plugin_lang_get( 'config_accesslevel' );
 echo '</td>';
@@ -43,65 +38,65 @@ echo '</select>';
 echo '</td>';
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_showMenu' );
-$upp_api->printRadioButton( 5, 'ShowMenu' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showMenu' );
+$userprojectview_print_api->printRadioButton( 5, 'ShowMenu' );
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_showFooter' );
-$upp_api->printRadioButton( 5, 'ShowInFooter' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showFooter' );
+$userprojectview_print_api->printRadioButton( 5, 'ShowInFooter' );
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_showAvatar' );
-$upp_api->printRadioButton( 5, 'ShowAvatar' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showAvatar' );
+$userprojectview_print_api->printRadioButton( 5, 'ShowAvatar' );
 echo '</tr>';
 
-$upp_api->printSpacer( 6 );
-$upp_api->printConfigTitle( 6, 'config_highlighting' );
+$userprojectview_print_api->printSpacer( 6 );
+$userprojectview_print_api->printConfigTitle( 6, 'config_highlighting' );
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_IAUHighlighting' );
-$upp_api->printRadioButton( 1, 'IAUHighlighting' );
-$upp_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$upp_api->printColorPicker( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_IAUHighlighting' );
+$userprojectview_print_api->printRadioButton( 1, 'IAUHighlighting' );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_URIUHighlighting' );
-$upp_api->printRadioButton( 1, 'URIUHighlighting' );
-$upp_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$upp_api->printColorPicker( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_URIUHighlighting' );
+$userprojectview_print_api->printRadioButton( 1, 'URIUHighlighting' );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_NUIHighlighting' );
-$upp_api->printRadioButton( 1, 'NUIHighlighting' );
-$upp_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$upp_api->printColorPicker( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_NUIHighlighting' );
+$userprojectview_print_api->printRadioButton( 1, 'NUIHighlighting' );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
 echo '</tr>';
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_showZIU' );
-$upp_api->printRadioButton( 5, 'ShowZIU' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showZIU' );
+$userprojectview_print_api->printRadioButton( 5, 'ShowZIU' );
 echo '</tr>';
 
-$upp_api->printConfigRow();
+$userprojectview_print_api->printConfigRow();
 echo '<td class="category" colspan="1">';
 echo plugin_lang_get( 'config_ZIHighlighting' ) . '<br/>';
 echo '<span class="small">' . plugin_lang_get( 'config_ZIUExpl' ) . '</span>';
 echo '</td>';
-$upp_api->printRadioButton( 1, 'ZIHighlighting' );
-$upp_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$upp_api->printColorPicker( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+$userprojectview_print_api->printRadioButton( 1, 'ZIHighlighting' );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
 echo '</tr>';
 
-$upp_api->printSpacer( 6 );
-$upp_api->printConfigTitle( 6, 'config_specColumns' );
+$userprojectview_print_api->printSpacer( 6 );
+$userprojectview_print_api->printConfigTitle( 6, 'config_specColumns' );
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_CAmount' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_CAmount' );
 echo '<td width="100px" colspan="1" rowspan="1">';
 ?>
    <label><input type="number" name="CAmount"
@@ -110,13 +105,13 @@ echo '<td width="100px" colspan="1" rowspan="1">';
 <?php
 echo '</td>';
 
-$upp_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$upp_api->printColorPicker( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 echo '</tr>';
 
 for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
 {
-   $upp_api->printConfigRow();
+   $userprojectview_print_api->printConfigRow();
    echo '<td class="category" colspan="1" rowspan="1">';
    echo plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
    echo '</td>';
@@ -148,11 +143,11 @@ for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnI
    echo '</tr>';
 }
 
-$upp_api->printSpacer( 6 );
-$upp_api->printConfigTitle( 6, 'config_URIFilter' );
+$userprojectview_print_api->printSpacer( 6 );
+$userprojectview_print_api->printConfigTitle( 6, 'config_URIFilter' );
 
-$upp_api->printConfigRow();
-$upp_api->printConfigCategory( 1, 1, 'config_URIThreshold' );
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_URIThreshold' );
 echo '<td valign="top" width="100px" colspan="7">';
 echo '<select name="URIThreshold[]" multiple="multiple">';
 print_enum_string_option_list( 'status', plugin_config_get( 'URIThreshold', 50 ) );
@@ -160,7 +155,7 @@ echo '</select>';
 echo '</td>';
 echo '</tr>';
 
-$upp_api->printSpacer( 6 );
+$userprojectview_print_api->printSpacer( 6 );
 echo '<tr>';
 echo '<td class="center" colspan="6">';
 echo '<input type="submit" name="change" class="button" value="' . lang_get( 'update_prefs_button' ) . '"/>' . ' ';

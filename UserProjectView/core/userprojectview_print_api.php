@@ -1,11 +1,11 @@
 <?php
 
-class UPPrint_api
+class userprojectview_print_api
 {
    public function printUPMenu()
    {
       echo '<table align="center">';
-      echo '<tr">';
+      echo '<tr>';
       echo '<td>';
       echo '[ <a href="' . plugin_page( 'UserProject_Print' ) . '&sortVal=userName&sort=ASC">';
       echo plugin_lang_get( 'menu_printbutton' );

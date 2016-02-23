@@ -1,8 +1,8 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_system_api.php';
 
-$upv_api = new UPSystem_api();
+$userprojectview_system_api = new userprojectview_system_api();
 $record_set = null;
 $user_id = null;
 $project_id = null;
@@ -22,11 +22,11 @@ if ( !empty( $_POST['project'] ) )
 
 if ( $record_set != null )
 {
-   $upv_api->removeProjectUserSet( $record_set );
+   $userprojectview_system_api->removeProjectUserSet( $record_set );
 }
 elseif ( $user_id != null && $project_id != null )
 {
-   $upv_api->removeProjectUser( $user_id, $project_id );
+   $userprojectview_system_api->removeProjectUser( $user_id, $project_id );
 }
 
 $redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';

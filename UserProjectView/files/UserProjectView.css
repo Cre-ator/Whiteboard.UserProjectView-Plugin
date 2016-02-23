@@ -1,11 +1,4 @@
-a:link
-{
-   color: black;
-   background: transparent;
-   text-decoration: none;
-}
-
-a:visited
+a
 {
    color: black;
    background: transparent;
@@ -14,16 +7,7 @@ a:visited
 
 a:hover
 {
-   color: black;
-   background: transparent;
    text-decoration: underline;
-}
-
-a:active
-{
-   color: black;
-   background: transparent;
-   text-decoration: none;
 }
 
 .avatar
