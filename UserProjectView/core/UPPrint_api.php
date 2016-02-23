@@ -15,38 +15,6 @@ class UPPrint_api
       echo '</table>';
    }
 
-   /**
-    * Prints the whiteboardmenu plugin specific menu
-    */
-   public function print_whiteboardplugin_menu()
-   {
-      echo '<table align="center">';
-      echo '<tr">';
-
-      if ( plugin_is_installed( 'UserProjectView' ) )
-      {
-         echo '<td>';
-         echo '| ';
-         echo '<a href="' . plugin_page( 'UserProject', false, 'UserProjectView' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_userprojecttitle', 'UserProjectView' ) . '</a>';
-         echo '</td>';
-      }
-
-      if ( plugin_is_installed( 'SpecManagement' ) )
-      {
-         echo '<td>';
-         echo '| ';
-         echo '<a href="' . plugin_page( 'choose_document', false, 'SpecManagement' ) . '">' . plugin_lang_get( 'menu_title', 'SpecManagement' ) . '</a>';
-         echo '</td>';
-      }
-
-      echo '<td>';
-      echo ' |';
-      echo '</td>';
-
-      echo '</tr>';
-      echo '</table>';
-   }
-
    public function printTH( $lang_string, $sort_val, $colspan )
    {
       if ( $colspan != null )

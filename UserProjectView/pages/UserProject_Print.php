@@ -1,8 +1,8 @@
 <?php
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
 $upd_api = new UPDatabase_api();
 $upv_api = new UPSystem_api();
@@ -142,7 +142,7 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
       . '__' . $aBAPIname
       . '__' . $actBugTargetVersion
       . '__' . $versionDate
-      . '__' . $tpl_target_version_string
+      . '__' . $targetVersionString
       . '__' . $aBAUIActivFlag;
 }
 

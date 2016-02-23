@@ -1,8 +1,8 @@
 <?php
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPConfig_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPConfig_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
 // UserProjectView_api object
 $upc_api = new UPConfig_api();

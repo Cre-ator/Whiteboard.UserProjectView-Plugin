@@ -1,28 +1,28 @@
 <?php
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
 $upv_api = new UPSystem_api();
 $upp_api = new UPPrint_api();
 
 auth_reauthenticate();
-
-html_page_top1( plugin_lang_get( 'menu_title' ) );
+html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
 html_page_top2();
 
 if ( plugin_is_installed( 'WhiteboardMenu' ) )
 {
-   $upp_api->print_whiteboardplugin_menu();
+   require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
+   $whiteboard_print_api = new whiteboard_print_api();
+   $whiteboard_print_api->printWhiteboardMenu();
 }
 
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
 
-// UserProjectView_api object
 $upv_api = new UPSystem_api();
 $selected_values = null;
 
-if ( $_POST['dataRow'] != null )
+if ( !empty( $_POST['dataRow'] ) )
 {
    $selected_values = $_POST['dataRow'];
 }

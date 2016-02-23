@@ -1,8 +1,8 @@
 <?php
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPPrint_api.php';
 
 $upd_api = new UPDatabase_api();
 $upv_api = new UPSystem_api();
@@ -318,7 +318,9 @@ html_page_top2();
 
 if ( plugin_is_installed( 'WhiteboardMenu' ) )
 {
-   $upp_api->print_whiteboardplugin_menu();
+   require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
+   $whiteboard_print_api = new whiteboard_print_api();
+   $whiteboard_print_api->printWhiteboardMenu();
 }
 
 // user configuration area ++++++++++++++++++++++++++++++++++++++++++++++++++++

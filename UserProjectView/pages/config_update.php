@@ -1,15 +1,13 @@
 <?php
 auth_reauthenticate();
 access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
-
 form_security_validate( 'plugin_UserProjectView_config_update' );
 
-require_once( USERPROJECTVIEW_CORE_URI . 'constant_api.php' );
-include USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPConfig_api.php';
-include USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPSystem_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPConfig_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'UPDatabase_api.php';
 
-// UserProjectView_api object
 $upc_api = new UPConfig_api();
 $upv_api = new UPSystem_api();
 $upd_api = new UPDatabase_api();
