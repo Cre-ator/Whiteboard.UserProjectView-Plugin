@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.9';
+      $this->version = '1.3.10';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -36,7 +36,7 @@ class UserProjectViewPlugin extends MantisPlugin
          . DIRECTORY_SEPARATOR
          . 'core'
          . DIRECTORY_SEPARATOR;
-      require_once( $t_core_path . 'constant_api.php' );
+      require_once( $t_core_path . 'userprojectview_constant_api.php' );
    }
 
    function uninstall()
@@ -46,11 +46,10 @@ class UserProjectViewPlugin extends MantisPlugin
          . DIRECTORY_SEPARATOR
          . 'core'
          . DIRECTORY_SEPARATOR;
+      require_once( $t_core_path . 'userprojectview_database_api.php' );
 
-      require_once( $t_core_path . 'UPDatabase_api.php' );
-
-      $upd_api = new UPDatabase_api();
-      $upd_api->resetPlugin();
+      $userprojectview_database_api = new userprojectview_database_api();
+      $userprojectview_database_api->resetPlugin();
    }
 
    function config()
@@ -61,7 +60,7 @@ class UserProjectViewPlugin extends MantisPlugin
          . 'core'
          . DIRECTORY_SEPARATOR;
 
-      require_once( $t_core_path . 'constant_api.php' );
+      require_once( $t_core_path . 'userprojectview_constant_api.php' );
 
       return array
       (

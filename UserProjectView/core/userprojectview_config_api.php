@@ -1,6 +1,6 @@
 <?php
 
-class UPConfig_api
+class userprojectview_config_api
 {
    public function includeLeadingColorIdentifier( $color )
    {

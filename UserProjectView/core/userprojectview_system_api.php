@@ -1,6 +1,6 @@
 <?php
 
-class UPSystem_api
+class userprojectview_system_api
 {
    public function getMantisVersion()
    {
@@ -109,16 +109,16 @@ class UPSystem_api
 
    public function checkUserAssignedToProject( $user_id, $bug_assigned_project_id )
    {
-      include_once config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'UPDatabase_api.php';
+      include_once config_get_global( 'plugin_path' ) . plugin_get_current() . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectview_database_api.php';
 
-      $upd_api = new UPDatabase_api();
+      $userprojectview_database_api = new userprojectview_database_api();
 
       $assigned_to_project = '0';
       if ( $user_id != '0' && $bug_assigned_project_id != '' )
       {
          if ( !user_is_administrator( $user_id ) )
          {
-            $assigned_to_project = mysqli_fetch_row( $upd_api->checkUserIsAssignedToProject( $user_id, $bug_assigned_project_id ) );
+            $assigned_to_project = mysqli_fetch_row( $userprojectview_database_api->checkUserIsAssignedToProject( $user_id, $bug_assigned_project_id ) );
          }
       }
 
