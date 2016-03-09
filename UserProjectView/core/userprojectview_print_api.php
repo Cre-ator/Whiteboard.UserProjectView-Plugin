@@ -70,7 +70,7 @@ class userprojectview_print_api
          $row_index = 2;
       }
 
-      if ( $user_id != '0' && user_get_field( $user_id, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
+      if ( user_exists( $user_id ) && $user_id != '0' && user_get_field( $user_id, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
       {
          echo '<tr style="background-color:' . $iA_background_color . '">';
       }
