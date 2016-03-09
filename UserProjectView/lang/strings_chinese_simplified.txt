@@ -2,7 +2,6 @@
 $s_plugin_UserProjectView_menu_printbutton = '打印报表';
 $s_plugin_UserProjectView_menu_userprojecttitle = '用户报表';
 
-$s_plugin_UserProjectView_thead_accounts_title = '帐户概况- ';
 $s_plugin_UserProjectView_thead_projects_title = '已选项目: ';
 $s_plugin_UserProjectView_thead_username = '用户名：';
 $s_plugin_UserProjectView_thead_realname = '真实姓名';

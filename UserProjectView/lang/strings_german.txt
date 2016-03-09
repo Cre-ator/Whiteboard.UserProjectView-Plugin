@@ -2,7 +2,6 @@
 $s_plugin_UserProjectView_menu_printbutton = 'Bericht Drucken';
 $s_plugin_UserProjectView_menu_userprojecttitle = 'Benutzer Bericht';
 
-$s_plugin_UserProjectView_thead_accounts_title = 'Kontenübersicht - ';
 $s_plugin_UserProjectView_thead_projects_title = 'Ausgewähltes Projekt: ';
 $s_plugin_UserProjectView_thead_username = 'Benutzername';
 $s_plugin_UserProjectView_thead_realname = 'Realer Name';

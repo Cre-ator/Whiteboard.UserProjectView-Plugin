@@ -17,7 +17,8 @@ if ( $option_reset )
 {
    $userprojectview_database_api->resetPlugin();
 }
-elseif ( $option_change )
+
+if ( $option_change )
 {
    $userprojectview_config_api->updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
 

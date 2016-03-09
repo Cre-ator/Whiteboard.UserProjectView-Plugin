@@ -37,14 +37,20 @@ class userprojectview_print_api
       echo '</th>';
    }
 
-   public function printTHRow( $colspan )
+   public function printTHRow( $colspan, $print_flag )
    {
       echo '<tr>';
-      echo '<td class="form-title" colspan="' . $colspan . '">' .
-         plugin_lang_get( 'thead_accounts_title' ) .
+      echo '<td class="form-title" colspan="' . ( $colspan - 1 ) . '">' .
+         plugin_lang_get( 'menu_userprojecttitle' ) . ' - ' .
          plugin_lang_get( 'thead_projects_title' ) .
          project_get_name( helper_get_current_project() );
       echo '</td>';
+      if ( !$print_flag )
+      {
+         echo '<td><form action="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC' . '" method="post">';
+         echo '&nbsp<input type="submit" name="print_flag" class="button" value="' . lang_get( 'print' ) . '"/>';
+         echo '</form></td>';
+      }
       echo '</tr>';
    }
 
@@ -151,5 +157,17 @@ class userprojectview_print_api
       echo '<input class="color {pickerFace:4,pickerClosable:true}" type="text" name="' . $name . '" value="' . plugin_config_get( $name, $default ) . '" />';
       echo '</label>';
       echo '</td>';
+   }
+
+   public function print_table_head()
+   {
+      if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+      {
+         echo '<table class="width100" cellspacing="1">';
+      }
+      else
+      {
+         echo '<table>';
+      }
    }
 }

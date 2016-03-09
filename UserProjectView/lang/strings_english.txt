@@ -2,7 +2,6 @@
 $s_plugin_UserProjectView_menu_printbutton = 'Print report';
 $s_plugin_UserProjectView_menu_userprojecttitle = 'User report';
 
-$s_plugin_UserProjectView_thead_accounts_title = 'Account overview - ';
 $s_plugin_UserProjectView_thead_projects_title = 'Selected project: ';
 $s_plugin_UserProjectView_thead_username = 'Username';
 $s_plugin_UserProjectView_thead_realname = 'Real name';
