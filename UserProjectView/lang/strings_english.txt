@@ -12,7 +12,7 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 
 $s_plugin_UserProjectView_remark_noProject = 'No project-assignment';
 $s_plugin_UserProjectView_remark_showURIssues = 'Unreachable issues';
-$s_plugin_UserProjectView_remark_IAUser = 'User is inactive';
+$s_plugin_UserProjectView_remark_IAUser = 'User is disabled';
 $s_plugin_UserProjectView_remark_ZIssues = 'User has no issues';
 $s_plugin_UserProjectView_remark_noUser = 'No user-assignmend';
 $s_plugin_UserProjectView_remark_since = 'since';
@@ -27,7 +27,7 @@ $s_plugin_UserProjectView_remove_failure = 'Error, user not removed from project
 $s_plugin_UserProjectView_config_showFooter = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_config_showMenu = 'Show plugin menu entry?';
 $s_plugin_UserProjectView_config_showAvatar = 'Show avatar in user report?';
-$s_plugin_UserProjectView_config_IAUHighlighting = 'Mark inactive users?';
+$s_plugin_UserProjectView_config_IAUHighlighting = 'Mark disabled users?';
 $s_plugin_UserProjectView_config_URIUHighlighting = 'Mark row if user is not assigned to project?';
 $s_plugin_UserProjectView_config_NUIHighlighting = 'Mark issues without assigned user?';
 $s_plugin_UserProjectView_config_showZIU = 'Show Users with zero Issues?';
