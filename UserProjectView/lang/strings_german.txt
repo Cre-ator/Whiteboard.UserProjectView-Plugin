@@ -12,7 +12,7 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 
 $s_plugin_UserProjectView_remark_noProject = 'Projekt-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_showURIssues = 'Unerreichbare Issues';
-$s_plugin_UserProjectView_remark_IAUser = 'Nutzer ist inaktiv';
+$s_plugin_UserProjectView_remark_IAUser = 'Nutzer ist deaktiviert';
 $s_plugin_UserProjectView_remark_ZIssues = 'Nutzer hat keine Issues';
 $s_plugin_UserProjectView_remark_noUser = 'Nutzer-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_since = 'seit';
@@ -27,7 +27,7 @@ $s_plugin_UserProjectView_remove_failure = 'Fehler, Nutzer nicht aus Projekt ent
 $s_plugin_UserProjectView_config_showFooter = 'Plugin Info in Footer anzeigen?';
 $s_plugin_UserProjectView_config_showMenu = 'Plugin Menüeintrag anzeigen?';
 $s_plugin_UserProjectView_config_showAvatar = 'Avatar in Übersicht anzeigen?';
-$s_plugin_UserProjectView_config_IAUHighlighting = 'Hervorhebung inaktiver Nutzer?';
+$s_plugin_UserProjectView_config_IAUHighlighting = 'Hervorhebung deaktivierter Nutzer?';
 $s_plugin_UserProjectView_config_URIUHighlighting = 'Hervorhebung bei fehlender Projektzuweisung?';
 $s_plugin_UserProjectView_config_NUIHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';
 $s_plugin_UserProjectView_config_showZIU = 'Nutzer ohne Issues anzeigen?';
