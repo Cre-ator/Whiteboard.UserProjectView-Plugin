@@ -89,8 +89,11 @@ for ( $bugIndex = 0; $bugIndex < $t_row_count; $bugIndex++ )
    if ( $actBugAssignedUserId != 0 )
    {
       $aBAUIUsername = user_get_name( $actBugAssignedUserId );
-      $aBAUIRealname = user_get_realname( $actBugAssignedUserId );
-      $aBAUIActivFlag = user_is_enabled( $actBugAssignedUserId );
+      if ( user_exists( $actBugAssignedUserId ) )
+      {
+         $aBAUIRealname = user_get_realname( $actBugAssignedUserId );
+         $aBAUIActivFlag = user_is_enabled( $actBugAssignedUserId );
+      }
    }
 
    // project information
@@ -165,7 +168,6 @@ for ( $rowIndex = 0; $rowIndex < $rowCount; $rowIndex++ )
 
    // process data string
    $rowVals = explode( '__', $rowContent );
-
    // fill tablerow with data
    $tableRow[$rowIndex]['userId'] = $rowVals[0];
    $tableRow[$rowIndex]['userName'] = $rowVals[1];
@@ -218,7 +220,11 @@ if ( plugin_config_get( 'ShowZIU' ) )
       $userId = $userRows[$userRowIndex][0];
       $userName = user_get_name( $userId );
       $userRealname = user_get_realname( $userId );
-      $userIsActive = user_is_enabled( $userId );
+      $userIsActive = false;
+      if ( user_exists( $userId ) )
+      {
+         $userIsActive = user_is_enabled( $userId );
+      }
       $userIsAssignedToProjectHierarchy = false;
 
       if ( $userIsActive == false )
@@ -529,24 +535,27 @@ function build_avatar_column( $userAccessLevel, $linkUserId, $userId )
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
       echo '<td align="center" width="25px">';
-      if ( access_has_global_level( $userAccessLevel ) )
+      if ( user_exists( $userId ) )
       {
-         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-         echo $filterString;
-      }
-
-      if ( config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
-      {
-         if ( $userId > 0 )
+         if ( access_has_global_level( $userAccessLevel ) )
          {
-            $assocArray = user_get_avatar( $userId );
-            echo '<img class="avatar" src="' . $assocArray [0] . '" />';
+            $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+            echo $filterString;
          }
-      }
 
-      if ( access_has_global_level( $userAccessLevel ) )
-      {
-         echo '</a>';
+         if ( config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
+         {
+            if ( $userId > 0 )
+            {
+               $assocArray = user_get_avatar( $userId );
+               echo '<img class="avatar" src="' . $assocArray [0] . '" />';
+            }
+         }
+
+         if ( access_has_global_level( $userAccessLevel ) )
+         {
+            echo '</a>';
+         }
       }
       echo '</td>';
    }

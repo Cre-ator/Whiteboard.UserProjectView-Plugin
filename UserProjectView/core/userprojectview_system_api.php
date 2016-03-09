@@ -114,7 +114,7 @@ class userprojectview_system_api
       $userprojectview_database_api = new userprojectview_database_api();
 
       $assigned_to_project = '0';
-      if ( $user_id != '0' && $bug_assigned_project_id != '' )
+      if ( $user_id != '0' && $bug_assigned_project_id != '' && user_exists( $user_id ) )
       {
          if ( !user_is_administrator( $user_id ) )
          {
@@ -218,7 +218,7 @@ class userprojectview_system_api
       $user_count = count( $user_id );
       $project_count = count( $project_id );
 
-      if ( $user_count == $project_count )
+      if ( $user_count == $project_count && user_exists( $user_id ) )
       {
          for ( $dIndex = 0; $dIndex < $user_count; $dIndex++ )
          {
