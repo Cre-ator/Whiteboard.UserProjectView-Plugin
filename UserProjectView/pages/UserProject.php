@@ -568,12 +568,26 @@ function build_user_column( $userAccessLevel, $linkUserId, $userName, $print_fla
    {
       $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
       echo $filterString;
-      echo $userName;
+      if ( user_exists( $linkUserId ) )
+      {
+         echo $userName;
+      }
+      else
+      {
+         echo '<s>' . $userName . '</s>';
+      }
       echo '</a>';
    }
    else
    {
-      echo $userName;
+      if ( user_exists( $linkUserId ) )
+      {
+         echo $userName;
+      }
+      else
+      {
+         echo '<s>' . $userName . '</s>';
+      }
    }
    echo '</td>';
 }
