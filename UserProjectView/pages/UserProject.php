@@ -317,7 +317,7 @@ echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserP
 if ( !$print_flag )
 {
    html_page_top2();
-   if ( plugin_is_installed( 'WhiteboardMenu' ) )
+   if ( plugin_is_installed( 'WhiteboardMenu' ) && file_exists( config_get_global( 'plugin_path' ) . 'WhiteboardMenu' ) )
    {
       require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
       $whiteboard_print_api = new whiteboard_print_api();
