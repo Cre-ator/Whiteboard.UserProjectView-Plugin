@@ -12,7 +12,7 @@ html_page_top2();
 
 print_manage_menu();
 
-echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
+echo '<script type=" text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
 echo '<br/>';
 echo '<form action="' . plugin_page( 'config_update' ) . '" method="post">';
 echo form_security_field( 'plugin_UserProjectView_config_update' );

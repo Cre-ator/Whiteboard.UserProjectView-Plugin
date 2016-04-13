@@ -46,6 +46,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 
 html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
+echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'table.js"></script>';
 if ( !$print_flag )
 {
    html_page_top2();
@@ -738,7 +739,7 @@ function build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssig
    $userprojectview_database_api = new userprojectview_database_api();
    $userprojectview_system_api = new userprojectview_system_api();
 
-   echo '<td style="white-space:nowrap">';
+   echo '<td>';
    for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
    {
       $issueAgeThreshold = $issueAgeThresholds[$statColIndex];
