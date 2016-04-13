@@ -63,7 +63,14 @@ switch ( $select )
 
          echo '<td>';
          echo '<a href="manage_user_edit_page.php?user_id=' . $user_id . '">';
-         echo user_get_name( $user_id );
+         if ( user_exists( $user_id ) )
+         {
+            echo user_get_name( $user_id );
+         }
+         else
+         {
+            echo '<s>' . user_get_name( $user_id ) . '</s>';
+         }
          echo '</a>';
          echo '</td>';
          echo '<td>';
@@ -135,7 +142,14 @@ switch ( $select )
 
             echo '<td>';
             echo '<a href="manage_user_edit_page.php?user_id=' . $user_id . '">';
-            echo user_get_name( $user_id );
+            if ( user_exists( $user_id ) )
+            {
+               echo user_get_name( $user_id );
+            }
+            else
+            {
+               echo '<s>' . user_get_name( $user_id ) . '</s>';
+            }
             echo '</a>';
             echo '</td>';
             echo '<td>';
