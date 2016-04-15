@@ -560,7 +560,8 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCo
          }
          else
          {
-            echo '<s>' . user_get_name( $head_row_array[0] ) . '</s>';
+//            echo '<s>' . user_get_name( $head_row_array[0] ) . '</s>';
+            echo 'Issues without assigned user';
          }
          echo '</td>';
 
@@ -573,7 +574,7 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCo
          echo '</td>';
 
          /** main project | assigned project | target version */
-         echo '<td colspan="3" class="center">### diverse ###</td>';
+         echo '<td colspan="3" class="center">### experimental ###</td>';
 
          /** amount of issues */
          $iCounter = $head_row_array[1];
