@@ -12,7 +12,7 @@ html_page_top2();
 
 print_manage_menu();
 
-echo '<script type=" text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
+echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
 echo '<br/>';
 echo '<form action="' . plugin_page( 'config_update' ) . '" method="post">';
 echo form_security_field( 'plugin_UserProjectView_config_update' );
@@ -51,6 +51,11 @@ echo '</tr>';
 $userprojectview_print_api->printConfigRow();
 $userprojectview_print_api->printConfigCategory( 1, 1, 'config_showAvatar' );
 $userprojectview_print_api->printRadioButton( 5, 'ShowAvatar' );
+echo '</tr>';
+
+$userprojectview_print_api->printConfigRow();
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showHeadRow' );
+$userprojectview_print_api->printRadioButton( 5, 'showHeadRow' );
 echo '</tr>';
 
 $userprojectview_print_api->printSpacer( 6 );

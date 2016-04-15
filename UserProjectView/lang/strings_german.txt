@@ -27,6 +27,7 @@ $s_plugin_UserProjectView_remove_failure = 'Fehler, Nutzer nicht aus Projekt ent
 $s_plugin_UserProjectView_config_showFooter = 'Plugin Info in Footer anzeigen?';
 $s_plugin_UserProjectView_config_showMenu = 'Plugin Menüeintrag anzeigen?';
 $s_plugin_UserProjectView_config_showAvatar = 'Avatar in Übersicht anzeigen?';
+$s_plugin_UserProjectView_config_showHeadRow = 'Zusammenfassende Kopfzeile anzeigen?';
 $s_plugin_UserProjectView_config_IAUHighlighting = 'Hervorhebung deaktivierter Nutzer?';
 $s_plugin_UserProjectView_config_URIUHighlighting = 'Hervorhebung bei fehlender Projektzuweisung?';
 $s_plugin_UserProjectView_config_NUIHighlighting = 'Hervorhebung von Issues ohne zugewiesenem Nutzer?';

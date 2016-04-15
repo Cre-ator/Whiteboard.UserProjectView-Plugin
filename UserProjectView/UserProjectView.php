@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.14';
+      $this->version = '1.3.16';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -54,6 +54,7 @@ class UserProjectViewPlugin extends MantisPlugin
          'ShowMenu' => ON,
          'ShowInFooter' => ON,
          'ShowAvatar' => ON,
+         'showHeadRow' => ON,
 
          // IAU -> inactive user
          'IAUHighlighting' => ON,

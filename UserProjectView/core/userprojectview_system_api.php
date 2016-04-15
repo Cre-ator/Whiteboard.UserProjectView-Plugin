@@ -15,15 +15,6 @@ class userprojectview_system_api
       return user_get_access_level( $user_id, $project_id ) >= plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
    }
 
-   public function compareValues( $value_one, $value_two, $row_val )
-   {
-      if ( $value_one != $value_two )
-      {
-         return !$row_val;
-      }
-      return $row_val;
-   }
-
    public function prepareFilterString( $unreach_issue_status_count, $unreach_issue_status_value, $filter_string )
    {
       for ( $unreachIssueStatusIndex = 0; $unreachIssueStatusIndex < $unreach_issue_status_count; $unreachIssueStatusIndex++ )

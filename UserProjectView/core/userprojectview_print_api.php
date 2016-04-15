@@ -54,21 +54,12 @@ class userprojectview_print_api
       echo '</tr>';
    }
 
-   public function printTDRow( $user_id, $row_val, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag )
+   public function printTDRow( $user_id, $row_index, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag )
    {
       $iA_background_color = plugin_config_get( 'IAUHBGColor' );
       $uR_background_color = plugin_config_get( 'URIUHBGColor' );
       $nU_background_color = plugin_config_get( 'NUIHBGColor' );
       $zI_background_color = plugin_config_get( 'ZIHBGColor' );
-
-      if ( $row_val == true )
-      {
-         $row_index = 1;
-      }
-      else
-      {
-         $row_index = 2;
-      }
 
       if ( user_exists( $user_id ) && $user_id != '0' && user_get_field( $user_id, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
       {
