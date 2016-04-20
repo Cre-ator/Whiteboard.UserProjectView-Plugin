@@ -416,60 +416,63 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
 
    /** todo */
    /** generate "each-user"-headrows */
-   $head_rows_array = array();
-   for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
+   if ( $sortVal == 'userName' || $sortVal == 'realName' )
    {
-      $userId = $tableRow[$tableRowIndex]['userId'];
-      $head_row = array();
-
-      $iCounter = array();
-      for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+      $head_rows_array = array();
+      for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
       {
-         $iCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
-      }
+         $userId = $tableRow[$tableRowIndex]['userId'];
+         $head_row = array();
 
-      if ( $tableRowIndex == 0 )
-      {
-         /** create first headrow entry */
-         $head_row[0] = $userId;
-         $head_row[1] = $iCounter;
-
-         array_push( $head_rows_array, $head_row );
-      }
-
-      if ( $tableRowIndex > 0 )
-      {
-         /** process data of same user now || not and create next headrow */
-         $last_user_id = $tableRow[$tableRowIndex - 1]['userId'];
-         if ( $last_user_id == $userId )
+         $iCounter = array();
+         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
          {
-            /** same user */
-            for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
-            {
-               $head_row_array = $head_rows_array[$head_rows_array_index];
-               /** find his array */
-               if ( $head_row_array[0] == $userId )
-               {
-                  /** get his issue counter */
-                  $extracted_iCounter = $head_row_array[1];
-                  /** add count to existing */
-                  for ( $iCounter_index = 1; $iCounter_index <= $amountStatColumns; $iCounter_index++ )
-                  {
-                     $extracted_iCounter[$iCounter_index] += $tableRow[$tableRowIndex]['specColumn' . $iCounter_index];
-                  }
-                  /** save modified counter */
-                  $head_row_array[1] = $extracted_iCounter;
-                  $head_rows_array[$head_rows_array_index] = $head_row_array;
-               }
-            }
+            $iCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
          }
-         else
+
+         if ( $tableRowIndex == 0 )
          {
-            /** new user */
+            /** create first headrow entry */
             $head_row[0] = $userId;
             $head_row[1] = $iCounter;
 
             array_push( $head_rows_array, $head_row );
+         }
+
+         if ( $tableRowIndex > 0 )
+         {
+            /** process data of same user now || not and create next headrow */
+            $last_user_id = $tableRow[$tableRowIndex - 1]['userId'];
+            if ( $last_user_id == $userId )
+            {
+               /** same user */
+               for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
+               {
+                  $head_row_array = $head_rows_array[$head_rows_array_index];
+                  /** find his array */
+                  if ( $head_row_array[0] == $userId )
+                  {
+                     /** get his issue counter */
+                     $extracted_iCounter = $head_row_array[1];
+                     /** add count to existing */
+                     for ( $iCounter_index = 1; $iCounter_index <= $amountStatColumns; $iCounter_index++ )
+                     {
+                        $extracted_iCounter[$iCounter_index] += $tableRow[$tableRowIndex]['specColumn' . $iCounter_index];
+                     }
+                     /** save modified counter */
+                     $head_row_array[1] = $extracted_iCounter;
+                     $head_rows_array[$head_rows_array_index] = $head_row_array;
+                  }
+               }
+            }
+            else
+            {
+               /** new user */
+               $head_row[0] = $userId;
+               $head_row[1] = $iCounter;
+
+               array_push( $head_rows_array, $head_row );
+            }
          }
       }
    }
@@ -516,12 +519,13 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
       }
 
       /** todo EXPERIMANTAL */
-      if ( plugin_config_get( 'showHeadRow' ) )
+      if ( plugin_config_get( 'showHeadRow' ) && !$print_flag )
       {
-         $head_rows_array = print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCols );
+         /** @var array $head_rows_array */
+         $head_rows_array = print_head_rows( $head_rows_array, $userId, $amountStatColumns );
       }
 
-      $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
+      $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
       if ( !$print_flag )
       {
          build_chackbox_column( $userId, $pProject );
@@ -541,7 +545,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
    echo '</tbody>';
 }
 
-function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCols )
+function print_head_rows( $head_rows_array, $userId, $amountStatColumns )
 {
    for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
    {
@@ -550,7 +554,7 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCo
       if ( $head_row_array[0] == $userId )
       {
          /** print information */
-         echo '<tr style="background-color:#44e643">';
+         echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
 
          /** user */
          echo '<td colspan="3">';
@@ -560,8 +564,7 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCo
          }
          else
          {
-//            echo '<s>' . user_get_name( $head_row_array[0] ) . '</s>';
-            echo 'Issues without assigned user';
+            echo plugin_lang_get( 'headrow_no_user' );
          }
          echo '</td>';
 
@@ -574,20 +577,20 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns, $statCo
          echo '</td>';
 
          /** main project | assigned project | target version */
-         echo '<td colspan="3" class="center">### experimental ###</td>';
+         echo '<td colspan="3" class="center" />';
 
          /** amount of issues */
          $iCounter = $head_row_array[1];
          for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
          {
             $issueAmount = $iCounter[$statColIndex];
-            echo '<td bgcolor="' . get_status_color( $statCols[$statColIndex], null, null ) . '">';
+            echo '<td>';
             echo $issueAmount;
             echo '</td>';
          }
 
          /** remark */
-         echo '<td>### Headrow ###</td>';
+         echo '<td><a href="#" onclick="row_view(' . $userId . ')">' . plugin_lang_get( 'remark_showhideHeadRow' ) . '</a></td>';
          echo '</tr>';
          $head_row_array[0] = null;
          $head_rows_array[$head_rows_array_index] = $head_row_array;

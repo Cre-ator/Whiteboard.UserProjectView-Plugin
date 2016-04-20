@@ -17,6 +17,9 @@ $s_plugin_UserProjectView_remark_ZIssues = 'Nutzer hat keine Issues';
 $s_plugin_UserProjectView_remark_noUser = 'Nutzer-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_since = 'seit';
 $s_plugin_UserProjectView_remark_day = 'Tagen';
+$s_plugin_UserProjectView_remark_showhideHeadRow = 'Ein- / Ausblenden';
+
+$s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';
 $s_plugin_UserProjectView_remove_selectSingle = 'Nutzer aus Projekt entfernen';

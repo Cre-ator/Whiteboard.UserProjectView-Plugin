@@ -55,7 +55,9 @@ echo '</tr>';
 
 $userprojectview_print_api->printConfigRow();
 $userprojectview_print_api->printConfigCategory( 1, 1, 'config_showHeadRow' );
-$userprojectview_print_api->printRadioButton( 5, 'showHeadRow' );
+$userprojectview_print_api->printRadioButton( 1, 'showHeadRow' );
+$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
+$userprojectview_print_api->printColorPicker( 3, 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 echo '</tr>';
 
 $userprojectview_print_api->printSpacer( 6 );

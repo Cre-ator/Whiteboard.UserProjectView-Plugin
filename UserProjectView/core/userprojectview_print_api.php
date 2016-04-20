@@ -54,7 +54,7 @@ class userprojectview_print_api
       echo '</tr>';
    }
 
-   public function printTDRow( $user_id, $row_index, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag )
+   public function printTDRow( $user_id, $row_index, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag, $sortVal, $print_flag )
    {
       $iA_background_color = plugin_config_get( 'IAUHBGColor' );
       $uR_background_color = plugin_config_get( 'URIUHBGColor' );
@@ -63,31 +63,70 @@ class userprojectview_print_api
 
       if ( user_exists( $user_id ) && $user_id != '0' && user_get_field( $user_id, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
       {
-         echo '<tr style="background-color:' . $iA_background_color . '">';
-      }
-      elseif ( $zero_issues_flag && plugin_config_get( 'ZIHighlighting' ) )
-      {
-         echo '<tr style="background-color:' . $zI_background_color . '">';
-      }
-      elseif ( $no_user_flag && plugin_config_get( 'NUIHighlighting' ) )
-      {
-         echo '<tr style="background-color:' . $nU_background_color . '">';
-      }
-      elseif ( $unreachable_issue_flag && plugin_config_get( 'URIUHighlighting' ) )
-      {
-         echo '<tr style="background-color:' . $uR_background_color . '">';
-      }
-      else
-      {
-         if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+         echo '<tr name="' . $user_id . '"';
+         if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
-            echo '<tr ' . helper_alternate_class( $row_index ) . '">';
+            echo 'style="visibility: hidden; display: none; background-color:' . $iA_background_color . '"';
          }
          else
          {
-            echo '<tr class="row-' . $row_index . '">';
+            echo 'style="background-color:' . $iA_background_color . '"';
          }
+         echo '>';
       }
+      elseif ( $zero_issues_flag && plugin_config_get( 'ZIHighlighting' ) )
+      {
+         echo '<tr name="' . $user_id . '"';
+         if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
+         {
+            echo 'style="visibility: hidden; display: none; background-color:' . $zI_background_color . '"';
+         }
+         else
+         {
+            echo 'style="background-color:' . $iA_background_color . '"';
+         }
+         echo '>';
+      }
+      elseif ( $no_user_flag && plugin_config_get( 'NUIHighlighting' ) )
+      {
+         echo '<tr name="' . $user_id . '"';
+         if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
+         {
+            echo 'style="visibility: hidden; display: none; background-color:' . $nU_background_color . '"';
+         }
+         else
+         {
+            echo 'style="background-color:' . $iA_background_color . '"';
+         }
+         echo '>';
+      }
+      elseif ( $unreachable_issue_flag && plugin_config_get( 'URIUHighlighting' ) )
+      {
+         echo '<tr name="' . $user_id . '"';
+         if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
+         {
+            echo 'style="visibility: hidden; display: none; background-color:' . $uR_background_color . '"';
+         }
+         else
+         {
+            echo 'style="background-color:' . $iA_background_color . '"';
+         }
+         echo '>';
+      }
+      else
+      {
+         echo '<tr name="' . $user_id . '" class="row-' . $row_index . '"';
+         if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
+         {
+            echo 'style="visibility: hidden; display: none"';
+         }
+         echo '>';
+      }
+   }
+
+   public function check_head_row()
+   {
+      return plugin_config_get( 'showHeadRow' );
    }
 
    public function printConfigRow()
