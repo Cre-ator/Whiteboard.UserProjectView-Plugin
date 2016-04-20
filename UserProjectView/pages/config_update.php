@@ -25,6 +25,8 @@ if ( $option_change )
    $userprojectview_config_api->updateButton( 'ShowMenu' );
    $userprojectview_config_api->updateButton( 'ShowInFooter' );
    $userprojectview_config_api->updateButton( 'ShowAvatar' );
+   $userprojectview_config_api->updateButton( 'showHeadRow' );
+   $userprojectview_config_api->updateColor( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 
    $userprojectview_config_api->updateButton( 'IAUHighlighting' );
    $userprojectview_config_api->updateColor( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );

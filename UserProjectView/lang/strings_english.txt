@@ -17,6 +17,9 @@ $s_plugin_UserProjectView_remark_ZIssues = 'User has no issues';
 $s_plugin_UserProjectView_remark_noUser = 'No user-assignmend';
 $s_plugin_UserProjectView_remark_since = 'since';
 $s_plugin_UserProjectView_remark_day = 'Days';
+$s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
+
+$s_plugin_UserProjectView_headrow_no_user = 'Issues without assigned user';
 
 $s_plugin_UserProjectView_remove_quest = 'Are you sure you want to remove the following users from the specified project?';
 $s_plugin_UserProjectView_remove_selectSingle = 'Remove User from Project';
@@ -27,6 +30,7 @@ $s_plugin_UserProjectView_remove_failure = 'Error, user not removed from project
 $s_plugin_UserProjectView_config_showFooter = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_config_showMenu = 'Show plugin menu entry?';
 $s_plugin_UserProjectView_config_showAvatar = 'Show avatar in user report?';
+$s_plugin_UserProjectView_config_showHeadRow = 'Show summarizing Headrow?';
 $s_plugin_UserProjectView_config_IAUHighlighting = 'Mark disabled users?';
 $s_plugin_UserProjectView_config_URIUHighlighting = 'Mark row if user is not assigned to project?';
 $s_plugin_UserProjectView_config_NUIHighlighting = 'Mark issues without assigned user?';
