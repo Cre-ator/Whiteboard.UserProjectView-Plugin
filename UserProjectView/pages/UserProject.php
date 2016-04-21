@@ -415,10 +415,30 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
 
    echo '<tbody>';
 
-   /** todo */
-   /** generate "each-user"-headrows */
-   if ( $sortVal == 'userName' || $sortVal == 'realName' )
+   /** todo EXPERIMANTAL */
+   if ( plugin_config_get( 'showHeadRow' ) && !$print_flag )
    {
+      $group_user_with_issue = array();
+      $group_user_without_issue = array();
+      $group_inactive_deleted_user = array();
+      $group_issues_without_user = array();
+
+      $groups = array();
+      $groups[0] = $group_user_with_issue;
+      $groups[1] = $group_user_without_issue;
+      $groups[2] = $group_inactive_deleted_user;
+      $groups[3] = $group_issues_without_user;
+
+      $groups = sort_groups2( $groups, $tableRow, $amountStatColumns );
+
+      var_dump( $groups );
+      $group_user_with_issue = $groups[0];
+      $group_user_without_issue = $groups[1];
+      $group_inactive_deleted_user = $groups[2];
+      $group_issues_without_user = $groups[3];
+
+      /** todo */
+      /** generate "each-user"-headrows */
       $head_rows_array = array();
       for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
       {
@@ -476,135 +496,255 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
             }
          }
       }
-   }
 
-   /** generate "each-project"-content */
-   for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
+   }
+   else
    {
-      $userId = $tableRow[$tableRowIndex]['userId'];
-      $userName = $tableRow[$tableRowIndex]['userName'];
-      $userRealname = $tableRow[$tableRowIndex]['userRealname'];
-      $mainProjectId = $tableRow[$tableRowIndex]['mainProjectId'];
-      $mainProjectName = $tableRow[$tableRowIndex]['mainProjectName'];
-      $bugAssignedProjectId = $tableRow[$tableRowIndex]['bugAssignedProjectId'];
-      $bugAssignedProjectName = $tableRow[$tableRowIndex]['bugAssignedProjectName'];
-      $bugTargetVersion = $tableRow[$tableRowIndex]['bugTargetVersion'];
-      $bugTargetVersionDate = $tableRow[$tableRowIndex]['bugTargetVersionDate'];
-      $bugTargetVersionPreparedString = $tableRow[$tableRowIndex]['bugTargetVersionPreparedString'];
-      $inactiveUserFlag = $tableRow[$tableRowIndex]['inactiveUserFlag'];
-      $zeroIssuesFlag = $tableRow[$tableRowIndex]['zeroIssuesFlag'];
-      $issueCounter = array();
-      for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+      /** generate "each-project"-content */
+      for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
       {
-         $issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
+         $userId = $tableRow[$tableRowIndex]['userId'];
+         $userName = $tableRow[$tableRowIndex]['userName'];
+         $userRealname = $tableRow[$tableRowIndex]['userRealname'];
+         $mainProjectId = $tableRow[$tableRowIndex]['mainProjectId'];
+         $mainProjectName = $tableRow[$tableRowIndex]['mainProjectName'];
+         $bugAssignedProjectId = $tableRow[$tableRowIndex]['bugAssignedProjectId'];
+         $bugAssignedProjectName = $tableRow[$tableRowIndex]['bugAssignedProjectName'];
+         $bugTargetVersion = $tableRow[$tableRowIndex]['bugTargetVersion'];
+         $bugTargetVersionDate = $tableRow[$tableRowIndex]['bugTargetVersionDate'];
+         $bugTargetVersionPreparedString = $tableRow[$tableRowIndex]['bugTargetVersionPreparedString'];
+         $inactiveUserFlag = $tableRow[$tableRowIndex]['inactiveUserFlag'];
+         $zeroIssuesFlag = $tableRow[$tableRowIndex]['zeroIssuesFlag'];
+         $issueCounter = array();
+         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+         {
+            $issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
+         }
+
+         $bugAssignedProjectId = $userprojectview_system_api->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
+         $linkUserId = $userprojectview_system_api->generateLinkUserId( $userId );
+         $isAssignedToProject = $userprojectview_system_api->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
+         $unreachableIssueFlag = $userprojectview_system_api->setUnreachableIssueFlag( $isAssignedToProject );
+         $pProject = $userprojectview_system_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
+         $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
+
+         /** @var $change_row_bg := true, if value has changed, false if not */
+         $change_row_bg = false;
+         if ( $tableRowIndex > 0 )
+         {
+            $change_row_bg = checkout_change_row( $sortVal, $tableRow, $tableRowIndex );
+         }
+
+         /** @var $row_index := 1 dark grey, 2 light grey ( Mantis 1.2.x ) */
+         if ( $change_row_bg )
+         {
+            $row_index = 3 - $row_index;
+         }
+
+         $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
+         if ( !$print_flag )
+         {
+            build_chackbox_column( $userId, $pProject );
+            build_avatar_column( $userAccessLevel, $linkUserId, $userId );
+         }
+         build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag );
+         build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag );
+         build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
+         build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
+         target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
+         $specColumnIssueAmount = build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $statCols, $issueCounter, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $specColumnIssueAmount, $print_flag );
+         build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
+         echo '</tr>';
       }
 
-      $bugAssignedProjectId = $userprojectview_system_api->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
-      $linkUserId = $userprojectview_system_api->generateLinkUserId( $userId );
-      $isAssignedToProject = $userprojectview_system_api->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
-      $unreachableIssueFlag = $userprojectview_system_api->setUnreachableIssueFlag( $isAssignedToProject );
-      $pProject = $userprojectview_system_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
-      $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
-
-      /** @var $change_row_bg := true, if value has changed, false if not */
-      $change_row_bg = false;
-      if ( $tableRowIndex > 0 )
-      {
-         $change_row_bg = checkout_change_row( $sortVal, $tableRow, $tableRowIndex );
-      }
-
-      /** @var $row_index := 1 dark grey, 2 light grey ( Mantis 1.2.x ) */
-      if ( $change_row_bg )
-      {
-         $row_index = 3 - $row_index;
-      }
-
-      /** todo EXPERIMANTAL */
-      if ( plugin_config_get( 'showHeadRow' ) && !$print_flag )
-      {
-         /** @var array $head_rows_array */
-         $head_rows_array = print_head_rows( $head_rows_array, $userId, $amountStatColumns );
-      }
-
-      $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
-      if ( !$print_flag )
-      {
-         build_chackbox_column( $userId, $pProject );
-         build_avatar_column( $userAccessLevel, $linkUserId, $userId );
-      }
-      build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag );
-      build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag );
-      build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
-      build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
-      target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
-      $specColumnIssueAmount = build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $statCols, $issueCounter, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $specColumnIssueAmount, $print_flag );
-      build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
-      echo '</tr>';
+      build_option_panel( $userAccessLevel, $amountStatColumns, $specColumnIssueAmount, $print_flag );
+      echo '</tbody>';
    }
-
-   build_option_panel( $userAccessLevel, $amountStatColumns, $specColumnIssueAmount, $print_flag );
-   echo '</tbody>';
 }
 
-function sort_groups( $head_rows_array, $userId, $amountStatColumns )
+function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue )
 {
-   $group_user_with_issue = array();
-   $group_user_without_issue = array();
-   $group_inactive_deleted_user = array();
-   $group_issues_without_user = array();
-   for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
+   $userprojectview_system_api = new userprojectview_system_api();
+   $userprojectview_print_api = new userprojectview_print_api();
+
+   $userId = $tableRow[$tableRowIndex]['userId'];
+   $userName = $tableRow[$tableRowIndex]['userName'];
+   $userRealname = $tableRow[$tableRowIndex]['userRealname'];
+   $mainProjectId = $tableRow[$tableRowIndex]['mainProjectId'];
+   $mainProjectName = $tableRow[$tableRowIndex]['mainProjectName'];
+   $bugAssignedProjectId = $tableRow[$tableRowIndex]['bugAssignedProjectId'];
+   $bugAssignedProjectName = $tableRow[$tableRowIndex]['bugAssignedProjectName'];
+   $bugTargetVersion = $tableRow[$tableRowIndex]['bugTargetVersion'];
+   $bugTargetVersionDate = $tableRow[$tableRowIndex]['bugTargetVersionDate'];
+   $bugTargetVersionPreparedString = $tableRow[$tableRowIndex]['bugTargetVersionPreparedString'];
+   $inactiveUserFlag = $tableRow[$tableRowIndex]['inactiveUserFlag'];
+   $zeroIssuesFlag = $tableRow[$tableRowIndex]['zeroIssuesFlag'];
+   $issueCounter = array();
+   for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
    {
-      $head_row_array = $head_rows_array[$head_rows_array_index];
-      /** find his array */
-      if ( $head_row_array[0] == $userId )
+      $issueCounter[$statColIndex] = $tableRow[$tableRowIndex]['specColumn' . $statColIndex];
+   }
+
+   $bugAssignedProjectId = $userprojectview_system_api->getBugAssignedProjectId( $bugAssignedProjectId, $mainProjectId );
+   $linkUserId = $userprojectview_system_api->generateLinkUserId( $userId );
+   $isAssignedToProject = $userprojectview_system_api->checkUserAssignedToProject( $userId, $bugAssignedProjectId );
+   $unreachableIssueFlag = $userprojectview_system_api->setUnreachableIssueFlag( $isAssignedToProject );
+   $pProject = $userprojectview_system_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
+   $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
+
+   /** @var $change_row_bg := true, if value has changed, false if not */
+   $change_row_bg = false;
+   if ( $tableRowIndex > 0 )
+   {
+      $change_row_bg = checkout_change_row( $sortVal, $tableRow, $tableRowIndex );
+   }
+
+   /** @var $row_index := 1 dark grey, 2 light grey ( Mantis 1.2.x ) */
+   if ( $change_row_bg )
+   {
+      $row_index = 3 - $row_index;
+   }
+
+   $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
+   if ( !$print_flag )
+   {
+      build_chackbox_column( $userId, $pProject );
+      build_avatar_column( $userAccessLevel, $linkUserId, $userId );
+   }
+   build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag );
+   build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag );
+   build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
+   build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
+   target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
+   $specColumnIssueAmount = build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $statCols, $issueCounter, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $specColumnIssueAmount, $print_flag );
+   build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
+   echo '</tr>';
+}
+
+//function sort_groups( $groups, $head_rows_array, $userId, $amountStatColumns )
+//{
+//   $group_user_with_issue = $groups[0];
+//   $group_user_without_issue = $groups[1];
+//   $group_inactive_deleted_user = $groups[2];
+//   $group_issues_without_user = $groups[3];
+//   for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
+//   {
+//      $head_row_array = $head_rows_array[$head_rows_array_index];
+//      /** find his array */
+//      if ( $head_row_array[0] == $userId )
+//      {
+//         $iCounter = $head_row_array[1];
+//
+//         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
+//         if ( $head_row_array[0] > 0 )
+//         {
+//            /** user existiert */
+//            if ( user_exists( $head_row_array[0] ) )
+//            {
+//               /** user ist aktiv */
+//               if ( user_is_enabled( $head_row_array[0] ) )
+//               {
+//                  $amount_all_issues = 0;
+//                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+//                  {
+//                     $amount_all_issues += $iCounter[$statColIndex];
+//                  }
+//
+//                  /** user hat issues */
+//                  if ( $amount_all_issues > 0 )
+//                  {
+//                     array_push( $group_user_with_issue, $head_row_array );
+//                  }
+//                  /** user hat keine issues */
+//                  else
+//                  {
+//                     array_push( $group_user_without_issue, $head_row_array );
+//                  }
+//               }
+//               /** user ist inaktiv */
+//               else
+//               {
+//                  array_push( $group_inactive_deleted_user, $head_row_array );
+//               }
+//            }
+//            /** user existiert nicht */
+//            else
+//            {
+//               array_push( $group_inactive_deleted_user, $head_row_array );
+//            }
+//         }
+//         /** wenn user_id = 0, gibt es keinen Nutzer */
+//         else
+//         {
+//            array_push( $group_issues_without_user, $head_row_array );
+//         }
+//      }
+//   }
+//
+//   $groups[0] = $group_user_with_issue;
+//   $groups[1] = $group_user_without_issue;
+//   $groups[2] = $group_inactive_deleted_user;
+//   $groups[3] = $group_issues_without_user;
+//   return $groups;
+//}
+
+function sort_groups2( $groups, $tableRow, $amountStatColumns )
+{
+   $group_user_with_issue = $groups[0];
+   $group_user_without_issue = $groups[1];
+   $group_inactive_deleted_user = $groups[2];
+   $group_issues_without_user = $groups[3];
+   for ( $table_row_index = 0; $table_row_index < count( $tableRow ); $table_row_index++ )
+   {
+      if ( $tableRow[$table_row_index]['userId'] > 0 )
       {
-         $iCounter = $head_row_array[1];
-
-         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
-         if ( $head_row_array[0] > 0 )
+         /** user existiert */
+         if ( user_exists( $tableRow[$table_row_index]['userId'] ) )
          {
-            /** user existiert */
-            if ( user_exists( $head_row_array[0] ) )
+            /** user ist aktiv */
+            if ( user_is_enabled( $tableRow[$table_row_index]['userId'] ) )
             {
-               /** user ist aktiv */
-               if ( user_is_enabled( $head_row_array[0] ) )
+               $amount_all_issues = 0;
+               for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
                {
-                  $amount_all_issues = 0;
-                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-                  {
-                     $amount_all_issues += $iCounter[$statColIndex];
-                  }
-
-                  /** user hat issues */
-                  if ( $amount_all_issues > 0 )
-                  {
-                     array_push( $group_user_with_issue, $head_row_array );
-                  }
-                  /** user hat keine issues */
-                  else
-                  {
-                     array_push( $group_user_without_issue, $head_row_array );
-                  }
+                  $amount_all_issues += $tableRow[$table_row_index]['specColumn' . $statColIndex];
                }
-               /** user ist inaktiv */
+
+               /** user hat issues */
+               if ( $amount_all_issues > 0 )
+               {
+                  array_push( $group_user_with_issue, $table_row_index );
+               }
+               /** user hat keine issues */
                else
                {
-                  array_push( $group_inactive_deleted_user, $head_row_array );
+                  array_push( $group_user_without_issue, $table_row_index );
                }
             }
-            /** user existiert nicht */
+            /** user ist inaktiv */
             else
             {
-               array_push( $group_inactive_deleted_user, $head_row_array );
+               array_push( $group_inactive_deleted_user, $table_row_index );
             }
          }
-         /** wenn user_id = 0, gibt es keinen Nutzer */
+         /** user existiert nicht */
          else
          {
-            array_push( $group_issues_without_user, $head_row_array );
+            array_push( $group_inactive_deleted_user, $table_row_index );
          }
       }
+      /** wenn user_id = 0, gibt es keinen Nutzer */
+      else
+      {
+         array_push( $group_issues_without_user, $table_row_index );
+      }
    }
+
+   $groups[0] = $group_user_with_issue;
+   $groups[1] = $group_user_without_issue;
+   $groups[2] = $group_inactive_deleted_user;
+   $groups[3] = $group_issues_without_user;
+   return $groups;
 }
 
 function print_head_rows( $head_rows_array, $userId, $amountStatColumns )
