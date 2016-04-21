@@ -46,6 +46,7 @@ if ( plugin_config_get( 'ShowZIU' ) )
 
 html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
 echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
+echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'table.js"></script>';
 if ( !$print_flag )
 {
    html_page_top2();
@@ -545,6 +546,67 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
    echo '</tbody>';
 }
 
+function sort_groups( $head_rows_array, $userId, $amountStatColumns )
+{
+   $group_user_with_issue = array();
+   $group_user_without_issue = array();
+   $group_inactive_deleted_user = array();
+   $group_issues_without_user = array();
+   for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
+   {
+      $head_row_array = $head_rows_array[$head_rows_array_index];
+      /** find his array */
+      if ( $head_row_array[0] == $userId )
+      {
+         $iCounter = $head_row_array[1];
+
+         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
+         if ( $head_row_array[0] > 0 )
+         {
+            /** user existiert */
+            if ( user_exists( $head_row_array[0] ) )
+            {
+               /** user ist aktiv */
+               if ( user_is_enabled( $head_row_array[0] ) )
+               {
+                  $amount_all_issues = 0;
+                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+                  {
+                     $amount_all_issues += $iCounter[$statColIndex];
+                  }
+
+                  /** user hat issues */
+                  if ( $amount_all_issues > 0 )
+                  {
+                     array_push( $group_user_with_issue, $head_row_array );
+                  }
+                  /** user hat keine issues */
+                  else
+                  {
+                     array_push( $group_user_without_issue, $head_row_array );
+                  }
+               }
+               /** user ist inaktiv */
+               else
+               {
+                  array_push( $group_inactive_deleted_user, $head_row_array );
+               }
+            }
+            /** user existiert nicht */
+            else
+            {
+               array_push( $group_inactive_deleted_user, $head_row_array );
+            }
+         }
+         /** wenn user_id = 0, gibt es keinen Nutzer */
+         else
+         {
+            array_push( $group_issues_without_user, $head_row_array );
+         }
+      }
+   }
+}
+
 function print_head_rows( $head_rows_array, $userId, $amountStatColumns )
 {
    for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
@@ -553,44 +615,81 @@ function print_head_rows( $head_rows_array, $userId, $amountStatColumns )
       /** find his array */
       if ( $head_row_array[0] == $userId )
       {
+         $iCounter = $head_row_array[1];
          /** print information */
          echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
 
          /** user */
-         echo '<td colspan="3">';
-         if ( user_exists( $head_row_array[0] ) )
+         echo '<td colspan="3"><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
+         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
+         if ( $head_row_array[0] > 0 )
          {
-            echo user_get_name( $head_row_array[0] );
+            /** user existiert */
+            if ( user_exists( $head_row_array[0] ) )
+            {
+               /** user ist aktiv */
+               if ( user_is_enabled( $head_row_array[0] ) )
+               {
+                  $amount_all_issues = 0;
+                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+                  {
+                     $amount_all_issues += $iCounter[$statColIndex];
+                  }
+
+                  /** user hat issues */
+                  if ( $amount_all_issues > 0 )
+                  {
+                     echo user_get_name( $head_row_array[0] );
+                  }
+                  /** user hat keine issues */
+                  else
+                  {
+                     echo plugin_lang_get( 'headrow_no_issue' );
+                  }
+               }
+               /** user ist inaktiv */
+               else
+               {
+                  echo plugin_lang_get( 'headrow_del_user' );
+               }
+            }
+            /** user existiert nicht */
+            else
+            {
+               echo plugin_lang_get( 'headrow_del_user' );
+            }
          }
+         /** wenn user_id = 0, gibt es keinen Nutzer */
          else
          {
             echo plugin_lang_get( 'headrow_no_user' );
          }
-         echo '</td>';
+         echo '</div></a></td>';
 
          /** real name */
-         echo '<td>';
+         echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
          if ( user_exists( $head_row_array[0] ) )
          {
             echo user_get_realname( $head_row_array[0] );
          }
-         echo '</td>';
+         echo '</div></a></td>';
 
          /** main project | assigned project | target version */
-         echo '<td colspan="3" class="center" />';
+         echo '<td colspan="3" class="center"><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">&nbsp';
+         echo '</div></a></td>';
 
          /** amount of issues */
-         $iCounter = $head_row_array[1];
          for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
          {
             $issueAmount = $iCounter[$statColIndex];
-            echo '<td>';
+            echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
             echo $issueAmount;
-            echo '</td>';
+            echo '</div></a></td>';
          }
 
          /** remark */
-         echo '<td><a href="#" onclick="row_view(' . $userId . ')">' . plugin_lang_get( 'remark_showhideHeadRow' ) . '</a></td>';
+         echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">&nbsp';
+         echo '</div></a></td>';
          echo '</tr>';
          $head_row_array[0] = null;
          $head_rows_array[$head_rows_array_index] = $head_row_array;
