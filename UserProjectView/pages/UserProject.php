@@ -429,22 +429,19 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
       $groups[2] = $group_inactive_deleted_user;
       $groups[3] = $group_issues_without_user;
 
-      $groups = sort_groups2( $groups, $tableRow, $amountStatColumns );
+      $groups = assign_groups( $groups, $tableRow, $amountStatColumns );
 
-      var_dump( $groups );
-      $group_user_with_issue = $groups[0];
-      $group_user_without_issue = $groups[1];
-      $group_inactive_deleted_user = $groups[2];
-      $group_issues_without_user = $groups[3];
-
-      /** todo */
-      /** generate "each-user"-headrows */
+      /** ------------------------------------------------------------------------------------------------------- */
       $head_rows_array = array();
-      for ( $tableRowIndex = 0; $tableRowIndex < $tableRowCount; $tableRowIndex++ )
+      for ( $tableRowIndex = 0; $tableRowIndex < count( $tableRow ); $tableRowIndex++ )
       {
          $userId = $tableRow[$tableRowIndex]['userId'];
-         $head_row = array();
+         if ( $userId == 0 )
+         {
+            continue;
+         }
 
+         $head_row = array();
          $iCounter = array();
          for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
          {
@@ -497,6 +494,70 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
          }
       }
 
+      /** ------------------------------------------------------------------------------------------------------- */
+
+      $group_user_with_issue = $groups[0];
+
+      print_group_head_row( '', 'headrow_user', $amountStatColumns, $group_user_with_issue, $tableRow );
+      foreach ( $head_rows_array as $head_row )
+      {
+         $head_row_user_id = $head_row[0];
+         $category = $head_row_user_id;
+         $head_row_counter = true;
+         for ( $group_index = 0; $group_index < count( $group_user_with_issue ); $group_index++ )
+         {
+            $tableRowIndex = $group_user_with_issue[$group_index];
+            $user_id = $tableRow[$tableRowIndex]['userId'];
+            if ( $user_id == $head_row_user_id )
+            {
+               if ( $head_row_counter )
+               {
+                  echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+                  echo '<td colspan="3"><a href="#" onclick="row_view(' . $user_id . ')"><div style="height:100%;width:100%">' . user_get_name( $user_id ) . '</div></a></td>';
+                  echo '<td>' . user_get_realname( $user_id ) . '</td>';
+                  echo '<td colspan="3"/>';
+                  $iCounter = $head_row[1];
+                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+                  {
+                     echo '<td>' . $iCounter[$statColIndex] . '</td>';
+                  }
+                  echo '<td/>';
+                  echo '</tr>';
+                  $head_row_counter = false;
+               }
+               print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
+            }
+         }
+      }
+
+      $group_user_without_issue = $groups[1];
+      $category = '997';
+      print_group_head_row( $category, 'headrow_no_issue', $amountStatColumns, $group_user_without_issue, $tableRow );
+      for ( $group_index = 0; $group_index < count( $group_user_without_issue ); $group_index++ )
+      {
+         $tableRowIndex = $group_user_without_issue[$group_index];
+         print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
+      }
+
+
+      $group_inactive_deleted_user = $groups[2];
+      $category = '998';
+      print_group_head_row( $category, 'headrow_del_user', $amountStatColumns, $group_inactive_deleted_user, $tableRow );
+      for ( $group_index = 0; $group_index < count( $group_inactive_deleted_user ); $group_index++ )
+      {
+         $tableRowIndex = $group_inactive_deleted_user[$group_index];
+         print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
+      }
+
+
+      $group_issues_without_user = $groups[3];
+      $category = '999';
+      print_group_head_row( $category, 'headrow_no_user', $amountStatColumns, $group_issues_without_user, $tableRow );
+      for ( $group_index = 0; $group_index < count( $group_issues_without_user ); $group_index++ )
+      {
+         $tableRowIndex = $group_issues_without_user[$group_index];
+         print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
+      }
    }
    else
    {
@@ -541,7 +602,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
             $row_index = 3 - $row_index;
          }
 
-         $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
+         $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, '' );
          if ( !$print_flag )
          {
             build_chackbox_column( $userId, $pProject );
@@ -562,7 +623,42 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
    }
 }
 
-function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue )
+function print_group_head_row( $category, $lang_string, $amountStatColumns, $group, $tableRow )
+{
+   if ( $category == '0' )
+   {
+      echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+      echo '<td colspan="' . ( 8 + $amountStatColumns ) . '">' . plugin_lang_get( $lang_string ) . '</td>';
+      echo '</tr>';
+   }
+   else
+   {
+      $iCounter = array();
+      foreach ( $group as $table_row_index )
+      {
+         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+         {
+            $iCounter[$statColIndex] += $tableRow[$table_row_index]['specColumn' . $statColIndex];
+         }
+      }
+
+      if ( !empty( $iCounter ) )
+      {
+         echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+         echo '<td colspan="7"><a href="#" onclick="row_view(' . $category . ')"><div style="height:100%;width:100%">' . plugin_lang_get( $lang_string ) . '</div></a></td>';
+
+         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+         {
+            echo '<td>' . $iCounter[$statColIndex] . '</td>';
+         }
+
+         echo '<td/>';
+         echo '</tr>';
+      }
+   }
+}
+
+function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category )
 {
    $userprojectview_system_api = new userprojectview_system_api();
    $userprojectview_print_api = new userprojectview_print_api();
@@ -605,7 +701,7 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
       $row_index = 3 - $row_index;
    }
 
-   $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag );
+   $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, $category );
    if ( !$print_flag )
    {
       build_chackbox_column( $userId, $pProject );
@@ -621,74 +717,15 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
    echo '</tr>';
 }
 
-//function sort_groups( $groups, $head_rows_array, $userId, $amountStatColumns )
-//{
-//   $group_user_with_issue = $groups[0];
-//   $group_user_without_issue = $groups[1];
-//   $group_inactive_deleted_user = $groups[2];
-//   $group_issues_without_user = $groups[3];
-//   for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
-//   {
-//      $head_row_array = $head_rows_array[$head_rows_array_index];
-//      /** find his array */
-//      if ( $head_row_array[0] == $userId )
-//      {
-//         $iCounter = $head_row_array[1];
-//
-//         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
-//         if ( $head_row_array[0] > 0 )
-//         {
-//            /** user existiert */
-//            if ( user_exists( $head_row_array[0] ) )
-//            {
-//               /** user ist aktiv */
-//               if ( user_is_enabled( $head_row_array[0] ) )
-//               {
-//                  $amount_all_issues = 0;
-//                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-//                  {
-//                     $amount_all_issues += $iCounter[$statColIndex];
-//                  }
-//
-//                  /** user hat issues */
-//                  if ( $amount_all_issues > 0 )
-//                  {
-//                     array_push( $group_user_with_issue, $head_row_array );
-//                  }
-//                  /** user hat keine issues */
-//                  else
-//                  {
-//                     array_push( $group_user_without_issue, $head_row_array );
-//                  }
-//               }
-//               /** user ist inaktiv */
-//               else
-//               {
-//                  array_push( $group_inactive_deleted_user, $head_row_array );
-//               }
-//            }
-//            /** user existiert nicht */
-//            else
-//            {
-//               array_push( $group_inactive_deleted_user, $head_row_array );
-//            }
-//         }
-//         /** wenn user_id = 0, gibt es keinen Nutzer */
-//         else
-//         {
-//            array_push( $group_issues_without_user, $head_row_array );
-//         }
-//      }
-//   }
-//
-//   $groups[0] = $group_user_with_issue;
-//   $groups[1] = $group_user_without_issue;
-//   $groups[2] = $group_inactive_deleted_user;
-//   $groups[3] = $group_issues_without_user;
-//   return $groups;
-//}
-
-function sort_groups2( $groups, $tableRow, $amountStatColumns )
+/**
+ * Assigns each data row (from $tableRow) to one of the four specific groups
+ *
+ * @param $groups
+ * @param $tableRow
+ * @param $amountStatColumns
+ * @return mixed
+ */
+function assign_groups( $groups, $tableRow, $amountStatColumns )
 {
    $group_user_with_issue = $groups[0];
    $group_user_without_issue = $groups[1];

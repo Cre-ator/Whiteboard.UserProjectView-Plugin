@@ -19,9 +19,10 @@ $s_plugin_UserProjectView_remark_since = 'since';
 $s_plugin_UserProjectView_remark_day = 'Days';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
 
-$s_plugin_UserProjectView_headrow_no_user = 'Issues without assigned user';
-$s_plugin_UserProjectView_headrow_del_user = 'Inactive/Deleted user';
+$s_plugin_UserProjectView_headrow_user = 'User with issues';
 $s_plugin_UserProjectView_headrow_no_issue = 'User without Issues';
+$s_plugin_UserProjectView_headrow_del_user = 'Inactive/Deleted user';
+$s_plugin_UserProjectView_headrow_no_user = 'Issues without assigned user';
 
 $s_plugin_UserProjectView_remove_quest = 'Are you sure you want to remove the following users from the specified project?';
 $s_plugin_UserProjectView_remove_selectSingle = 'Remove User from Project';

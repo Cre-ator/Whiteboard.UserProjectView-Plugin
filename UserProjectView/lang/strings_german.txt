@@ -19,9 +19,10 @@ $s_plugin_UserProjectView_remark_since = 'seit';
 $s_plugin_UserProjectView_remark_day = 'Tagen';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Ein- / Ausblenden';
 
-$s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer';
-$s_plugin_UserProjectView_headrow_del_user = 'Nutzer inaktiv/gelöscht';
+$s_plugin_UserProjectView_headrow_user = 'Nutzer mit Einträgen';
 $s_plugin_UserProjectView_headrow_no_issue = 'Nutzer ohne Einträge';
+$s_plugin_UserProjectView_headrow_del_user = 'Nutzer inaktiv/gelöscht';
+$s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';
 $s_plugin_UserProjectView_remove_selectSingle = 'Nutzer aus Projekt entfernen';

@@ -54,7 +54,7 @@ class userprojectview_print_api
       echo '</tr>';
    }
 
-   public function printTDRow( $user_id, $row_index, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag, $sortVal, $print_flag )
+   public function printTDRow( $user_id, $row_index, $no_user_flag, $zero_issues_flag, $unreachable_issue_flag, $sortVal, $print_flag, $category )
    {
       $iA_background_color = plugin_config_get( 'IAUHBGColor' );
       $uR_background_color = plugin_config_get( 'URIUHBGColor' );
@@ -63,7 +63,7 @@ class userprojectview_print_api
 
       if ( user_exists( $user_id ) && $user_id != '0' && user_get_field( $user_id, 'enabled' ) == '0' && plugin_config_get( 'IAUHighlighting' ) )
       {
-         echo '<tr name="' . $user_id . '"';
+         echo '<tr name="' . $category . '"';
          if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
             echo 'style="visibility: hidden; display: none; background-color:' . $iA_background_color . '"';
@@ -76,7 +76,7 @@ class userprojectview_print_api
       }
       elseif ( $zero_issues_flag && plugin_config_get( 'ZIHighlighting' ) )
       {
-         echo '<tr name="' . $user_id . '"';
+         echo '<tr name="' . $category . '"';
          if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
             echo 'style="visibility: hidden; display: none; background-color:' . $zI_background_color . '"';
@@ -89,7 +89,7 @@ class userprojectview_print_api
       }
       elseif ( $no_user_flag && plugin_config_get( 'NUIHighlighting' ) )
       {
-         echo '<tr name="' . $user_id . '"';
+         echo '<tr name="' . $category . '"';
          if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
             echo 'style="visibility: hidden; display: none; background-color:' . $nU_background_color . '"';
@@ -102,7 +102,7 @@ class userprojectview_print_api
       }
       elseif ( $unreachable_issue_flag && plugin_config_get( 'URIUHighlighting' ) )
       {
-         echo '<tr name="' . $user_id . '"';
+         echo '<tr name="' . $category . '"';
          if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
             echo 'style="visibility: hidden; display: none; background-color:' . $uR_background_color . '"';
@@ -115,7 +115,7 @@ class userprojectview_print_api
       }
       else
       {
-         echo '<tr name="' . $user_id . '" class="row-' . $row_index . '"';
+         echo '<tr name="' . $category . '" class="row-' . $row_index . '"';
          if ( plugin_config_get( 'showHeadRow' ) && ( $sortVal == 'userName' || $sortVal == 'realName' ) && !$print_flag )
          {
             echo 'style="visibility: hidden; display: none"';
