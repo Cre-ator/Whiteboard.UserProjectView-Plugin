@@ -24,7 +24,6 @@ if ( ( ALL_PROJECTS == $t_project_id || project_exists( $t_project_id ) )
 $statCols = array();
 $issueThresholds = array();
 $issueAgeThresholds = array();
-
 $amountStatColumns = get_amount_stat_columns();
 for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
 {
@@ -354,9 +353,14 @@ function print_thead( $statCols, $print_flag )
    $userprojectview_print_api = new userprojectview_print_api();
 
    $fixColspan = 7;
+   if ( plugin_config_get( 'showHeadRow' ) )
+   {
+      $fixColspan++;
+   }
+
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
-      $fixColspan = 8;
+      $fixColspan++;
    }
 
    $amountStatColumns = get_amount_stat_columns();
@@ -414,7 +418,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
 
    echo '<tbody>';
 
-   if ( plugin_config_get( 'showHeadRow' ) && !$print_flag )
+   if ( plugin_config_get( 'showHeadRow' ) && !$print_flag && ( $sortVal == 'userName' || $sortVal == 'realName' ) )
    {
       /** initialize and prepare groups */
       $group_user_with_issue = array();
@@ -432,7 +436,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
       /** process each group */
       $group_user_with_issue = $groups[0];
       $head_rows_array = calculate_head_rows( $tableRow, $amountStatColumns );
-      print_group_head_row( 0, 'headrow_user', $amountStatColumns, $group_user_with_issue, $tableRow );
+      print_group_head_row( 0, 'headrow_user', $amountStatColumns, $group_user_with_issue, $tableRow, $statCols );
       foreach ( $head_rows_array as $head_row )
       {
          $head_row_user_id = $head_row[0];
@@ -445,7 +449,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
             {
                if ( $head_row_counter )
                {
-                  print_user_head_row( $user_id, $head_row, $amountStatColumns );
+                  print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThresholds );
                   $head_row_counter = false;
                }
                $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $head_row_user_id );
@@ -454,8 +458,8 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
       }
 
       $group_user_without_issue = $groups[1];
-      $category = '100001';
-      print_group_head_row( $category, 'headrow_no_issue', $amountStatColumns, $group_user_without_issue, $tableRow );
+      $category = '100002';
+      print_group_head_row( $category, 'headrow_no_issue', $amountStatColumns, $group_user_without_issue, $tableRow, $statCols );
       for ( $group_index = 0; $group_index < count( $group_user_without_issue ); $group_index++ )
       {
          $tableRowIndex = $group_user_without_issue[$group_index];
@@ -464,8 +468,8 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
 
 
       $group_inactive_deleted_user = $groups[2];
-      $category = '100002';
-      print_group_head_row( $category, 'headrow_del_user', $amountStatColumns, $group_inactive_deleted_user, $tableRow );
+      $category = '100003';
+      print_group_head_row( $category, 'headrow_del_user', $amountStatColumns, $group_inactive_deleted_user, $tableRow, $statCols );
       for ( $group_index = 0; $group_index < count( $group_inactive_deleted_user ); $group_index++ )
       {
          $tableRowIndex = $group_inactive_deleted_user[$group_index];
@@ -473,8 +477,8 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
       }
 
       $group_issues_without_user = $groups[3];
-      $category = '100003';
-      print_group_head_row( $category, 'headrow_no_user', $amountStatColumns, $group_issues_without_user, $tableRow );
+      $category = '100004';
+      print_group_head_row( $category, 'headrow_no_user', $amountStatColumns, $group_issues_without_user, $tableRow, $statCols );
       for ( $group_index = 0; $group_index < count( $group_issues_without_user ); $group_index++ )
       {
          $tableRowIndex = $group_issues_without_user[$group_index];
@@ -614,55 +618,139 @@ function calculate_head_rows( $tableRow, $amountStatColumns )
    return $head_rows_array;
 }
 
-function print_user_head_row( $user_id, $head_row, $amountStatColumns )
+function print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThresholds )
 {
-   echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
+   echo '<tr name="100001" style="visibility: hidden; display: none; background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
    echo '<td width="20px" />';
-   echo '<td colspan="3"><a href="#" onclick="row_view(' . $user_id . ')"><div style="height:100%;width:100%">' . user_get_name( $user_id ) . '</div></a></td>';
+   echo '<td name="userclick"><a href="#" onclick="row_view(' . $user_id . ')">+/-</a></td>';
+   if ( plugin_config_get( 'ShowAvatar' ) && config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
+   {
+      echo '<td align="center" width="25px">';
+      $assocArray = user_get_avatar( $user_id );
+      echo '<img class="avatar" src="' . $assocArray[0] . '" />';
+      echo '</td>';
+   }
+   echo '<td>' . user_get_name( $user_id ) . '</td>';
    echo '<td>' . user_get_realname( $user_id ) . '</td>';
-   echo '<td colspan="2"/>';
+   echo '<td colspan="3"/>';
    $iCounter = $head_row[1];
    for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
    {
-      echo '<td>' . $iCounter[$statColIndex] . '</td>';
+      $issueThreshold = $issueThresholds[$statColIndex];
+      if ( $issueThreshold <= $iCounter[$statColIndex] && $issueThreshold > 0 )
+      {
+         echo '<td style="background-color:' . plugin_config_get( 'TAMHBGColor' ) . '">' . $iCounter[$statColIndex] . '</td>';
+      }
+      else
+      {
+         echo '<td>' . $iCounter[$statColIndex] . '</td>';
+      }
    }
    echo '<td/>';
    echo '</tr>';
 }
 
-function print_group_head_row( $category, $lang_string, $amountStatColumns, $group, $tableRow )
+function print_group_head_row( $category, $lang_string, $amountStatColumns, $group, $tableRow, $statCols )
 {
-   if ( $category == '0' )
+   $iCounter = array();
+   foreach ( $group as $table_row_index )
    {
-      echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-      echo '<td colspan="' . ( 8 + $amountStatColumns ) . '">' . plugin_lang_get( $lang_string ) . '</td>';
-      echo '</tr>';
-   }
-   else
-   {
-      $iCounter = array();
-      foreach ( $group as $table_row_index )
+      for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
       {
-         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-         {
-            $iCounter[$statColIndex] += $tableRow[$table_row_index]['specColumn' . $statColIndex];
-         }
+         $iCounter[$statColIndex] += $tableRow[$table_row_index]['specColumn' . $statColIndex];
+      }
+   }
+
+   if ( !empty( $iCounter ) )
+   {
+      $colspan = 6;
+      if ( plugin_config_get( 'ShowAvatar' ) && config_get( 'show_avatar' ) )
+      {
+         $colspan = 7;
       }
 
-      if ( !empty( $iCounter ) )
+      if ( $category == '0' )
       {
-         echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-         echo '<td colspan="7"><a href="#" onclick="row_view(' . $category . ')"><div style="height:100%;width:100%">' . plugin_lang_get( $lang_string ) . '</div></a></td>';
+         $row_name = '100001';
+      }
+      else
+      {
+         $row_name = $category;
+      }
 
-         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+      echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+      echo '<td name="click"><a href="#" onclick="row_view(' . $row_name . ')">+/-</a></td>';
+      echo '<td colspan="' . $colspan . '">' . plugin_lang_get( $lang_string );
+      if ( $category == '0' )
+      {
+         $js_function_call_string = get_js_function_call_string( $tableRow, $amountStatColumns, $group );
+         echo '<a href="#" onclick="row_view(100001);' . $js_function_call_string . '"> (' . plugin_lang_get( 'headrow_show_all_user' ) . ')</a>';
+      }
+      echo '</td>';
+
+
+      for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
+      {
+         if ( $category == 100002 && $iCounter[$statColIndex] > 0 )
+         {
+            $StatColStatus = $statCols[$statColIndex];
+            if ( $StatColStatus == '10' || $StatColStatus == '20' || $StatColStatus == '30' || $StatColStatus == '40' || $StatColStatus == '50' )
+            {
+               echo '<td style="background-color:' . plugin_config_get( 'TAMHBGColor' ) . '">' . $iCounter[$statColIndex] . '</td>';
+            }
+            else
+            {
+               echo '<td>' . $iCounter[$statColIndex] . '</td>';
+            }
+         }
+         else
          {
             echo '<td>' . $iCounter[$statColIndex] . '</td>';
          }
+      }
 
-         echo '<td/>';
-         echo '</tr>';
+      echo '<td/>';
+      echo '</tr>';
+   }
+}
+
+/**
+ * Erzeugt einen String, der alle "row_view"-Aufrufe in table.js koordiniert.
+ *
+ * @param $tableRow
+ * @param $amountStatColumns
+ * @param $group
+ * @return string
+ */
+function get_js_function_call_string( $tableRow, $amountStatColumns, $group )
+{
+   $user_id_array = array();
+   $head_rows_array = calculate_head_rows( $tableRow, $amountStatColumns );
+   foreach ( $head_rows_array as $head_row )
+   {
+      $head_row_user_id = $head_row[0];
+      for ( $group_index = 0; $group_index < count( $group ); $group_index++ )
+      {
+         $tableRowIndex = $group[$group_index];
+         $user_id = $tableRow[$tableRowIndex]['userId'];
+         if ( $user_id == $head_row_user_id )
+         {
+            if ( !in_array( $user_id, $user_id_array, true ) )
+            {
+               array_push( $user_id_array, $user_id );
+            }
+         }
       }
    }
+
+   $function_call_string = '';
+   foreach ( $user_id_array as $user_id )
+   {
+      $function_call_string .= 'row_view(' . $user_id . ');';
+   }
+
+   return $function_call_string;
 }
 
 function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category )
@@ -696,6 +784,7 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
    $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
 
    $userprojectview_print_api->printTDRow( $userId, 2, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, $category );
+   echo '<td/>';
    if ( !$print_flag )
    {
       build_chackbox_column( $userId, $pProject );
@@ -778,97 +867,6 @@ function assign_groups( $groups, $tableRow, $amountStatColumns )
    $groups[2] = $group_inactive_deleted_user;
    $groups[3] = $group_issues_without_user;
    return $groups;
-}
-
-function print_head_rows( $head_rows_array, $userId, $amountStatColumns )
-{
-   for ( $head_rows_array_index = 0; $head_rows_array_index < count( $head_rows_array ); $head_rows_array_index++ )
-   {
-      $head_row_array = $head_rows_array[$head_rows_array_index];
-      /** find his array */
-      if ( $head_row_array[0] == $userId )
-      {
-         $iCounter = $head_row_array[1];
-         /** print information */
-         echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-
-         /** user */
-         echo '<td colspan="3"><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
-         /** es gibt einen Nutzer ... nun zuordnen, zu welcher Gruppe dieser gehört */
-         if ( $head_row_array[0] > 0 )
-         {
-            /** user existiert */
-            if ( user_exists( $head_row_array[0] ) )
-            {
-               /** user ist aktiv */
-               if ( user_is_enabled( $head_row_array[0] ) )
-               {
-                  $amount_all_issues = 0;
-                  for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-                  {
-                     $amount_all_issues += $iCounter[$statColIndex];
-                  }
-
-                  /** user hat issues */
-                  if ( $amount_all_issues > 0 )
-                  {
-                     echo user_get_name( $head_row_array[0] );
-                  }
-                  /** user hat keine issues */
-                  else
-                  {
-                     echo plugin_lang_get( 'headrow_no_issue' );
-                  }
-               }
-               /** user ist inaktiv */
-               else
-               {
-                  echo plugin_lang_get( 'headrow_del_user' );
-               }
-            }
-            /** user existiert nicht */
-            else
-            {
-               echo plugin_lang_get( 'headrow_del_user' );
-            }
-         }
-         /** wenn user_id = 0, gibt es keinen Nutzer */
-         else
-         {
-            echo plugin_lang_get( 'headrow_no_user' );
-         }
-         echo '</div></a></td>';
-
-         /** real name */
-         echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
-         if ( user_exists( $head_row_array[0] ) )
-         {
-            echo user_get_realname( $head_row_array[0] );
-         }
-         echo '</div></a></td>';
-
-         /** main project | assigned project | target version */
-         echo '<td colspan="3" class="center"><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">&nbsp';
-         echo '</div></a></td>';
-
-         /** amount of issues */
-         for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
-         {
-            $issueAmount = $iCounter[$statColIndex];
-            echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">';
-            echo $issueAmount;
-            echo '</div></a></td>';
-         }
-
-         /** remark */
-         echo '<td><a href="#" onclick="row_view(' . $userId . ')"><div style="height:100%;width:100%">&nbsp';
-         echo '</div></a></td>';
-         echo '</tr>';
-         $head_row_array[0] = null;
-         $head_rows_array[$head_rows_array_index] = $head_row_array;
-      }
-   }
-   return $head_rows_array;
 }
 
 function get_sort_col( $sortVal, $tableRow )
@@ -1115,10 +1113,9 @@ function build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $s
       $specStatus = $statCols[$statColIndex];
       $issueAmount = $issueCounter[$statColIndex];
       $specColumnIssueAmount[$statColIndex] += $issueAmount;
-      $issueAgeThresholdColor = plugin_config_get( 'TAMHBGColor' );
       if ( $issueThreshold < $issueAmount && $issueThreshold > 0 )
       {
-         echo '<td style="background-color:' . $issueAgeThresholdColor . '">';
+         echo '<td style="background-color:' . plugin_config_get( 'TAMHBGColor' ) . '">';
       }
       else
       {
