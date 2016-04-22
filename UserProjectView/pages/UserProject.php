@@ -353,9 +353,14 @@ function print_thead( $statCols, $print_flag )
    $userprojectview_print_api = new userprojectview_print_api();
 
    $fixColspan = 7;
+   if ( plugin_config_get( 'showHeadRow' ) )
+   {
+      $fixColspan++;
+   }
+
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
-      $fixColspan = 8;
+      $fixColspan++;
    }
 
    $amountStatColumns = get_amount_stat_columns();
@@ -618,6 +623,7 @@ function print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThr
    $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<tr name="100001" style="visibility: hidden; display: none; background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
    echo '<td width="20px" />';
+   echo '<td name="userclick"><a href="#" onclick="row_view(' . $user_id . ')">+/-</a></td>';
    if ( plugin_config_get( 'ShowAvatar' ) && config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
    {
       echo '<td align="center" width="25px">';
@@ -625,7 +631,7 @@ function print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThr
       echo '<img class="avatar" src="' . $assocArray[0] . '" />';
       echo '</td>';
    }
-   echo '<td><a href="#" onclick="row_view(' . $user_id . ')"><div style="height:100%;width:100%">' . user_get_name( $user_id ) . '</div></a></td>';
+   echo '<td>' . user_get_name( $user_id ) . '</td>';
    echo '<td>' . user_get_realname( $user_id ) . '</td>';
    echo '<td colspan="3"/>';
    $iCounter = $head_row[1];
@@ -674,7 +680,8 @@ function print_group_head_row( $category, $lang_string, $amountStatColumns, $gro
       }
 
       echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-      echo '<td colspan="' . $colspan . '"><a href="#" onclick="row_view(' . $row_name . ')">' . plugin_lang_get( $lang_string ) . '</a>';
+      echo '<td name="click"><a href="#" onclick="row_view(' . $row_name . ')">+/-</a></td>';
+      echo '<td colspan="' . $colspan . '">' . plugin_lang_get( $lang_string );
       if ( $category == '0' )
       {
          $js_function_call_string = get_js_function_call_string( $tableRow, $amountStatColumns, $group );
@@ -777,6 +784,7 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
    $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
 
    $userprojectview_print_api->printTDRow( $userId, 2, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, $category );
+   echo '<td/>';
    if ( !$print_flag )
    {
       build_chackbox_column( $userId, $pProject );
