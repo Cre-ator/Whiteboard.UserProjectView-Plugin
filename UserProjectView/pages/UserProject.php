@@ -378,12 +378,12 @@ function print_thead( $statCols, $print_flag )
 
    for ( $headIndex = 1; $headIndex <= $amountStatColumns; $headIndex++ )
    {
-      echo '<th bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) . '">';
+      echo '<th class="headrow" bgcolor="' . get_status_color( $statCols[$headIndex], null, null ) . '">';
       $assocArray = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
       echo $assocArray [$statCols[$headIndex]];
       echo '</th>';
    }
-   echo '<th>' . plugin_lang_get( 'thead_remark' ) . '</th>';
+   echo '<th class="headrow">' . plugin_lang_get( 'thead_remark' ) . '</th>';
    echo '</tr>';
    echo '</thead>';
 }

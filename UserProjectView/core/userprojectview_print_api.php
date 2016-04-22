@@ -20,11 +20,11 @@ class userprojectview_print_api
       if ( $colspan != null )
       {
          echo '<th />';
-         echo '<th colspan="' . $colspan . '">';
+         echo '<th class="headrow" colspan="' . $colspan . '">';
       }
       else
       {
-         echo '<th>';
+         echo '<th class="headrow">';
       }
 
       echo plugin_lang_get( $lang_string ) . ' ';

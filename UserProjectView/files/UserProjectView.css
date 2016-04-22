@@ -1,18 +1,25 @@
 a
 {
-   color: black;
-   background: transparent;
-   text-decoration: none;
+    color: black;
+    background: transparent;
+    text-decoration: none;
 }
 
 a:hover
 {
-   text-decoration: underline;
+    text-decoration: underline;
 }
 
 .avatar
 {
-   max-width: 25px;
-   width: 100%;
-   height: auto;
+    max-width: 25px;
+    width: 100%;
+    height: auto;
+}
+
+.headrow
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
