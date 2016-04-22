@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.17';
+      $this->version = '1.3.19';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -23,7 +23,6 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       $hooks = array
       (
-         'EVENT_PLUGIN_INIT' => 'loader',
          'EVENT_LAYOUT_PAGE_FOOTER' => 'footer',
          'EVENT_MENU_MAIN' => 'menu'
       );
@@ -128,10 +127,5 @@ class UserProjectViewPlugin extends MantisPlugin
          return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_userprojecttitle' ) . '</a>';
       }
       return null;
-   }
-
-   function loader()
-   {
-      echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'table.js"></script>';
    }
 }
