@@ -48,7 +48,7 @@ class userprojectview_print_api
       if ( !$print_flag )
       {
          echo '<td><form action="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC' . '" method="post">';
-         echo '&nbsp<input type="submit" name="print_flag" class="button" value="' . lang_get( 'print' ) . '"/>';
+         echo '<input type="submit" name="print_flag" class="button" value="' . lang_get( 'print' ) . '"/>';
          echo '</form></td>';
       }
       echo '</tr>';
