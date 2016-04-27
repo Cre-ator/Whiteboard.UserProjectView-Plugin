@@ -23,3 +23,39 @@ a:hover
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+table
+{
+    border-spacing: 1px;
+    border-collapse: separate;
+}
+
+td
+{
+    padding: 4px;
+}
+
+thead th
+{
+    background-color: #c8c8e8;
+}
+
+tbody tr[class="clickable"]
+{
+    background-color: #d0d0d0;
+}
+
+tbody tr[class="info"]
+{
+    background-color: #e8e8e8;
+}
+
+table
+{
+    border: none;
+}
+
+table caption
+{
+    text-align: left;
+}
