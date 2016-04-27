@@ -17,6 +17,13 @@ $s_plugin_UserProjectView_remark_ZIssues = 'L´utilisateur n´a aucun problème'
 $s_plugin_UserProjectView_remark_noUser = 'L´utilisateur est pas affectée à';
 $s_plugin_UserProjectView_remark_since = 'depuis';
 $s_plugin_UserProjectView_remark_day = 'Jours';
+$s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
+
+$s_plugin_UserProjectView_headrow_user = 'User with issues';
+$s_plugin_UserProjectView_headrow_no_issue = 'User without Issues';
+$s_plugin_UserProjectView_headrow_del_user = 'Inactive/Deleted user';
+$s_plugin_UserProjectView_headrow_no_user = 'Issues without assigned user';
+$s_plugin_UserProjectView_headrow_show_all_user = 'Show / Hide all user with issues';
 
 $s_plugin_UserProjectView_remove_quest = 'Etes-vous sûr que vous voulez supprimer les utilisateurs suivants du projet spécifié?';
 $s_plugin_UserProjectView_remove_selectSingle = 'Retirer l´utilisateur à partir du projet';
@@ -27,6 +34,7 @@ $s_plugin_UserProjectView_remove_failure = 'Erreur, l´utilisateur pas supprimé
 $s_plugin_UserProjectView_config_showFooter = 'Montrer les infos du plugin dans le footer?';
 $s_plugin_UserProjectView_config_showMenu = 'Montrer les entrées menu du plugin?';
 $s_plugin_UserProjectView_config_showAvatar = 'Afficher avatar dans un rapport d´utilisateur?';
+$s_plugin_UserProjectView_config_showHeadRow = 'Show summarizing Headrow?';
 $s_plugin_UserProjectView_config_IAUHighlighting = 'Marquer les utilisateurs inactifs?';
 $s_plugin_UserProjectView_config_URIUHighlighting = 'Marquer la ligne si le projet n’est pas attribué?';
 $s_plugin_UserProjectView_config_NUIHighlighting = 'Marquez les questions sans utilisateur assigné?';

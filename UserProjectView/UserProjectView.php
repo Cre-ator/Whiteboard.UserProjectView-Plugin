@@ -2,13 +2,13 @@
 
 class UserProjectViewPlugin extends MantisPlugin
 {
-   function register()
+   function register ()
    {
       $this->name = 'UserProjectView';
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.22';
+      $this->version = '1.3.23';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -19,7 +19,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->url = '';
    }
 
-   function hooks()
+   function hooks ()
    {
       $hooks = array
       (
@@ -29,25 +29,25 @@ class UserProjectViewPlugin extends MantisPlugin
       return $hooks;
    }
 
-   function init()
+   function init ()
    {
-      $t_core_path = config_get_global( 'plugin_path' )
-         . plugin_get_current()
+      $t_core_path = config_get_global ( 'plugin_path' )
+         . plugin_get_current ()
          . DIRECTORY_SEPARATOR
          . 'core'
          . DIRECTORY_SEPARATOR;
-      require_once( $t_core_path . 'userprojectview_constant_api.php' );
+      require_once ( $t_core_path . 'userprojectview_constant_api.php' );
    }
 
-   function config()
+   function config ()
    {
-      $t_core_path = config_get_global( 'plugin_path' )
-         . plugin_get_current()
+      $t_core_path = config_get_global ( 'plugin_path' )
+         . plugin_get_current ()
          . DIRECTORY_SEPARATOR
          . 'core'
          . DIRECTORY_SEPARATOR;
 
-      require_once( $t_core_path . 'userprojectview_constant_api.php' );
+      require_once ( $t_core_path . 'userprojectview_constant_api.php' );
 
       return array
       (
@@ -92,7 +92,7 @@ class UserProjectViewPlugin extends MantisPlugin
          'IAGThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
 
          // URI -> unreachable issue
-         'URIThreshold' => array(
+         'URIThreshold' => array (
             '0' => 20,
             '1' => 30,
             '2' => 40,
@@ -103,28 +103,28 @@ class UserProjectViewPlugin extends MantisPlugin
       );
    }
 
-   function getUserHasLevel()
+   function getUserHasLevel ()
    {
-      $project_id = helper_get_current_project();
-      $user_id = auth_get_current_user_id();
+      $project_id = helper_get_current_project ();
+      $user_id = auth_get_current_user_id ();
 
-      return user_get_access_level( $user_id, $project_id ) >= plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
+      return user_get_access_level ( $user_id, $project_id ) >= plugin_config_get ( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
    }
 
-   function footer()
+   function footer ()
    {
-      if ( plugin_config_get( 'ShowInFooter' ) && $this->getUserHasLevel() )
+      if ( plugin_config_get ( 'ShowInFooter' ) && $this->getUserHasLevel () )
       {
          return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
       }
       return null;
    }
 
-   function menu()
+   function menu ()
    {
-      if ( !plugin_is_installed( 'WhiteboardMenu' ) && plugin_config_get( 'ShowMenu' ) && $this->getUserHasLevel() )
+      if ( !plugin_is_installed ( 'WhiteboardMenu' ) && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel () )
       {
-         return '<a href="' . plugin_page( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get( 'menu_userprojecttitle' ) . '</a>';
+         return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_userprojecttitle' ) . '</a>';
       }
       return null;
    }

@@ -1,75 +1,173 @@
 <?php
-auth_reauthenticate();
-access_ensure_global_level( config_get( 'UserProjectAccessLevel' ) );
-form_security_validate( 'plugin_UserProjectView_config_update' );
-
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_config_api.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_database_api.php';
 
-$userprojectview_config_api = new userprojectview_config_api();
+auth_reauthenticate ();
+access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
+form_security_validate ( 'plugin_UserProjectView_config_update' );
+
+
 $userprojectview_database_api = new userprojectview_database_api();
 
-$option_reset = gpc_get_bool( 'reset', false );
-$option_change = gpc_get_bool( 'change', false );
+$option_reset = gpc_get_bool ( 'reset', false );
+$option_change = gpc_get_bool ( 'change', false );
 
 if ( $option_reset )
 {
-   $userprojectview_database_api->resetPlugin();
+   $userprojectview_database_api->reset_plugin ();
 }
 
 if ( $option_change )
 {
-   $userprojectview_config_api->updateValue( 'UserProjectAccessLevel', ADMINISTRATOR );
+   update_single_value ( 'UserProjectAccessLevel', ADMINISTRATOR );
 
-   $userprojectview_config_api->updateButton( 'ShowMenu' );
-   $userprojectview_config_api->updateButton( 'ShowInFooter' );
-   $userprojectview_config_api->updateButton( 'ShowAvatar' );
-   $userprojectview_config_api->updateButton( 'showHeadRow' );
-   $userprojectview_config_api->updateColor( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
+   update_button ( 'ShowMenu' );
+   update_button ( 'ShowInFooter' );
+   update_button ( 'ShowAvatar' );
+   update_button ( 'showHeadRow' );
+   update_color ( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 
-   $userprojectview_config_api->updateButton( 'IAUHighlighting' );
-   $userprojectview_config_api->updateColor( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+   update_button ( 'IAUHighlighting' );
+   update_color ( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
 
-   $userprojectview_config_api->updateButton( 'URIUHighlighting' );
-   $userprojectview_config_api->updateColor( 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+   update_button ( 'URIUHighlighting' );
+   update_color ( 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
 
-   $userprojectview_config_api->updateButton( 'NUIHighlighting' );
-   $userprojectview_config_api->updateColor( 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+   update_button ( 'NUIHighlighting' );
+   update_color ( 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
 
-   $userprojectview_config_api->updateButton( 'ShowZIU' );
-   $userprojectview_config_api->updateButton( 'ZIHighlighting' );
-   $userprojectview_config_api->updateColor( 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+   update_button ( 'ShowZIU' );
+   update_button ( 'ZIHighlighting' );
+   update_color ( 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
 
-   $userprojectview_config_api->updateColor( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+   update_color ( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 
-   $col_amount = gpc_get_int( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
-   if ( plugin_config_get( 'CAmount' ) != $col_amount && plugin_config_get( 'CAmount' ) != '' && $col_amount <= PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )
+   $col_amount = gpc_get_int ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
+   if ( plugin_config_get ( 'CAmount' ) != $col_amount && plugin_config_get ( 'CAmount' ) != '' && $col_amount <= PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )
    {
-      plugin_config_set( 'CAmount', $col_amount );
+      plugin_config_set ( 'CAmount', $col_amount );
    }
-   elseif ( plugin_config_get( 'CAmount' ) == '' )
+   elseif ( plugin_config_get ( 'CAmount' ) == '' )
    {
-      plugin_config_set( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
+      plugin_config_set ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
    }
 
-   if ( !empty( $_POST['URIThreshold'] ) )
+   if ( !empty( $_POST[ 'URIThreshold' ] ) )
    {
-      foreach ( $_POST['URIThreshold'] as $unreach_issue_threshold )
+      foreach ( $_POST[ 'URIThreshold' ] as $unreach_issue_threshold )
       {
-         $unreach_issue_threshold = gpc_get_int_array( 'URIThreshold' );
-         if ( plugin_config_get( 'URIThreshold' ) != $unreach_issue_threshold )
+         $unreach_issue_threshold = gpc_get_int_array ( 'URIThreshold' );
+         if ( plugin_config_get ( 'URIThreshold' ) != $unreach_issue_threshold )
          {
-            plugin_config_set( 'URIThreshold', $unreach_issue_threshold );
+            plugin_config_set ( 'URIThreshold', $unreach_issue_threshold );
          }
       }
    }
 
-   $userprojectview_config_api->updateDynamicValues( 'CStatSelect', PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT );
-   $userprojectview_config_api->updateDynamicValues( 'IAMThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD );
-   $userprojectview_config_api->updateDynamicValues( 'IAGThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD );
+   update_multiple_values ( 'CStatSelect', PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT );
+   update_multiple_values ( 'IAMThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD );
+   update_multiple_values ( 'IAGThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD );
 }
 
-form_security_purge( 'plugin_UserProjectView_config_update' );
+form_security_purge ( 'plugin_UserProjectView_config_update' );
 
-print_successful_redirect( plugin_page( 'config_page', true ) );
+print_successful_redirect ( plugin_page ( 'config_page', true ) );
+
+
+/**
+ * Adds the "#"-Tag if necessary
+ *
+ * @param $color
+ * @return string
+ */
+function include_leading_color_identifier ( $color )
+{
+   if ( "#" == $color[ 0 ] )
+   {
+      return $color;
+   }
+   else
+   {
+      return "#" . $color;
+   }
+}
+
+/**
+ * Updates a specific color value in the plugin
+ *
+ * @param $field_name
+ * @param $default_color
+ */
+function update_color ( $field_name, $default_color )
+{
+   $default_color = include_leading_color_identifier ( $default_color );
+   $iA_background_color = include_leading_color_identifier ( gpc_get_string ( $field_name, $default_color ) );
+
+   if ( plugin_config_get ( $field_name ) != $iA_background_color && plugin_config_get ( $field_name ) != '' )
+   {
+      plugin_config_set ( $field_name, $iA_background_color );
+   }
+   elseif ( plugin_config_get ( $field_name ) == '' )
+   {
+      plugin_config_set ( $field_name, $default_color );
+   }
+}
+
+/**
+ * Updates the value set by a button
+ *
+ * @param $config
+ */
+function update_button ( $config )
+{
+   $button = gpc_get_int ( $config );
+
+   if ( plugin_config_get ( $config ) != $button )
+   {
+      plugin_config_set ( $config, $button );
+   }
+}
+
+/**
+ * Updates the value set by an input text field
+ *
+ * @param $value
+ * @param $constant
+ */
+function update_single_value ( $value, $constant )
+{
+   $act_value = null;
+
+   if ( is_int ( $value ) )
+   {
+      $act_value = gpc_get_int ( $value, $constant );
+   }
+
+   if ( is_string ( $value ) )
+   {
+      $act_value = gpc_get_string ( $value, $constant );
+   }
+
+   if ( plugin_config_get ( $value ) != $act_value )
+   {
+      plugin_config_set ( $value, $act_value );
+   }
+}
+
+/**
+ * Iterates through a specific amount and updates each value
+ *
+ * @param $value
+ * @param $constant
+ */
+function update_multiple_values ( $value, $constant )
+{
+   $column_amount = plugin_config_get ( 'CAmount' );
+
+   for ( $columnIndex = 1; $columnIndex <= $column_amount; $columnIndex++ )
+   {
+      $act_value = $value . $columnIndex;
+
+      update_single_value ( $act_value, $constant );
+   }
+}
