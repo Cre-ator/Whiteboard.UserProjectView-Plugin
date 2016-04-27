@@ -1,23 +1,20 @@
 <?php
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_print_api.php';
 
-$userprojectview_print_api = new userprojectview_print_api();
+auth_reauthenticate ();
+access_ensure_global_level ( plugin_config_get ( 'UserProjectAccessLevel' ) );
 
-auth_reauthenticate();
-access_ensure_global_level( plugin_config_get( 'UserProjectAccessLevel' ) );
+html_page_top1 ( plugin_lang_get ( 'config_title' ) );
+html_page_top2 ();
 
-html_page_top1( plugin_lang_get( 'config_title' ) );
-html_page_top2();
+print_manage_menu ();
 
-print_manage_menu();
-
-echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
+echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current () . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'jscolor' . DIRECTORY_SEPARATOR . 'jscolor.js"></script>';
 echo '<br/>';
-echo '<form action="' . plugin_page( 'config_update' ) . '" method="post">';
-echo form_security_field( 'plugin_UserProjectView_config_update' );
+echo '<form action="' . plugin_page ( 'config_update' ) . '" method="post">';
+echo form_security_field ( 'plugin_UserProjectView_config_update' );
 
-if ( substr( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
 {
    echo '<table align="center" class="width75" cellspacing="1">';
 }
@@ -26,157 +23,235 @@ else
    echo '<div class="form-container">';
    echo '<table>';
 }
-$userprojectview_print_api->printConfigTitle( 6, 'config_caption' );
-$userprojectview_print_api->printConfigRow();
+print_config_table_title_row ( 6, 'config_caption' );
+print_config_table_row ();
 echo '<td class="category" colspan="1">';
-echo '<span class="required">*</span>' . plugin_lang_get( 'config_accesslevel' );
+echo '<span class="required">*</span>' . plugin_lang_get ( 'config_accesslevel' );
 echo '</td>';
 echo '<td width="100px" colspan="5">';
 echo '<select name="UserProjectAccessLevel">';
-print_enum_string_option_list( 'access_levels', plugin_config_get( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT ) );
+print_enum_string_option_list ( 'access_levels', plugin_config_get ( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT ) );
 echo '</select>';
 echo '</td>';
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showMenu' );
-$userprojectview_print_api->printRadioButton( 5, 'ShowMenu' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_showMenu' );
+print_config_table_radio_button_col ( 5, 'ShowMenu' );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showFooter' );
-$userprojectview_print_api->printRadioButton( 5, 'ShowInFooter' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_showFooter' );
+print_config_table_radio_button_col ( 5, 'ShowInFooter' );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showAvatar' );
-$userprojectview_print_api->printRadioButton( 5, 'ShowAvatar' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_showAvatar' );
+print_config_table_radio_button_col ( 5, 'ShowAvatar' );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showHeadRow' );
-$userprojectview_print_api->printRadioButton( 1, 'showHeadRow' );
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 3, 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_showHeadRow' );
+print_config_table_radio_button_col ( 1, 'showHeadRow' );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 3, 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 echo '</tr>';
 
-$userprojectview_print_api->printSpacer( 6 );
-$userprojectview_print_api->printConfigTitle( 6, 'config_highlighting' );
+print_config_table_title_row ( 6, 'config_highlighting' );
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_IAUHighlighting' );
-$userprojectview_print_api->printRadioButton( 1, 'IAUHighlighting' );
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_IAUHighlighting' );
+print_config_table_radio_button_col ( 1, 'IAUHighlighting' );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_URIUHighlighting' );
-$userprojectview_print_api->printRadioButton( 1, 'URIUHighlighting' );
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_URIUHighlighting' );
+print_config_table_radio_button_col ( 1, 'URIUHighlighting' );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_NUIHighlighting' );
-$userprojectview_print_api->printRadioButton( 1, 'NUIHighlighting' );
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_NUIHighlighting' );
+print_config_table_radio_button_col ( 1, 'NUIHighlighting' );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_showZIU' );
-$userprojectview_print_api->printRadioButton( 5, 'ShowZIU' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_showZIU' );
+print_config_table_radio_button_col ( 5, 'ShowZIU' );
 echo '</tr>';
 
-$userprojectview_print_api->printConfigRow();
+print_config_table_row ();
 echo '<td class="category" colspan="1">';
-echo plugin_lang_get( 'config_ZIHighlighting' ) . '<br/>';
-echo '<span class="small">' . plugin_lang_get( 'config_ZIUExpl' ) . '</span>';
+echo plugin_lang_get ( 'config_ZIHighlighting' ) . '<br/>';
+echo '<span class="small">' . plugin_lang_get ( 'config_ZIUExpl' ) . '</span>';
 echo '</td>';
-$userprojectview_print_api->printRadioButton( 1, 'ZIHighlighting' );
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+print_config_table_radio_button_col ( 1, 'ZIHighlighting' );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
 echo '</tr>';
 
-$userprojectview_print_api->printSpacer( 6 );
-$userprojectview_print_api->printConfigTitle( 6, 'config_specColumns' );
+print_config_table_title_row ( 6, 'config_specColumns' );
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_CAmount' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_CAmount' );
 echo '<td width="100px" colspan="1" rowspan="1">';
 ?>
    <label><input type="number" name="CAmount"
-                 value="<?php echo plugin_config_get( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT ); ?>" min="1"
+                 value="<?php echo plugin_config_get ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT ); ?>" min="1"
                  max="20"/></label>
 <?php
 echo '</td>';
 
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_BGColor' );
-$userprojectview_print_api->printColorPicker( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+print_config_table_category_col ( 1, 1, 'config_BGColor' );
+print_config_table_color_picker_row ( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 echo '</tr>';
 
-for ( $columnIndex = 1; $columnIndex <= plugin_config_get( 'CAmount' ); $columnIndex++ )
+for ( $columnIndex = 1; $columnIndex <= plugin_config_get ( 'CAmount' ); $columnIndex++ )
 {
-   $userprojectview_print_api->printConfigRow();
+   print_config_table_row ();
    echo '<td class="category" colspan="1" rowspan="1">';
-   echo plugin_lang_get( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
+   echo plugin_lang_get ( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
    echo '</td>';
    echo '<td valign="top" width="100px" colspan="1" rowspan="1">';
    echo '<select name="CStatSelect' . $columnIndex . '">';
-   print_enum_string_option_list( 'status', plugin_config_get( 'CStatSelect' . $columnIndex ) );
+   print_enum_string_option_list ( 'status', plugin_config_get ( 'CStatSelect' . $columnIndex ) );
    echo '</select>';
    echo '</td>';
    echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_IAMThreshold' ) . '<br>';
-   echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
+   echo plugin_lang_get ( 'config_IAMThreshold' ) . '<br>';
+   echo '<span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span>';
    echo '</td>';
    echo '<td  colspan="1">';
    ?>
    <label><input type="number" name="IAMThreshold<?php echo $columnIndex ?>"
-                 value="<?php echo plugin_config_get( 'IAMThreshold' . $columnIndex, 5 ); ?>" min="0"/></label>
+                 value="<?php echo plugin_config_get ( 'IAMThreshold' . $columnIndex, 5 ); ?>" min="0"/></label>
    <?php
    echo '</td>';
    echo '<td class="category" colspan="1">';
-   echo plugin_lang_get( 'config_IAGThreshold' ) . '<br>';
-   echo '<span class="small">' . plugin_lang_get( 'config_IAGMThresholdExpl' ) . '</span>';
+   echo plugin_lang_get ( 'config_IAGThreshold' ) . '<br>';
+   echo '<span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span>';
    echo '</td>';
    echo '<td  colspan="1">';
    ?>
    <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>"
-                 value="<?php echo plugin_config_get( 'IAGThreshold' . $columnIndex, 30 ); ?>" min="0"/></label>
+                 value="<?php echo plugin_config_get ( 'IAGThreshold' . $columnIndex, 30 ); ?>" min="0"/></label>
    <?php
    echo '</td>';
    echo '</tr>';
 }
 
-$userprojectview_print_api->printSpacer( 6 );
-$userprojectview_print_api->printConfigTitle( 6, 'config_URIFilter' );
+print_config_table_title_row ( 6, 'config_URIFilter' );
 
-$userprojectview_print_api->printConfigRow();
-$userprojectview_print_api->printConfigCategory( 1, 1, 'config_URIThreshold' );
+print_config_table_row ();
+print_config_table_category_col ( 1, 1, 'config_URIThreshold' );
 echo '<td valign="top" width="100px" colspan="7">';
 echo '<select name="URIThreshold[]" multiple="multiple">';
-print_enum_string_option_list( 'status', plugin_config_get( 'URIThreshold', 50 ) );
+print_enum_string_option_list ( 'status', plugin_config_get ( 'URIThreshold', 50 ) );
 echo '</select>';
 echo '</td>';
 echo '</tr>';
 
-$userprojectview_print_api->printSpacer( 6 );
 echo '<tr>';
 echo '<td class="center" colspan="6">';
-echo '<input type="submit" name="change" class="button" value="' . lang_get( 'update_prefs_button' ) . '"/>' . ' ';
-echo '<input type="submit" name="reset" class="button" value="' . lang_get( 'reset_prefs_button' ) . '"/>';
+echo '<input type="submit" name="change" class="button" value="' . lang_get ( 'update_prefs_button' ) . '"/>' . ' ';
+echo '<input type="submit" name="reset" class="button" value="' . lang_get ( 'reset_prefs_button' ) . '"/>';
 echo '</td>';
 echo '</tr>';
 
 echo '</table>';
 
-if ( substr( MANTIS_VERSION, 0, 4 ) != '1.2.' )
+if ( substr ( MANTIS_VERSION, 0, 4 ) != '1.2.' )
 {
    echo '</div>';
 }
 
 echo '</form>';
 
-html_page_bottom1();
+html_page_bottom1 ();
+
+/**
+ * Prints a table row in the plugin config area
+ */
+function print_config_table_row ()
+{
+   if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+   {
+      echo '<tr ' . helper_alternate_class () . '>';
+   }
+   else
+   {
+      echo '<tr>';
+   }
+}
+
+/**
+ * Prints a category column in the plugin config area
+ *
+ * @param $colspan
+ * @param $rowspan
+ * @param $lang_string
+ */
+function print_config_table_category_col ( $colspan, $rowspan, $lang_string )
+{
+   echo '<td class="category" colspan="' . $colspan . '" rowspan="' . $rowspan . '">';
+   echo plugin_lang_get ( $lang_string );
+   echo '</td>';
+}
+
+/**
+ * Prints a title row in the plugin config area
+ *
+ * @param $colspan
+ * @param $lang_string
+ */
+function print_config_table_title_row ( $colspan, $lang_string )
+{
+   echo '<tr>';
+   echo '<td class="form-title" colspan="' . $colspan . '">';
+   echo plugin_lang_get ( $lang_string );
+   echo '</td>';
+   echo '</tr>';
+}
+
+/**
+ * Prints a radio button element in the plugin config area
+ *
+ * @param $colspan
+ * @param $name
+ */
+function print_config_table_radio_button_col ( $colspan, $name )
+{
+   echo '<td width="100px" colspan="' . $colspan . '">';
+   echo '<label>';
+   echo '<input type="radio" name="' . $name . '" value="1"';
+   echo ( ON == plugin_config_get ( $name ) ) ? 'checked="checked"' : '';
+   echo '/>' . lang_get ( 'yes' );
+   echo '</label>';
+   echo '<label>';
+   echo '<input type="radio" name="' . $name . '" value="0"';
+   echo ( OFF == plugin_config_get ( $name ) ) ? 'checked="checked"' : '';
+   echo '/>' . lang_get ( 'no' );
+   echo '</label>';
+   echo '</td>';
+}
+
+/**
+ * Prints a color picker element in the plugin config area
+ *
+ * @param $colspan
+ * @param $name
+ * @param $default
+ */
+function print_config_table_color_picker_row ( $colspan, $name, $default )
+{
+   echo '<td width="100px" colspan="' . $colspan . '">';
+   echo '<label>';
+   echo '<input class="color {pickerFace:4,pickerClosable:true}" type="text" name="' . $name . '" value="' . plugin_config_get ( $name, $default ) . '" />';
+   echo '</label>';
+   echo '</td>';
+}

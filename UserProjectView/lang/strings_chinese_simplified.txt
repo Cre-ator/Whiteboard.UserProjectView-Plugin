@@ -17,6 +17,13 @@ $s_plugin_UserProjectView_remark_ZIssues = '用户没有任何项';
 $s_plugin_UserProjectView_remark_noUser = '没有用户分配';
 $s_plugin_UserProjectView_remark_since = '自';
 $s_plugin_UserProjectView_remark_day = '天';
+$s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
+
+$s_plugin_UserProjectView_headrow_user = 'User with issues';
+$s_plugin_UserProjectView_headrow_no_issue = 'User without Issues';
+$s_plugin_UserProjectView_headrow_del_user = 'Inactive/Deleted user';
+$s_plugin_UserProjectView_headrow_no_user = 'Issues without assigned user';
+$s_plugin_UserProjectView_headrow_show_all_user = 'Show / Hide all user with issues';
 
 $s_plugin_UserProjectView_remove_quest = '确实要将以下用户从指定的项目移除吗?';
 $s_plugin_UserProjectView_remove_selectSingle = '从项目中删除用户';
@@ -27,6 +34,7 @@ $s_plugin_UserProjectView_remove_failure = '错误，不能从项目中移除的
 $s_plugin_UserProjectView_config_showFooter = '在页脚中显示插件信息吗?';
 $s_plugin_UserProjectView_config_showMenu = '在菜单显示插件吗?';
 $s_plugin_UserProjectView_config_showAvatar = '在用户报表中显示"Avatar" 吗?';
+$s_plugin_UserProjectView_config_showHeadRow = 'Show summarizing Headrow?';
 $s_plugin_UserProjectView_config_IAUHighlighting = '标记非活跃用户吗?';
 $s_plugin_UserProjectView_config_URIUHighlighting = '是否标记用户未分配项目行?';
 $s_plugin_UserProjectView_config_NUIHighlighting = '是否标记没有分配用户的项?';
