@@ -1,44 +1,72 @@
-function row_view( category )
+function open_row()
 {
-    for ( var i = 0; i < document.getElementsByName( category ).length; i++ )
-    {
-        if ( document.getElementsByName( category )[i] )
+    // data-level : level of hierarchy
+    // data-status: 1=show; 0=hide
+    $( document ).ready(
+        function ()
         {
-            var actualVisibility = document.getElementsByName( category )[i].style.visibility;
-            if ( actualVisibility == '' || actualVisibility == 'visible' )
-            {
-                document.getElementsByName( category )[i].style.visibility = "hidden";
-                document.getElementsByName( category )[i].style.display = "none";
-            }
-            else
-            {
-                document.getElementsByName( category )[i].style.visibility = "visible";
-                document.getElementsByName( category )[i].style.display = "";
-            }
-        }
-    }
-}
+            $( ".clickable" ).click(
+                function ()
+                {
+                    var element = $( this );
+                    var levelMain = parseInt( element.attr( 'data-level' ), 10 );
+                    var statusChildren;
 
-function row_view_open( category )
-{
-    for ( var i = 0; i < document.getElementsByName( category ).length; i++ )
-    {
-        if ( document.getElementsByName( category )[i] )
-        {
-            document.getElementsByName( category )[i].style.visibility = "visible";
-            document.getElementsByName( category )[i].style.display = "";
-        }
-    }
-}
+                    if ( "+" == element.find( ".icon" ).html() )
+                    {
+                        element.find( ".icon" ).html( "-" );
+                        statusChildren = "1";
+                    }
+                    else
+                    {
+                        element.find( ".icon" ).html( "+" );
+                        statusChildren = "0";
+                    }
 
-function row_view_close( category )
-{
-    for ( var i = 0; i < document.getElementsByName( category ).length; i++ )
-    {
-        if ( document.getElementsByName( category )[i] )
-        {
-            document.getElementsByName( category )[i].style.visibility = "hidden";
-            document.getElementsByName( category )[i].style.display = "none";
-        }
-    }
+                    for ( ; ; )
+                    {
+                        element = element.next();
+                        if ( null == element.attr( 'class' ) )
+                        {
+                            break;
+                        } // next element doesn't exist
+
+                        if ( "clickable" == element.attr( 'class' )
+                            && levelMain >= element.attr( 'data-level' )
+                        )
+                        {
+                            break; // stop if same level
+                        }
+
+                        if ( "0" == statusChildren )
+                        {
+                            element.hide(); // hide all
+                            if ( (levelMain + 1) == element.attr( 'data-level' ) )
+                            {
+                                element.attr( 'data-status', 0 );
+                            } // change data-status only for the next data-level
+                        }
+                        else if ( "1" == statusChildren )
+                        {
+                            if ( (levelMain + 1) == element.attr( 'data-level' ) )
+                            {
+                                element.attr( 'data-status', 1 ); // change data-status only for the next data-level
+                                element.show();
+                            }
+                            else if ( "1" == element.attr( 'data-status' ) )
+                            {
+                                element.show();
+                            }
+                        }
+                    }
+                } );
+            $( ".clickable" ).hover(
+                function ()
+                {
+                    $( this ).css( 'cursor', 'pointer' );
+                }, function ()
+                {
+                    $( this ).css( 'cursor', 'auto' );
+                } );
+        } );
 }

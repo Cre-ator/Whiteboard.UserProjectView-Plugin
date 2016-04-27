@@ -44,8 +44,9 @@ if ( plugin_config_get( 'ShowZIU' ) )
 }
 
 html_page_top1( plugin_lang_get( 'menu_userprojecttitle' ) );
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>';
 echo '<script type="text/javascript" src="plugins' . DIRECTORY_SEPARATOR . plugin_get_current() . DIRECTORY_SEPARATOR . 'javascript' . DIRECTORY_SEPARATOR . 'table.js"></script>';
+echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
 if ( !$print_flag )
 {
    html_page_top2();
@@ -396,9 +397,6 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
 {
    $userprojectview_system_api = new userprojectview_system_api();
    $userprojectview_print_api = new userprojectview_print_api();
-   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
-   $unreachIssueStatusValue = plugin_config_get( 'URIThreshold' );
-   $unreachIssueStatusCount = count( $unreachIssueStatusValue );
    $amountStatColumns = get_amount_stat_columns();
    $sortVal = $_GET['sortVal'];
    $sortOrder = $_GET['sort'];
@@ -452,40 +450,15 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
                   print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThresholds );
                   $head_row_counter = false;
                }
-               $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $head_row_user_id );
+               $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
             }
          }
       }
 
-      $group_user_without_issue = $groups[1];
-      $category = '100002';
-      print_group_head_row( $category, 'headrow_no_issue', $amountStatColumns, $group_user_without_issue, $tableRow, $statCols );
-      for ( $group_index = 0; $group_index < count( $group_user_without_issue ); $group_index++ )
-      {
-         $tableRowIndex = $group_user_without_issue[$group_index];
-         $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
-      }
-
-
-      $group_inactive_deleted_user = $groups[2];
-      $category = '100003';
-      print_group_head_row( $category, 'headrow_del_user', $amountStatColumns, $group_inactive_deleted_user, $tableRow, $statCols );
-      for ( $group_index = 0; $group_index < count( $group_inactive_deleted_user ); $group_index++ )
-      {
-         $tableRowIndex = $group_inactive_deleted_user[$group_index];
-         $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
-      }
-
-      $group_issues_without_user = $groups[3];
-      $category = '100004';
-      print_group_head_row( $category, 'headrow_no_user', $amountStatColumns, $group_issues_without_user, $tableRow, $statCols );
-      for ( $group_index = 0; $group_index < count( $group_issues_without_user ); $group_index++ )
-      {
-         $tableRowIndex = $group_issues_without_user[$group_index];
-         $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category );
-      }
-
-      build_option_panel( $userAccessLevel, $amountStatColumns, $specColumnIssueAmount, $print_flag );
+      print_category_block( $groups[1], '100002', 'headrow_no_issue', $amountStatColumns, $tableRow, $statCols, $t_project_id, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
+      print_category_block( $groups[2], '100003', 'headrow_del_user', $amountStatColumns, $tableRow, $statCols, $t_project_id, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
+      print_category_block( $groups[3], '100004', 'headrow_no_user', $amountStatColumns, $tableRow, $statCols, $t_project_id, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
+      build_option_panel( $amountStatColumns, $specColumnIssueAmount, $print_flag );
    }
    else
    {
@@ -530,24 +503,34 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
             $row_index = 3 - $row_index;
          }
 
-         $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, '' );
+         $userprojectview_print_api->printTDRow( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
          if ( !$print_flag )
          {
             build_chackbox_column( $userId, $pProject );
-            build_avatar_column( $userAccessLevel, $linkUserId, $userId );
+            build_avatar_column( $linkUserId, $userId );
          }
-         build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag );
-         build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag );
-         build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
-         build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
-         target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
+         build_user_column( $linkUserId, $userName, $print_flag );
+         build_real_name_column( $linkUserId, $userRealname, $print_flag );
+         build_main_project_column( $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
+         build_assigned_project_column( $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
+         target_version_column( $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
          $specColumnIssueAmount = build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $statCols, $issueCounter, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $specColumnIssueAmount, $print_flag );
-         build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
+         build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
          echo '</tr>';
       }
 
-      build_option_panel( $userAccessLevel, $amountStatColumns, $specColumnIssueAmount, $print_flag );
+      build_option_panel( $amountStatColumns, $specColumnIssueAmount, $print_flag );
       echo '</tbody>';
+   }
+}
+
+function print_category_block( $group, $category, $lang_string, $amountStatColumns, $tableRow, $statCols, $t_project_id, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount )
+{
+   print_group_head_row( $category, $lang_string, $amountStatColumns, $group, $tableRow, $statCols );
+   for ( $group_index = 0; $group_index < count( $group ); $group_index++ )
+   {
+      $tableRowIndex = $group[$group_index];
+      $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
    }
 }
 
@@ -621,9 +604,9 @@ function calculate_head_rows( $tableRow, $amountStatColumns )
 function print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThresholds )
 {
    $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
-   echo '<tr name="100001" style="visibility: hidden; display: none; background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+   echo '<tr name="100001" class="clickable" data-level="1" data-status="0" background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
    echo '<td width="20px" />';
-   echo '<td name="userclick"><a href="#" onclick="row_view(' . $user_id . ')">+/-</a></td>';
+   echo '<td class="icon" onclick="open_row()">+</a></td>';
    if ( plugin_config_get( 'ShowAvatar' ) && config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
    {
       echo '<td align="center" width="25px">';
@@ -670,25 +653,10 @@ function print_group_head_row( $category, $lang_string, $amountStatColumns, $gro
          $colspan = 7;
       }
 
-      if ( $category == '0' )
-      {
-         $row_name = '100001';
-      }
-      else
-      {
-         $row_name = $category;
-      }
-
-      echo '<tr style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-      echo '<td name="click"><a href="#" onclick="row_view(' . $row_name . ')">+/-</a></td>';
+      echo '<tr class="clickable" data-level="0" data-status="0" style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
+      echo '<td class="icon"><a href="#" onclick="open_row()">+</a></td>';
       echo '<td colspan="' . $colspan . '">' . plugin_lang_get( $lang_string );
-      if ( $category == '0' )
-      {
-         $js_function_call_string = get_js_function_call_string( $tableRow, $amountStatColumns, $group );
-         echo '<a href="#" onclick="row_view(100001);' . $js_function_call_string . '"> (' . plugin_lang_get( 'headrow_show_all_user' ) . ')</a>';
-      }
       echo '</td>';
-
 
       for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
       {
@@ -753,7 +721,7 @@ function get_js_function_call_string( $tableRow, $amountStatColumns, $group )
    return $function_call_string;
 }
 
-function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $sortVal, $print_flag, $userAccessLevel, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $unreachIssueStatusCount, $unreachIssueStatusValue, $category )
+function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount )
 {
    $userprojectview_system_api = new userprojectview_system_api();
    $userprojectview_print_api = new userprojectview_print_api();
@@ -783,20 +751,20 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
    $pProject = $userprojectview_system_api->prepareParentProject( $t_project_id, $bugAssignedProjectId, $mainProjectId );
    $noUserFlag = $userprojectview_system_api->setUserflag( $amountStatColumns, $statCols, $userId );
 
-   $userprojectview_print_api->printTDRow( $userId, 2, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag, $sortVal, $print_flag, $category );
+   $userprojectview_print_api->printTDRow( $userId, 2, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
    echo '<td/>';
    if ( !$print_flag )
    {
       build_chackbox_column( $userId, $pProject );
-      build_avatar_column( $userAccessLevel, $linkUserId, $userId );
+      build_avatar_column( $linkUserId, $userId );
    }
-   build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag );
-   build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag );
-   build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
-   build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
-   target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
+   build_user_column( $linkUserId, $userName, $print_flag );
+   build_real_name_column( $linkUserId, $userRealname, $print_flag );
+   build_main_project_column( $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
+   build_assigned_project_column( $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
+   target_version_column( $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
    $specColumnIssueAmount = build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $statCols, $issueCounter, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $specColumnIssueAmount, $print_flag );
-   build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
+   build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag );
    echo '</tr>';
 
    return $specColumnIssueAmount;
@@ -971,8 +939,9 @@ function build_chackbox_column( $userId, $pProject )
    echo '</td>';
 }
 
-function build_avatar_column( $userAccessLevel, $linkUserId, $userId )
+function build_avatar_column( $linkUserId, $userId )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
       echo '<td align="center" width="25px">';
@@ -1002,8 +971,9 @@ function build_avatar_column( $userAccessLevel, $linkUserId, $userId )
    }
 }
 
-function build_user_column( $userAccessLevel, $linkUserId, $userName, $print_flag )
+function build_user_column( $linkUserId, $userName, $print_flag )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
    {
@@ -1033,8 +1003,9 @@ function build_user_column( $userAccessLevel, $linkUserId, $userName, $print_fla
    echo '</td>';
 }
 
-function build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $print_flag )
+function build_real_name_column( $linkUserId, $userRealname, $print_flag )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
    {
@@ -1050,8 +1021,9 @@ function build_real_name_column( $userAccessLevel, $linkUserId, $userRealname, $
    echo '</td>';
 }
 
-function build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserId, $mainProjectName, $print_flag )
+function build_main_project_column( $mainProjectId, $linkUserId, $mainProjectName, $print_flag )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
    {
@@ -1068,8 +1040,9 @@ function build_main_project_column( $userAccessLevel, $mainProjectId, $linkUserI
    echo '</td>';
 }
 
-function build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag )
+function build_assigned_project_column( $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
    if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
    {
@@ -1086,8 +1059,9 @@ function build_assigned_project_column( $userAccessLevel, $bugAssignedProjectId,
    echo '</td>';
 }
 
-function target_version_column( $userAccessLevel, $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag )
+function target_version_column( $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag )
 {
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
    echo $bugTargetVersionDate . ' ';
    if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
@@ -1141,7 +1115,7 @@ function build_amount_of_issues_column( $amountStatColumns, $issueThresholds, $s
    return $specColumnIssueAmount;
 }
 
-function build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $unreachIssueStatusCount, $unreachIssueStatusValue, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag )
+function build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssignedProjectId, $mainProjectId, $statCols, $userId, $bugTargetVersion, $linkUserId, $unreachableIssueFlag, $inactiveUserFlag, $zeroIssuesFlag, $noUserFlag, $print_flag )
 {
    $userprojectview_database_api = new userprojectview_database_api();
    $userprojectview_system_api = new userprojectview_system_api();
@@ -1198,6 +1172,8 @@ function build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssig
 
    if ( $unreachableIssueFlag )
    {
+      $unreachIssueStatusValue = plugin_config_get( 'URIThreshold' );
+      $unreachIssueStatusCount = count( $unreachIssueStatusValue );
       $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId;
       $filterString = $userprojectview_system_api->prepareFilterString( $unreachIssueStatusCount, $unreachIssueStatusValue, $filterString );
       $filterString .= '&handler_id=' . $linkUserId .
@@ -1223,15 +1199,16 @@ function build_remark_column( $amountStatColumns, $issueAgeThresholds, $bugAssig
    echo '</td>';
 }
 
-function build_option_panel( $userAccessLevel, $amountStatColumns, $specColumnIssueAmount, $print_flag )
+function build_option_panel( $amountStatColumns, $specColumnIssueAmount, $print_flag )
 {
-   $fixColspan = 7;
+   $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
+   $fixColspan = 8;
    if ( plugin_config_get( 'ShowAvatar' ) )
    {
-      $fixColspan = 8;
+      $fixColspan = 9;
    }
 
-   echo '<tr class="spacer">';
+   echo '<tr>';
    $footerColspan = $fixColspan - 1;
    if ( $print_flag )
    {
