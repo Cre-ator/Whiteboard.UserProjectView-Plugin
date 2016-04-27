@@ -450,7 +450,7 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
                   print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThresholds );
                   $head_row_counter = false;
                }
-               $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
+               $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, false );
             }
          }
       }
@@ -509,8 +509,8 @@ function print_tbody( $tableRow, $t_project_id, $statCols, $issueThresholds, $is
             build_chackbox_column( $userId, $pProject );
             build_avatar_column( $linkUserId, $userId );
          }
-         build_user_column( $linkUserId, $userName, $print_flag );
-         build_real_name_column( $linkUserId, $userRealname, $print_flag );
+         build_user_column( $linkUserId, $userName, $print_flag, true );
+         build_real_name_column( $linkUserId, $userRealname, $print_flag, true );
          build_main_project_column( $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
          build_assigned_project_column( $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
          target_version_column( $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
@@ -530,7 +530,7 @@ function print_category_block( $group, $category, $lang_string, $amountStatColum
    for ( $group_index = 0; $group_index < count( $group ); $group_index++ )
    {
       $tableRowIndex = $group[$group_index];
-      $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount );
+      $specColumnIssueAmount = print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, true );
    }
 }
 
@@ -606,7 +606,7 @@ function print_user_head_row( $user_id, $head_row, $amountStatColumns, $issueThr
    $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<tr name="100001" class="clickable" data-level="1" data-status="0" background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
    echo '<td width="20px" />';
-   echo '<td class="icon" onclick="open_row()">+</a></td>';
+   echo '<td class="icon" />';
    if ( plugin_config_get( 'ShowAvatar' ) && config_get( 'show_avatar' ) && $userAccessLevel >= config_get( 'show_avatar_threshold' ) )
    {
       echo '<td align="center" width="25px">';
@@ -654,7 +654,7 @@ function print_group_head_row( $category, $lang_string, $amountStatColumns, $gro
       }
 
       echo '<tr class="clickable" data-level="0" data-status="0" style="background-color:' . plugin_config_get( 'HeadRowColor' ) . '">';
-      echo '<td class="icon"><a href="#" onclick="open_row()">+</a></td>';
+      echo '<td class="icon" />';
       echo '<td colspan="' . $colspan . '">' . plugin_lang_get( $lang_string );
       echo '</td>';
 
@@ -721,7 +721,7 @@ function get_js_function_call_string( $tableRow, $amountStatColumns, $group )
    return $function_call_string;
 }
 
-function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount )
+function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id, $statCols, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount, $detailed_flag )
 {
    $userprojectview_system_api = new userprojectview_system_api();
    $userprojectview_print_api = new userprojectview_print_api();
@@ -758,8 +758,8 @@ function print_row( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_id
       build_chackbox_column( $userId, $pProject );
       build_avatar_column( $linkUserId, $userId );
    }
-   build_user_column( $linkUserId, $userName, $print_flag );
-   build_real_name_column( $linkUserId, $userRealname, $print_flag );
+   build_user_column( $linkUserId, $userName, $print_flag, $detailed_flag );
+   build_real_name_column( $linkUserId, $userRealname, $print_flag, $detailed_flag );
    build_main_project_column( $mainProjectId, $linkUserId, $mainProjectName, $print_flag );
    build_assigned_project_column( $bugAssignedProjectId, $linkUserId, $bugAssignedProjectName, $print_flag );
    target_version_column( $bugAssignedProjectId, $linkUserId, $bugTargetVersion, $bugTargetVersionDate, $bugTargetVersionPreparedString, $print_flag );
@@ -971,52 +971,58 @@ function build_avatar_column( $linkUserId, $userId )
    }
 }
 
-function build_user_column( $linkUserId, $userName, $print_flag )
+function build_user_column( $linkUserId, $userName, $print_flag, $detailed_flag )
 {
    $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
-   if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
+   if ( $detailed_flag )
    {
-      $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-      echo $filterString;
-      if ( user_exists( $linkUserId ) )
+      if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
       {
-         echo $userName;
+         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         echo $filterString;
+         if ( user_exists( $linkUserId ) )
+         {
+            echo $userName;
+         }
+         else
+         {
+            echo '<s>' . $userName . '</s>';
+         }
+         echo '</a>';
       }
       else
       {
-         echo '<s>' . $userName . '</s>';
-      }
-      echo '</a>';
-   }
-   else
-   {
-      if ( user_exists( $linkUserId ) )
-      {
-         echo $userName;
-      }
-      else
-      {
-         echo '<s>' . $userName . '</s>';
+         if ( user_exists( $linkUserId ) )
+         {
+            echo $userName;
+         }
+         else
+         {
+            echo '<s>' . $userName . '</s>';
+         }
       }
    }
    echo '</td>';
 }
 
-function build_real_name_column( $linkUserId, $userRealname, $print_flag )
+function build_real_name_column( $linkUserId, $userRealname, $print_flag, $detailed_flag )
 {
    $userAccessLevel = user_get_access_level( auth_get_current_user_id(), helper_get_current_project() );
    echo '<td>';
-   if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
+   if ( $detailed_flag )
    {
-      $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
-      echo $filterString;
-      echo $userRealname;
-      echo '</a>';
-   }
-   else
-   {
-      echo $userRealname;
+      if ( access_has_global_level( $userAccessLevel ) && !$print_flag )
+      {
+         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         echo $filterString;
+         echo $userRealname;
+         echo '</a>';
+      }
+      else
+      {
+         echo $userRealname;
+      }
    }
    echo '</td>';
 }
