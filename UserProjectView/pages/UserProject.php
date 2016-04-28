@@ -497,7 +497,7 @@ function print_tbody ( $tableRow, $t_project_id, $statCols, $issueThresholds, $i
          print_main_table_user_row ( $userId, $row_index, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
          if ( !$print_flag )
          {
-            build_chackbox_column ( $userId, $pProject );
+            build_chackbox_column ( $userId, $pProject, $noUserFlag );
             build_avatar_column ( $linkUserId, $userId, true, false, false, false );
          }
          build_user_column ( $linkUserId, $userName, $print_flag, true, false, false, false );
@@ -745,7 +745,7 @@ function print_row ( $tableRow, $tableRowIndex, $amountStatColumns, $t_project_i
    echo '<td/>';
    if ( !$print_flag )
    {
-      build_chackbox_column ( $userId, $pProject );
+      build_chackbox_column ( $userId, $pProject, $noUserFlag );
       build_avatar_column ( $linkUserId, $userId, $detailed_flag, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
    }
    build_user_column ( $linkUserId, $userName, $print_flag, $detailed_flag, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
@@ -921,11 +921,14 @@ function checkout_change_row ( $sortVal, $tableRow, $tableRowIndex )
    return $change_row_bg;
 }
 
-function build_chackbox_column ( $userId, $pProject )
+function build_chackbox_column ( $userId, $pProject, $noUserFlag )
 {
    echo '<td width="15px">';
-   echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
-   echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
+   if ( !$noUserFlag )
+   {
+      echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
+      echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
+   }
    echo '</td>';
 }
 
