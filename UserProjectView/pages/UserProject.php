@@ -39,9 +39,9 @@ if ( plugin_config_get ( 'ShowZIU' ) )
 }
 
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
-echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>';
+echo '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>';
 echo '<script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>';
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
+echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css"/>';
 if ( !$print_flag )
 {
    html_page_top2 ();
@@ -481,8 +481,8 @@ function print_tbody ( $tableRow, $t_project_id, $statCols, $issueThresholds, $i
       }
 
       build_option_panel ( $specColumnIssueAmount, $print_flag );
-      echo '</tbody>';
    }
+   echo '</tbody>';
 }
 
 function print_category_block ( $group, $category, $lang_string, $tableRow, $statCols, $t_project_id, $print_flag, $issueAgeThresholds, $issueThresholds, $specColumnIssueAmount )
@@ -566,18 +566,18 @@ function calculate_head_rows ( $tableRow )
 
 function print_user_head_row ( $user_id, $head_row, $issueThresholds )
 {
-   $filterString = '<a href="search.php?&handler_id=' . $user_id . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+   $filterString = '<a href="search.php?handler_id=' . $user_id . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
 
-   echo '<tr name="100001" class="clickable" data-level="1" data-status="0" background-color:' . plugin_config_get ( 'HeadRowColor' ) . '">';
+   echo '<tr class="clickable" data-level="1" data-status="0">';
    echo '<td width="15px" />';
    echo '<td class="icon" />';
-   if ( plugin_config_get ( 'ShowAvatar' ) )
+   echo '<td class="group_row_bg" align="center" width="25px">';
+   if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
    {
-      echo '<td class="group_row_bg" align="center" width="25px">';
       $assocArray = user_get_avatar ( $user_id );
       echo $filterString . '<img class="avatar" src="' . $assocArray[ 0 ] . '" /></a>';
-      echo '</td>';
    }
+   echo '</td>';
    echo '<td class="group_row_bg">' . $filterString . user_get_name ( $user_id ) . '</a></td>';
    echo '<td class="group_row_bg">' . $filterString . user_get_realname ( $user_id ) . '</a></td>';
    echo '<td class="group_row_bg" colspan="3"/>';
@@ -618,8 +618,7 @@ function print_group_head_row ( $category, $lang_string, $group, $tableRow, $sta
       }
       echo '<tr class="clickable" data-level="0" data-status="0" >';
       echo '<td class="icon" />';
-      echo '<td class="group_row_bg" colspan="' . $colspan . '">' . plugin_lang_get ( $lang_string );
-      echo '</td class="group_row_bg">';
+      echo '<td class="group_row_bg" colspan="' . $colspan . '">' . plugin_lang_get ( $lang_string ) . '</td>';
 
       for ( $statColIndex = 1; $statColIndex <= get_amount_stat_columns (); $statColIndex++ )
       {
@@ -628,7 +627,7 @@ function print_group_head_row ( $category, $lang_string, $group, $tableRow, $sta
             $StatColStatus = $statCols[ $statColIndex ];
             if ( $StatColStatus == '10' || $StatColStatus == '20' || $StatColStatus == '30' || $StatColStatus == '40' || $StatColStatus == '50' )
             {
-               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $iCounter[ $statColIndex ] . '</td>';
+               echo '<td style="background-color:"' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $iCounter[ $statColIndex ] . '</td>';
             }
             else
             {
@@ -848,6 +847,7 @@ function build_chackbox_column ( $table_row_content, $t_project_id, $statCols )
    {
       echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
       echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
+      echo '</form>';
    }
    echo '</td>';
 }
@@ -863,42 +863,42 @@ function build_avatar_column ( $table_row_content, $t_project_id, $statCols, $de
    $isAssignedToProject = checkUserAssignedToProject ( $userId, $bugAssignedProjectId );
    $unreachableIssueFlag = setUnreachableIssueFlag ( $isAssignedToProject );
 
-   if ( plugin_config_get ( 'ShowAvatar' ) )
+   $iA_background_color = plugin_config_get ( 'IAUHBGColor' );
+   $uR_background_color = plugin_config_get ( 'URIUHBGColor' );
+   $nU_background_color = plugin_config_get ( 'NUIHBGColor' );
+   $zI_background_color = plugin_config_get ( 'ZIHBGColor' );
+   if ( ( !user_exists ( $linkUserId ) && !$noUserFlag )
+      || ( user_exists ( $linkUserId ) && $linkUserId != '0' && user_get_field ( $linkUserId, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+   )
    {
-      $iA_background_color = plugin_config_get ( 'IAUHBGColor' );
-      $uR_background_color = plugin_config_get ( 'URIUHBGColor' );
-      $nU_background_color = plugin_config_get ( 'NUIHBGColor' );
-      $zI_background_color = plugin_config_get ( 'ZIHBGColor' );
-      if ( ( !user_exists ( $linkUserId ) && !$noUserFlag )
-         || ( user_exists ( $linkUserId ) && $linkUserId != '0' && user_get_field ( $linkUserId, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
-      )
-      {
-         echo '<td align="center" width="25px" style="background-color:' . $iA_background_color . '">';
-      }
-      elseif ( $zeroIssuesFlag && plugin_config_get ( 'ZIHighlighting' ) )
-      {
-         echo '<td align="center" width="25px" style="background-color:' . $zI_background_color . '">';
-      }
-      elseif ( $noUserFlag && plugin_config_get ( 'NUIHighlighting' ) )
-      {
-         echo '<td align="center" width="25px" style="background-color:' . $nU_background_color . '">';
-      }
-      elseif ( $unreachableIssueFlag && plugin_config_get ( 'URIUHighlighting' ) )
-      {
-         echo '<td align="center" width="25px" style="background-color:' . $uR_background_color . '">';
-      }
-      else
-      {
-         echo '<td class="user_row_bg" align="center" width="25px">';
-      }
+      echo '<td align="center" width="25px" style="background-color:' . $iA_background_color . '">';
+   }
+   elseif ( $zeroIssuesFlag && plugin_config_get ( 'ZIHighlighting' ) )
+   {
+      echo '<td align="center" width="25px" style="background-color:' . $zI_background_color . '">';
+   }
+   elseif ( $noUserFlag && plugin_config_get ( 'NUIHighlighting' ) )
+   {
+      echo '<td align="center" width="25px" style="background-color:' . $nU_background_color . '">';
+   }
+   elseif ( $unreachableIssueFlag && plugin_config_get ( 'URIUHighlighting' ) )
+   {
+      echo '<td align="center" width="25px" style="background-color:' . $uR_background_color . '">';
+   }
+   else
+   {
+      echo '<td class="user_row_bg" align="center" width="25px">';
+   }
 
+   if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
+   {
       if ( $detailed_flag )
       {
          if ( user_exists ( $userId ) )
          {
             if ( access_has_global_level ( $userAccessLevel ) )
             {
-               $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+               $filterString = '<a href="search.php?handler_id=' . $linkUserId . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
                echo $filterString;
             }
 
@@ -925,10 +925,11 @@ function build_avatar_column ( $table_row_content, $t_project_id, $statCols, $de
          {
             echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
             echo '<input type="checkbox" name="dataRow[]" value="' . $userId . '__' . $pProject . '" />';
+            echo '</form>';
          }
       }
-      echo '</td>';
    }
+   echo '</td>';
 }
 
 function get_cell_highlighting ( $user_id, $no_assigned_user, $zero_issues, $unreachable_issues )
@@ -977,7 +978,7 @@ function build_user_column ( $table_row_content, $statCols, $print_flag, $detail
    {
       if ( access_has_global_level ( $userAccessLevel ) && !$print_flag )
       {
-         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         $filterString = '<a href="search.php?handler_id=' . $linkUserId . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
          echo $filterString;
          if ( user_exists ( $linkUserId ) )
          {
@@ -1020,7 +1021,7 @@ function build_real_name_column ( $table_row_content, $statCols, $print_flag, $d
    {
       if ( access_has_global_level ( $userAccessLevel ) && !$print_flag )
       {
-         $filterString = '<a href="search.php?&handler_id=' . $linkUserId . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         $filterString = '<a href="search.php?handler_id=' . $linkUserId . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
          echo $filterString;
          echo $userRealname;
          echo '</a>';
@@ -1047,8 +1048,8 @@ function build_main_project_column ( $table_row_content, $statCols, $print_flag 
    get_cell_highlighting ( $linkUserId, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
    if ( access_has_global_level ( $userAccessLevel ) && !$print_flag )
    {
-      $filterString = '<a href="search.php?project_id=' . $mainProjectId . '&handler_id=' . $linkUserId .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?project_id=' . $mainProjectId . '&amp;handler_id=' . $linkUserId .
+         '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
       echo $filterString;
       echo $mainProjectName;
       echo '</a>';
@@ -1074,8 +1075,8 @@ function build_assigned_project_column ( $table_row_content, $statCols, $print_f
    get_cell_highlighting ( $linkUserId, $noUserFlag, $zeroIssuesFlag, $unreachableIssueFlag );
    if ( access_has_global_level ( $userAccessLevel ) && !$print_flag )
    {
-      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&handler_id=' . $linkUserId .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&amp;handler_id=' . $linkUserId .
+         '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
       echo $filterString;
       echo $bugAssignedProjectName;
       echo '</a>';
@@ -1104,8 +1105,8 @@ function target_version_column ( $table_row_content, $statCols, $print_flag )
    echo $bugTargetVersionDate . ' ';
    if ( access_has_global_level ( $userAccessLevel ) && !$print_flag )
    {
-      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&handler_id=' . $linkUserId .
-         '&sticky_issues=on&target_version=' . $bugTargetVersion . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&amp;handler_id=' . $linkUserId .
+         '&amp;sticky_issues=on&amp;target_version=' . $bugTargetVersion . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
       echo $filterString;
       echo $bugTargetVersionPreparedString;
       echo '</a>';
@@ -1146,9 +1147,9 @@ function build_amount_of_issues_column ( $table_row_content, $issueThresholds, $
 
       if ( !$print_flag )
       {
-         $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&status_id=' . $specStatus .
-            '&handler_id=' . $linkUserId . '&sticky_issues=on&target_version=' . $bugTargetVersion .
-            '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+         $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&amp;status_id=' . $specStatus .
+            '&amp;handler_id=' . $linkUserId . '&amp;sticky_issues=on&amp;target_version=' . $bugTargetVersion .
+            '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
          echo $filterString;
          echo $issueAmount;
          echo '</a>';
@@ -1209,9 +1210,9 @@ function build_remark_column ( $table_row_content, $issueAgeThresholds, $statCol
 
             if ( $specTimeDifference > $issueAgeThreshold && !$print_flag )
             {
-               $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&search=' . $oldestSpecIssue .
-                  '&status_id=' . $specStatus . '&handler_id=' . $linkUserId . '&sticky_issues=on&target_version=' . $bugTargetVersion .
-                  '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+               $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId . '&amp;search=' . $oldestSpecIssue .
+                  '&amp;status_id=' . $specStatus . '&amp;handler_id=' . $linkUserId . '&amp;sticky_issues=on&target_version=' . $bugTargetVersion .
+                  '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
                echo $filterString;
                $assocArray = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
                echo $assocArray [ $specStatus ] .
@@ -1234,9 +1235,9 @@ function build_remark_column ( $table_row_content, $issueAgeThresholds, $statCol
       $unreachIssueStatusCount = count ( $unreachIssueStatusValue );
       $filterString = '<a href="search.php?project_id=' . $bugAssignedProjectId;
       $filterString .= prepareFilterString ( $unreachIssueStatusCount, $unreachIssueStatusValue );
-      $filterString .= '&handler_id=' . $linkUserId .
-         '&sticky_issues=on&target_version=' . $bugTargetVersion .
-         '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+      $filterString .= '&amp;handler_id=' . $linkUserId .
+         '&amp;sticky_issues=on&amp;target_version=' . $bugTargetVersion .
+         '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
       echo plugin_lang_get ( 'remark_noProject' ) . ' [';
       echo $filterString;
       echo plugin_lang_get ( 'remark_showURIssues' );
@@ -1311,11 +1312,11 @@ function print_main_table_head_col ( $lang_string, $sort_val, $colspan )
    }
 
    echo plugin_lang_get ( $lang_string ) . ' ';
-   echo '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=ASC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif"' . ' ';
+   echo '<a href="' . plugin_page ( 'UserProject' ) . '&amp;sortVal=' . $sort_val . '&amp;sort=ASC">';
+   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/up.gif" alt="sort asc" />';
    echo '</a>';
-   echo '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=' . $sort_val . '&sort=DESC">';
-   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif"' . ' ';
+   echo '<a href="' . plugin_page ( 'UserProject' ) . '&amp;sortVal=' . $sort_val . '&amp;sort=DESC">';
+   echo '<img src="' . USERPROJECTVIEW_PLUGIN_URL . 'files/down.gif" alt="sort desc" />';
    echo '</a>';
    echo '</th>';
 }
@@ -1330,7 +1331,7 @@ function print_main_table_head_row ( $colspan, $print_flag )
    echo '</td>';
    if ( !$print_flag )
    {
-      echo '<td><form action="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC' . '" method="post">';
+      echo '<td><form action="' . plugin_page ( 'UserProject' ) . '&amp;sortVal=userName&amp;sort=ASC' . '" method="post">';
       echo '<input type="submit" name="print_flag" class="button" value="' . lang_get ( 'print' ) . '"/>';
       echo '</form></td>';
    }
@@ -1401,11 +1402,11 @@ function prepareFilterString ( $unreach_issue_status_count, $unreach_issue_statu
       {
          if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
          {
-            $filter_string = '&status_id[]=' . $unreach_issue_status_value[ $unreachIssueStatusIndex ];
+            $filter_string = '&amp;status_id[]=' . $unreach_issue_status_value[ $unreachIssueStatusIndex ];
          }
          else
          {
-            $filter_string = '&status[]=' . $unreach_issue_status_value[ $unreachIssueStatusIndex ];
+            $filter_string = '&amp;status[]=' . $unreach_issue_status_value[ $unreachIssueStatusIndex ];
          }
       }
    }
