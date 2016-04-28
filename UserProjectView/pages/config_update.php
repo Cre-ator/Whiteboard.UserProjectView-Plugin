@@ -24,7 +24,6 @@ if ( $option_change )
    update_button ( 'ShowMenu' );
    update_button ( 'ShowInFooter' );
    update_button ( 'ShowAvatar' );
-   update_button ( 'showHeadRow' );
    update_color ( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 
    update_button ( 'IAUHighlighting' );
