@@ -46,11 +46,11 @@ tbody td[class="user_row_bg"] {
 }
 
 tbody tr[class="info"] {
-    width: 15px;
+    max-width: 15px;
 }
 
 tbody td[class="icon"] {
-    width: 15px;
+    max-width: 15px;
 }
 
 table {
