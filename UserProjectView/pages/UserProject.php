@@ -596,6 +596,8 @@ function calculate_head_rows ( $tableRow, $amountStatColumns )
 
 function print_user_head_row ( $user_id, $head_row, $amountStatColumns, $issueThresholds )
 {
+   $filterString = '<a href="search.php?&handler_id=' . $user_id . '&sortby=last_updated&dir=DESC&hide_status_id=-2&match_type=0">';
+
    echo '<tr name="100001" class="clickable" data-level="1" data-status="0" background-color:' . plugin_config_get ( 'HeadRowColor' ) . '">';
    echo '<td width="15px" />';
    echo '<td class="icon" />';
@@ -603,11 +605,11 @@ function print_user_head_row ( $user_id, $head_row, $amountStatColumns, $issueTh
    {
       echo '<td class="group_row_bg" align="center" width="25px">';
       $assocArray = user_get_avatar ( $user_id );
-      echo '<img class="avatar" src="' . $assocArray[0] . '" />';
+      echo $filterString . '<img class="avatar" src="' . $assocArray[0] . '" /></a>';
       echo '</td>';
    }
-   echo '<td class="group_row_bg">' . user_get_name ( $user_id ) . '</td>';
-   echo '<td class="group_row_bg">' . user_get_realname ( $user_id ) . '</td>';
+   echo '<td class="group_row_bg">' . $filterString . user_get_name ( $user_id ) . '</a></td>';
+   echo '<td class="group_row_bg">' . $filterString . user_get_realname ( $user_id ) . '</a></td>';
    echo '<td class="group_row_bg" colspan="3"/>';
    $iCounter = $head_row[1];
    for ( $statColIndex = 1; $statColIndex <= $amountStatColumns; $statColIndex++ )
