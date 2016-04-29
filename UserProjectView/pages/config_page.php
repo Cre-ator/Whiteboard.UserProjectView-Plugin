@@ -1,5 +1,5 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
 
 auth_reauthenticate ();
 access_ensure_global_level ( plugin_config_get ( 'UserProjectAccessLevel' ) );

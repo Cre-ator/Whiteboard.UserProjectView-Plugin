@@ -5,7 +5,7 @@
  *
  * Provides several functions to process data in the mantis- and plugin-database
  */
-class userprojectview_database_api
+class databaseapi
 {
    private $mysqli;
    private $dbPath;

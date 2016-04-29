@@ -1,6 +1,6 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_database_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 
 auth_reauthenticate ();
 access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
