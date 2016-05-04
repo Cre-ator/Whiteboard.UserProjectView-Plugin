@@ -286,12 +286,12 @@ function print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string )
          <?php
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            if ( $lang_string == 'headrow_no_issue' && $stat_issue_count[ $stat_index ] > 0 )
+            if ( $lang_string == 'headrow_del_user' && $stat_issue_count[ $stat_index ] > 0 )
             {
                $status = $stat_cols[ $stat_index ];
                if ( $status == '10' || $status == '20' || $status == '30' || $status == '40' || $status == '50' )
                {
-                  echo '<td style="background-color:"' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $stat_issue_count[ $stat_index ] . '</td>';
+                  echo '<td style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $stat_issue_count[ $stat_index ] . '</td>';
                }
                else
                {

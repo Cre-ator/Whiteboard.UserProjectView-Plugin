@@ -5,7 +5,7 @@ auth_reauthenticate ();
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
 html_page_top2 ();
 
-if ( plugin_is_installed ( 'WhiteboardMenu' ) )
+if ( plugin_is_installed ( 'WhiteboardMenu' ) && file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
 {
    require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
    $whiteboard_print_api = new whiteboard_print_api();
