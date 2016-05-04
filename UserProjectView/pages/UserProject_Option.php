@@ -17,7 +17,6 @@ if ( !empty( $_POST[ 'dataRow' ] ) )
 {
    $selected_values = $_POST[ 'dataRow' ];
 }
-var_dump ( $selected_values );
 $record_count = count ( $selected_values );
 $select = strtolower ( $_POST[ 'option' ] );
 
@@ -39,7 +38,7 @@ switch ( $select )
                      $recordIndex < $record_count;
                      $recordIndex++ )
                {
-                  $record[ $recordIndex ] = explode ( '__', $selected_values[ $recordIndex ] );
+                  $record[ $recordIndex ] = explode ( '_', $selected_values[ $recordIndex ] );
 
                   $user_id = $record[ $recordIndex ][ 0 ];
                   $project_id = $record[ $recordIndex ][ 1 ];
@@ -75,7 +74,7 @@ switch ( $select )
                   </td>
                   <td>
                      <a href="manage_proj_edit_page.php?project_id=<?php echo $project_id; ?>">
-                        echo project_get_name ( $project_id );
+                        <?php echo project_get_name ( $project_id );?>
                      </a>
                   </td>
                   </tr>

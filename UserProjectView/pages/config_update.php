@@ -6,15 +6,13 @@ auth_reauthenticate ();
 access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
 form_security_validate ( 'plugin_UserProjectView_config_update' );
 
-
-$userprojectview_database_api = new userprojectview_database_api();
-
 $option_reset = gpc_get_bool ( 'reset', false );
 $option_change = gpc_get_bool ( 'change', false );
 
 if ( $option_reset )
 {
-   $userprojectview_database_api->reset_plugin ();
+   $databaseapi = new databaseapi();
+   $databaseapi->reset_plugin ();
 }
 
 if ( $option_change )

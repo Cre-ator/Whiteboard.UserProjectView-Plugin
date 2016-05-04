@@ -218,6 +218,7 @@ function print_tbody ( $data_rows, $project_id, $stat_cols, $issue_amount_thresh
    $groups[ 2 ] = array ();
    $groups[ 3 ] = array ();
    $groups = assign_groups ( $groups, $data_rows );
+
    /** process each group */
 
    echo '<tbody>';
@@ -231,7 +232,7 @@ function print_tbody ( $data_rows, $project_id, $stat_cols, $issue_amount_thresh
       for ( $group_index = 0; $group_index < count ( $groups[ 0 ] ); $group_index++ )
       {
          $data_row_index = $groups[ 0 ][ $group_index ];
-         $user_id = $data_rows[ $data_row_index ][ 'userId' ];
+         $user_id = $data_rows[ $data_row_index ][ 'user_id' ];
          if ( $user_id == $head_row_user_id )
          {
             if ( $head_row_counter )
@@ -267,7 +268,7 @@ function print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string )
    {
       for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
       {
-         $stat_issue_count[ $stat_index ] += $data_rows[ $data_row_index ][ 'specColumn' . $stat_index ];
+         $stat_issue_count[ $stat_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
       }
    }
 
@@ -404,12 +405,12 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $project_id, 
    if ( $print )
    {
       echo '<td/>';
-      $link_user_id = get_link_user_id ( $dara_row[ 'userId' ] );
-      $no_user = get_no_user ( $stat_cols, $dara_row[ 'userId' ] );
-      $no_issue = $dara_row[ 'zeroIssuesFlag' ];
-      $assigned_to_project = get_assigned_to_project ( $dara_row[ 'userId' ], $dara_row[ 'bugAssignedProjectId' ] );
+      $user_id = get_link_user_id ( $dara_row[ 'user_id' ] );
+      $no_user = get_no_user ( $stat_cols, $user_id );
+      $no_issue = $dara_row[ 'no_issue' ];
+      $assigned_to_project = get_assigned_to_project ( $user_id, $dara_row[ 'assigned_project_id' ] );
       $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-      get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+      get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    }
    else
    {
@@ -444,26 +445,20 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $project_id, 
  */
 function print_chackbox ( $data_row, $project_id, $stat_cols )
 {
-   $user_id = $data_row[ 'userId' ];
-   $main_project_id = $data_row[ 'mainProjectId' ];
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
+   $user_id = $data_row[ 'user_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $parent_project_id = get_parent_project_id ( $project_id, $assigned_project_id, $main_project_id );
    $no_user = get_no_user ( $stat_cols, $user_id );
 
    echo '<td width="15px">';
    if ( !$no_user )
    {
-
-      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '__' . $parent_project_id . '" />';
-//      echo '</form>';
-//      ?>
-<!--      <form action="--><?php //echo plugin_page ( 'UserProject_Option' ); ?><!--" method="post">-->
-<!--         <label>-->
-<!--            <input type="checkbox" name="dataRow[]"-->
-<!--                   value="--><?php //echo $user_id . '__' . $parent_project_id; ?><!--"/>-->
-<!--         </label>-->
-<!--      </form>-->
-<!--      --><?php
+      ?>
+      <label>
+         <input type="checkbox" name="dataRow[]" value="<?php echo $user_id . '_' . $parent_project_id; ?>"/>
+      </label>
+      <?php
    }
    echo '</td>';
 }
@@ -479,16 +474,15 @@ function print_chackbox ( $data_row, $project_id, $stat_cols )
 function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
 {
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
-   $user_id = $data_row[ 'userId' ];
-   $link_user_id = get_link_user_id ( $user_id );
+   $user_id = $data_row[ 'user_id' ];
    $no_user = get_no_user ( $stat_cols, $user_id );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   if ( ( !user_exists ( $link_user_id ) && !$no_user )
-      || ( user_exists ( $link_user_id ) && $link_user_id != '0' && user_get_field ( $link_user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+   if ( ( !user_exists ( $user_id ) && !$no_user )
+      || ( user_exists ( $user_id ) && $user_id != '0' && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
       echo '<td align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
@@ -518,6 +512,7 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
          {
             if ( access_has_global_level ( $access_level ) )
             {
+               $link_user_id = get_link_user_id ( $user_id );
                echo '<a href="search.php?handler_id=' . $link_user_id .
                   '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
             }
@@ -539,21 +534,15 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
       }
       else
       {
-         $main_project_id = $data_row[ 'mainProjectId' ];
+         $main_project_id = $data_row[ 'main_project_id' ];
          $parent_project_id = get_parent_project_id ( $project_id, $assigned_project_id, $main_project_id );
          if ( !$no_user )
          {
-//            echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
-            echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '__' . $parent_project_id . '" />';
-//            echo '</form>';
-//            ?>
-<!--            <form action="--><?php //echo plugin_page ( 'UserProject_Option' ); ?><!--" method="post">-->
-<!--               <label>-->
-<!--                  <input type="checkbox" name="dataRow[]"-->
-<!--                         value="--><?php //echo $user_id . '__' . $parent_project_id; ?><!--"/>-->
-<!--               </label>-->
-<!--            </form>-->
-<!--            --><?php
+            ?>
+            <label>
+               <input type="checkbox" name="dataRow[]" value="--><?php echo $user_id . '_' . $parent_project_id; ?>">
+            </label>
+            <?php
          }
       }
    }
@@ -570,23 +559,27 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
  */
 function print_user_name ( $data_row, $stat_cols, $print, $detailed )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $user_name = $data_row[ 'userName' ];
-   $no_user = get_no_user ( $stat_cols, $data_row[ 'userId' ] );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_to_project = get_assigned_to_project ( $data_row[ 'userId' ], $data_row[ 'bugAssignedProjectId' ] );
+   $user_id = $data_row[ 'user_id' ];
+   $user_name = '';
+   if ( $user_id > 0 )
+   {
+      $user_name = user_get_name ( $user_id );
+   }
+   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
 
    if ( $detailed )
    {
       if ( access_has_global_level ( $access_level ) && !$print )
       {
-         echo '<a href="search.php?handler_id=' . $link_user_id .
+         echo '<a href="search.php?handler_id=' . get_link_user_id ( $user_id ) .
             '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
-         if ( user_exists ( $link_user_id ) )
+         if ( user_exists ( $user_id ) )
          {
             echo $user_name;
          }
@@ -598,7 +591,7 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
       }
       else
       {
-         if ( user_exists ( $link_user_id ) )
+         if ( user_exists ( $user_id ) )
          {
             echo $user_name;
          }
@@ -621,22 +614,26 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
  */
 function print_real_name ( $data_row, $stat_cols, $print, $detailed )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $real_name = $data_row[ 'userRealname' ];
-   $no_user = get_no_user ( $stat_cols, $data_row[ 'userId' ] );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_to_project = get_assigned_to_project ( $data_row[ 'userId' ], $data_row[ 'bugAssignedProjectId' ] );
+   $user_id = $data_row[ 'user_id' ];
+   $real_name = '';
+   if ( user_exists ( $user_id ) && $user_id > 0 )
+   {
+      $real_name = user_get_realname ( $user_id );
+   }
+   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
 
    if ( $detailed )
    {
       if ( access_has_global_level ( $access_level ) && !$print )
       {
          ?>
-         <a href="search.php?handler_id=<?php echo $link_user_id; ?>
+         <a href="search.php?handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                      &amp;sortby=last_updated
                      &amp;dir=DESC
                      &amp;hide_status_id=-2
@@ -662,21 +659,28 @@ function print_real_name ( $data_row, $stat_cols, $print, $detailed )
  */
 function print_main_project ( $data_row, $stat_cols, $print )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $main_project_id = $data_row[ 'mainProjectId' ];
-   $main_project_name = $data_row[ 'mainProjectName' ];
-   $no_user = get_no_user ( $stat_cols, $data_row[ 'userId' ] );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_to_project = get_assigned_to_project ( $data_row[ 'userId' ], $data_row[ 'bugAssignedProjectId' ] );
+   $user_id = $data_row[ 'user_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   if ( $main_project_id == '' )
+   {
+      $main_project_name = '';
+   }
+   else
+   {
+      $main_project_name = project_get_name ( $main_project_id );
+   }
+   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       ?>
       <a href="search.php?project_id=<?php echo $main_project_id; ?>
-                  &amp;handler_id=<?php echo $link_user_id; ?>
+                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                   &amp;sortby=last_updated
                   &amp;dir=DESC
                   &amp;hide_status_id=-2
@@ -701,21 +705,28 @@ function print_main_project ( $data_row, $stat_cols, $print )
  */
 function print_assigned_project ( $data_row, $stat_cols, $print )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
-   $assigned_project_name = $data_row[ 'bugAssignedProjectName' ];
-   $no_user = get_no_user ( $stat_cols, $data_row[ 'userId' ] );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_to_project = get_assigned_to_project ( $data_row[ 'userId' ], $data_row[ 'bugAssignedProjectId' ] );
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   if ( $assigned_project_id == '' )
+   {
+      $assigned_project_name = '';
+   }
+   else
+   {
+      $assigned_project_name = project_get_name ( $assigned_project_id );
+   }
+   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       ?>
       <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                  &amp;handler_id=<?php echo $link_user_id; ?>
+                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                   &amp;sortby=last_updated
                   &amp;dir=DESC
                   &amp;hide_status_id=-2
@@ -740,24 +751,31 @@ function print_assigned_project ( $data_row, $stat_cols, $print )
  */
 function print_target_version ( $data_row, $stat_cols, $print )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
-   $target_version = $data_row[ 'bugTargetVersion' ];
-   $target_version_data = $data_row[ 'bugTargetVersionDate' ];
-   $target_version_prepared_string = $data_row[ 'bugTargetVersionPreparedString' ];
-   $no_user = get_no_user ( $stat_cols, $data_row[ 'userId' ] );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
-   $assigned_to_project = get_assigned_to_project ( $data_row[ 'userId' ], $data_row[ 'bugAssignedProjectId' ] );
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $target_version_id = $data_row[ 'target_version_id' ];
+   $target_version = '';
+   $target_version_date = '';
+   $target_version_prepared_string = '';
+   if ( strlen ( $target_version_id ) > 0 )
+   {
+      $target_version = version_get_field ( $target_version_id, 'version' );
+      $target_version_date = date ( 'Y-m-d', version_get_field ( $target_version_id, 'date_order' ) );
+      $target_version_prepared_string = prepare_version_string ( $assigned_project_id, $target_version_id );
+   }
+   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
-   echo $target_version_data . ' ';
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   echo $target_version_date . ' ';
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       ?>
       <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                  &amp;handler_id=<?php echo $link_user_id; ?>
+                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                   &amp;sticky_issues=on
                   &amp;target_version=<?php echo $target_version; ?>
                   &amp;sortby=last_updated
@@ -787,14 +805,18 @@ function print_target_version ( $data_row, $stat_cols, $print )
  */
 function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print )
 {
-   $link_user_id = get_link_user_id ( $data_row[ 'userId' ] );
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
-   $target_version = $data_row[ 'bugTargetVersion' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $target_version_id = $data_row[ 'target_version_id' ];
+   $target_version = '';
+   if ( strlen ( $target_version_id ) > 0 )
+   {
+      $target_version = version_get_field ( $target_version_id, 'version' );
+   }
 
    $stat_issue_count_array = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      $stat_issue_count_array[ $stat_index ] = $data_row[ 'specColumn' . $stat_index ];
+      $stat_issue_count_array[ $stat_index ] = $data_row[ 'stat_col' . $stat_index ];
    }
 
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
@@ -817,7 +839,7 @@ function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols
          ?>
          <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
                      &amp;status_id=<?php echo $stat_status_id; ?>
-                     &amp;handler_id=<?php echo $link_user_id; ?>
+                     &amp;handler_id=<?php echo get_link_user_id ( $data_row[ 'user_id' ] ); ?>
                      &amp;sticky_issues=on
                      &amp;target_version=<?php echo $target_version; ?>
                      &amp;sortby=last_updated
@@ -848,18 +870,22 @@ function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols
  */
 function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
 {
-   $user_id = $data_row[ 'userId' ];
-   $link_user_id = get_link_user_id ( $user_id );
-   $main_project_id = $data_row[ 'mainProjectId' ];
-   $assigned_project_id = $data_row[ 'bugAssignedProjectId' ];
-   $target_version = $data_row[ 'bugTargetVersion' ];
-   $inactive_user = $data_row[ 'inactiveUserFlag' ];
+   $user_id = $data_row[ 'user_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $target_version_id = $data_row[ 'target_version_id' ];
+   $target_version = '';
+   if ( strlen ( $target_version_id ) > 0 )
+   {
+      $target_version = version_get_field ( $target_version_id, 'version' );
+   }
+   $inactive_user = $data_row[ 'no_user' ];
    $no_user = get_no_user ( $stat_cols, $user_id );
-   $no_issue = $data_row[ 'zeroIssuesFlag' ];
+   $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   get_cell_highlighting ( $link_user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
       $stat_issue_age_threshold = $issue_age_threshold[ $stat_index ];
@@ -895,7 +921,7 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
                <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
                            &amp;search=<?php echo $stat_oldest_issue_id; ?>
                            &amp;status_id=<?php echo $stat_status_id; ?>
-                           &amp;handler_id=<?php echo $link_user_id; ?>
+                           &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                            &amp;sticky_issues=on&target_version=<?php echo $target_version; ?>
                            &amp;sortby=last_updated
                            &amp;dir=DESC
@@ -928,7 +954,7 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
       ?>[
       <a href="search.php?project_id=<?php echo $assigned_project_id .
          prepare_filter_string ( count ( $unreachable_issue_status ), $unreachable_issue_status ); ?>
-                  &amp;handler_id=<?php echo $link_user_id; ?>
+                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
                   &amp;sticky_issues=on
                   &amp;target_version=<?php echo $target_version; ?>
                   &amp;sortby=last_updated
@@ -980,14 +1006,15 @@ function print_option_panel ( $stat_issue_count, $print )
             if ( access_has_global_level ( $access_level ) )
             {
                ?>
-<!--               <form name="options" action="--><?php //echo plugin_page ( 'UserProject_Option' );?><!--" method="post">-->
-                  <label for="option"></label>
-                  <select id="option" name="option">
-                     <option value="removeSingle"><?php echo plugin_lang_get ( 'remove_selectSingle' ) ?></option>
-                     <option value="removeAll"><?php echo plugin_lang_get ( 'remove_selectAll' ) ?></option>
-                  </select>
-                  <input type="submit" name="formSubmit" class="button" value="<?php echo lang_get ( 'ok' ); ?>"/>
-<!--               </form>-->
+               <!--               <form name="options" action="--><?php //echo plugin_page ( 'UserProject_Option' );
+               ?><!--" method="post">-->
+               <label for="option"></label>
+               <select id="option" name="option">
+                  <option value="removeSingle"><?php echo plugin_lang_get ( 'remove_selectSingle' ) ?></option>
+                  <option value="removeAll"><?php echo plugin_lang_get ( 'remove_selectAll' ) ?></option>
+               </select>
+               <input type="submit" name="formSubmit" class="button" value="<?php echo lang_get ( 'ok' ); ?>"/>
+               <!--               </form>-->
                <?php
             }
          }

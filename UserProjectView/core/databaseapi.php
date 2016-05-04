@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class userprojectview_database_api
+ * Class databaseapi
  *
  * Provides several functions to process data in the mantis- and plugin-database
  */
