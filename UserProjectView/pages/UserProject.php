@@ -56,7 +56,7 @@ if ( !$print )
 }
 
 echo '<div id="manage-user-div" class="form-container">';
-if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+if ( is_mantis_rel () )
 {
    echo '<table class="width100" cellspacing="1">';
 }
@@ -482,7 +482,7 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
    if ( ( !user_exists ( $user_id ) && !$no_user )
-      || ( user_exists ( $user_id ) && $user_id != '0' && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+      || ( check_user_id_is_valid ( $user_id ) && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
       echo '<td align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
@@ -579,7 +579,7 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
       {
          echo '<a href="search.php?handler_id=' . get_link_user_id ( $user_id ) .
             '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
-         if ( user_exists ( $user_id ) )
+         if ( check_user_id_is_valid ( $user_id ) )
          {
             echo $user_name;
          }
@@ -591,7 +591,7 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
       }
       else
       {
-         if ( user_exists ( $user_id ) )
+         if ( check_user_id_is_valid ( $user_id ) )
          {
             echo $user_name;
          }
@@ -616,7 +616,7 @@ function print_real_name ( $data_row, $stat_cols, $print, $detailed )
 {
    $user_id = $data_row[ 'user_id' ];
    $real_name = '';
-   if ( user_exists ( $user_id ) && $user_id > 0 )
+   if ( check_user_id_is_valid ( $user_id ) )
    {
       $real_name = user_get_realname ( $user_id );
    }

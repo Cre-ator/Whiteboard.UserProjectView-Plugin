@@ -188,7 +188,7 @@ class databaseapi
     *
     * @param $user_id
     * @param $project_id
-    * @return bool|mysqli_result
+    * @return bool
     */
    public function check_user_project_assignment ( $user_id, $project_id )
    {
@@ -198,8 +198,9 @@ class databaseapi
           WHERE project_id = " . $project_id . "
           AND user_id = " . $user_id;
 
-      $result = $this->mysqli->query ( $query );
+      $assoc_array = mysqli_fetch_row ( $this->mysqli->query ( $query ) );
+      $assigned_user_id = $assoc_array[ 0 ];
 
-      return $result;
+      return $assigned_user_id;
    }
 }

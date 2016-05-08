@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Returns true, if the used mantis version is a 1.2.x release
+ *
+ * @return bool
+ */
+function is_mantis_rel ()
+{
+   return substr ( MANTIS_VERSION, 0, 4 ) == '1.2.';
+}
+
+/**
  * Get the amount of status columns for the plugin
  *
  * @return int|string
@@ -35,15 +45,14 @@ function calc_matchcodes ( $stat_cols )
       $bug_id = $rows[ $row_index ]->id;
       $target_version = bug_get_field ( $bug_id, 'target_version' );
       $assigned_project_id = bug_get_field ( $bug_id, 'project_id' );
+      $status = bug_get_field ( $bug_id, 'status' );
+      $user_id = bug_get_field ( $bug_id, 'handler_id' );
 
       /** filter config specific bug status */
-      if ( !in_array ( false, set_irrelevant ( bug_get_field ( $bug_id, 'status' ), $stat_cols ) ) )
+      if ( !in_array ( false, set_irrelevant ( $status, $stat_cols ) ) )
       {
          continue;
       }
-
-      /** final user id */
-      $user_id = bug_get_field ( $bug_id, 'handler_id' );
 
       /** final main project id; target version id */
       $main_project_id = get_main_project_id ( $assigned_project_id );
@@ -51,8 +60,8 @@ function calc_matchcodes ( $stat_cols )
 
       if ( $target_version != '' )
       {
-         $databaseapi = new databaseapi();
          /** identify main project by target version of selected issue */
+         $databaseapi = new databaseapi();
          $main_project_id = $databaseapi->get_project_by_version ( $target_version );
       }
 
@@ -160,7 +169,7 @@ function process_match_codes ( $matchcode, $stat_cols )
       {
          $data_rows[ $matchcode_row_index ][ 'stat_col' . $stat_index ] = '0';
          $stat_column = 'stat_col' . $stat_index;
-         if ( $stat_cols[ $stat_index ] != null )
+         if ( !is_null ( $stat_cols[ $stat_index ] ) )
          {
             $databaseapi = new databaseapi();
             if ( $assigned_project_id == '' )
@@ -295,7 +304,7 @@ function check_user_assigned_to_project_hierarchy ( $sub_project_ids, $user_id )
    foreach ( $sub_project_ids as $sub_project_id )
    {
       $user_is_assigned_to_project = mysqli_fetch_row ( $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id ) );
-      if ( $user_is_assigned_to_project != null )
+      if ( !is_null ( $user_is_assigned_to_project ) )
       {
          $user_assigned_to_project_hierarchy = true;
          break;
@@ -338,7 +347,7 @@ function get_sort_col ( $get_sort_val, $data_rows )
    foreach ( $data_rows as $key => $row )
    {
       $user_id[ $key ] = $row[ 'user_id' ];
-      if ( $user_id[ $key ] != 0 )
+      if ( check_user_id_is_valid ( $user_id[ $key ] ) )
       {
          $user_name[ $key ] = user_get_name ( $user_id[ $key ] );
          $user_realname[ $key ] = user_get_realname ( $user_id[ $key ] );
@@ -407,7 +416,7 @@ function assign_groups ( $groups, $data_rows )
    $group_issues_without_user = $groups[ 3 ];
    for ( $data_row_index = 0; $data_row_index < count ( $data_rows ); $data_row_index++ )
    {
-      if ( $data_rows[ $data_row_index ][ 'user_id' ] > 0 && user_exists ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
+      if ( $data_rows[ $data_row_index ][ 'user_id' ] > 0 )
       {
          /** user existiert */
          if ( user_exists ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
@@ -569,7 +578,7 @@ function process_group ( $group, $data_rows, $stat_cols, $project_id, $issue_amo
 function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue )
 {
    if ( ( !user_exists ( $user_id ) && !$no_user )
-      || ( user_exists ( $user_id ) && $user_id > '0' && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+      || ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
       echo '<td align="center" width="25px" style="white-space:nowrap; background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
@@ -610,7 +619,7 @@ function get_user_row_cell_highlighting ( $data_row, $stat_cols, $ignore_row_col
 
    if ( !$ignore_row_color )
    {
-      if ( user_exists ( $user_id ) && $user_id != '0' && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+      if ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
       {
          echo '<tr class="info" data-level="2" data-status="1" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
       }
@@ -649,9 +658,9 @@ function prepare_filter_string ( $unreachable_issue_status_count, $unreach_issue
    $filter_string = '';
    for ( $unreachable_issue_status_index = 0; $unreachable_issue_status_index < $unreachable_issue_status_count; $unreachable_issue_status_index++ )
    {
-      if ( $unreach_issue_status[ $unreachable_issue_status_index ] != null )
+      if ( !is_null ( $unreach_issue_status[ $unreachable_issue_status_index ] ) )
       {
-         if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+         if ( is_mantis_rel () )
          {
             $filter_string = '&amp;status_id[]=' . $unreach_issue_status[ $unreachable_issue_status_index ];
          }
@@ -746,19 +755,17 @@ function get_assigned_project_id ( $assigned_project_id, $main_project_id )
  */
 function get_assigned_to_project ( $user_id, $assigned_project_id )
 {
-   include_once config_get_global ( 'plugin_path' ) . plugin_get_current () . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'databaseapi.php';
    $databaseapi = new databaseapi();
-
-   $assigned_to_project = '0';
-   if ( $user_id != '0' && $assigned_project_id != '' && user_exists ( $user_id ) )
+   $assigned_user_id = '0';
+   if ( check_user_id_is_valid ( $user_id ) && $assigned_project_id != '' )
    {
       if ( !user_is_administrator ( $user_id ) )
       {
-         $assigned_to_project = mysqli_fetch_row ( $databaseapi->check_user_project_assignment ( $user_id, $assigned_project_id ) );
+         $assigned_user_id = $databaseapi->check_user_project_assignment ( $user_id, $assigned_project_id );
       }
    }
 
-   return $assigned_to_project;
+   return $assigned_user_id;
 }
 
 /**
@@ -770,7 +777,7 @@ function get_assigned_to_project ( $user_id, $assigned_project_id )
 function get_unreachable_issue ( $assigned_to_project )
 {
    $unreachable_issue = false;
-   if ( $assigned_to_project == null || $assigned_to_project == '' )
+   if ( is_null ( $assigned_to_project ) || $assigned_to_project == '' )
    {
       $unreachable_issue = true;
    }

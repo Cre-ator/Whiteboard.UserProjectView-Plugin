@@ -14,7 +14,7 @@ echo '<br/>';
 echo '<form action="' . plugin_page ( 'config_update' ) . '" method="post">';
 echo form_security_field ( 'plugin_UserProjectView_config_update' );
 
-if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+if ( is_mantis_rel () )
 {
    echo '<table align="center" class="width75" cellspacing="1">';
 }
@@ -163,7 +163,7 @@ echo '</tr>';
 
 echo '</table>';
 
-if ( substr ( MANTIS_VERSION, 0, 4 ) != '1.2.' )
+if ( !is_mantis_rel () )
 {
    echo '</div>';
 }
@@ -177,7 +177,7 @@ html_page_bottom1 ();
  */
 function print_config_table_row ()
 {
-   if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+   if ( is_mantis_rel () )
    {
       echo '<tr ' . helper_alternate_class () . '>';
    }

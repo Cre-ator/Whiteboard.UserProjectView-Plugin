@@ -45,7 +45,7 @@ switch ( $select )
                   ?>
                   <input type="hidden" name="recordSet[]" value="<?php echo $selected_values[ $recordIndex ]; ?>"/>
                   <?php
-                  if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+                  if ( is_mantis_rel () )
                   {
                      ?>
                      <tr <?php echo helper_alternate_class (); ?>>
@@ -74,7 +74,7 @@ switch ( $select )
                   </td>
                   <td>
                      <a href="manage_proj_edit_page.php?project_id=<?php echo $project_id; ?>">
-                        <?php echo project_get_name ( $project_id );?>
+                        <?php echo project_get_name ( $project_id ); ?>
                      </a>
                   </td>
                   </tr>
@@ -130,7 +130,7 @@ switch ( $select )
             echo '<input type="hidden" name="user[]" value="' . $user_id . '"/>';
             echo '<input type="hidden" name="project[]" value="' . $sub_project . '"/>';
 
-            if ( substr ( MANTIS_VERSION, 0, 4 ) == '1.2.' )
+            if ( is_mantis_rel () )
             {
                echo '<tr ' . helper_alternate_class () . '>';
             }
