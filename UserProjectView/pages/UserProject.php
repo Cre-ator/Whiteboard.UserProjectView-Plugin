@@ -399,16 +399,18 @@ function print_user_head_row ( $head_row, $user_id, $issue_amount_threshold, $pr
  */
 function print_user_row ( $data_row_index, $data_rows, $stat_cols, $project_id, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, $detailed, $print )
 {
-   $dara_row = $data_rows[ $data_row_index ];
-   get_user_row_cell_highlighting ( $dara_row, $stat_cols, true );
+   $data_row = $data_rows[ $data_row_index ];
+   get_user_row_cell_highlighting ( $data_row, $stat_cols, true );
    echo '<td/>';
    if ( $print )
    {
       echo '<td/>';
-      $user_id = get_link_user_id ( $dara_row[ 'user_id' ] );
+      $main_project_id = $data_row[ 'main_project_id' ];
+      $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
+      $user_id = get_link_user_id ( $data_row[ 'user_id' ] );
       $no_user = get_no_user ( $stat_cols, $user_id );
-      $no_issue = $dara_row[ 'no_issue' ];
-      $assigned_to_project = get_assigned_to_project ( $user_id, $dara_row[ 'assigned_project_id' ] );
+      $no_issue = $data_row[ 'no_issue' ];
+      $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
       $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
       get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    }
@@ -416,21 +418,21 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $project_id, 
    {
       if ( $detailed )
       {
-         print_chackbox ( $dara_row, $project_id, $stat_cols );
+         print_chackbox ( $data_row, $project_id, $stat_cols );
       }
       else
       {
          echo '<td/>';
       }
-      print_user_avatar ( $dara_row, $project_id, $stat_cols, $detailed );
+      print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed );
    }
-   print_user_name ( $dara_row, $stat_cols, $print, $detailed );
-   print_real_name ( $dara_row, $stat_cols, $print, $detailed );
-   print_main_project ( $dara_row, $stat_cols, $print );
-   print_assigned_project ( $dara_row, $stat_cols, $print );
-   print_target_version ( $dara_row, $stat_cols, $print );
-   $stat_issue_count = print_amount_of_issues ( $dara_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print );
-   print_remark ( $dara_row, $issue_age_threshold, $stat_cols, $print );
+   print_user_name ( $data_row, $stat_cols, $print, $detailed );
+   print_real_name ( $data_row, $stat_cols, $print, $detailed );
+   print_main_project ( $data_row, $stat_cols, $print );
+   print_assigned_project ( $data_row, $stat_cols, $print );
+   print_target_version ( $data_row, $stat_cols, $print );
+   $stat_issue_count = print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print );
+   print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print );
    echo '</tr>';
 
    return $stat_issue_count;
@@ -447,7 +449,7 @@ function print_chackbox ( $data_row, $project_id, $stat_cols )
 {
    $user_id = $data_row[ 'user_id' ];
    $main_project_id = $data_row[ 'main_project_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    $parent_project_id = get_parent_project_id ( $project_id, $assigned_project_id, $main_project_id );
    $no_user = get_no_user ( $stat_cols, $user_id );
 
@@ -477,7 +479,8 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
    $user_id = $data_row[ 'user_id' ];
    $no_user = get_no_user ( $stat_cols, $user_id );
    $no_issue = $data_row[ 'no_issue' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
@@ -540,7 +543,7 @@ function print_user_avatar ( $data_row, $project_id, $stat_cols, $detailed )
          {
             ?>
             <label>
-               <input type="checkbox" name="dataRow[]" value="--><?php echo $user_id . '_' . $parent_project_id; ?>">
+               <input type="checkbox" name="dataRow[]" value="<?php echo $user_id . '_' . $parent_project_id; ?>">
             </label>
             <?php
          }
@@ -561,13 +564,15 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
 {
    $user_id = $data_row[ 'user_id' ];
    $user_name = '';
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    if ( $user_id > 0 )
    {
       $user_name = user_get_name ( $user_id );
    }
    $no_user = get_no_user ( $stat_cols, $user_id );
    $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
@@ -616,13 +621,15 @@ function print_real_name ( $data_row, $stat_cols, $print, $detailed )
 {
    $user_id = $data_row[ 'user_id' ];
    $real_name = '';
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    if ( check_user_id_is_valid ( $user_id ) )
    {
       $real_name = user_get_realname ( $user_id );
    }
    $no_user = get_no_user ( $stat_cols, $user_id );
    $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
@@ -661,6 +668,7 @@ function print_main_project ( $data_row, $stat_cols, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    if ( $main_project_id == '' )
    {
       $main_project_name = '';
@@ -671,7 +679,7 @@ function print_main_project ( $data_row, $stat_cols, $print )
    }
    $no_user = get_no_user ( $stat_cols, $user_id );
    $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $data_row[ 'assigned_project_id' ] );
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
@@ -752,7 +760,8 @@ function print_assigned_project ( $data_row, $stat_cols, $print )
 function print_target_version ( $data_row, $stat_cols, $print )
 {
    $user_id = $data_row[ 'user_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    $target_version_id = $data_row[ 'target_version_id' ];
    $target_version = '';
    $target_version_date = '';
@@ -805,7 +814,8 @@ function print_target_version ( $data_row, $stat_cols, $print )
  */
 function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print )
 {
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    $target_version_id = $data_row[ 'target_version_id' ];
    $target_version = '';
    if ( strlen ( $target_version_id ) > 0 )
@@ -872,7 +882,9 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $main_project_id = $data_row[ 'main_project_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
+   var_dump ( $main_project_id );
+   var_dump ( $assigned_project_id );
    $target_version_id = $data_row[ 'target_version_id' ];
    $target_version = '';
    if ( strlen ( $target_version_id ) > 0 )
@@ -882,6 +894,7 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
    $inactive_user = $data_row[ 'no_user' ];
    $no_user = get_no_user ( $stat_cols, $user_id );
    $no_issue = $data_row[ 'no_issue' ];
+
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
@@ -951,7 +964,7 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
    {
       $unreachable_issue_status = plugin_config_get ( 'URIThreshold' );
       echo plugin_lang_get ( 'remark_noProject' );
-      ?>[
+      ?> [
       <a href="search.php?project_id=<?php echo $assigned_project_id .
          prepare_filter_string ( count ( $unreachable_issue_status ), $unreachable_issue_status ); ?>
                   &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
@@ -961,9 +974,9 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
                   &amp;dir=DESC
                   &amp;hide_status_id=-2
                   &amp;match_type=0">
-         echo plugin_lang_get ( 'remark_showURIssues' );
-      </a>]
-      <br/>
+         <?php echo plugin_lang_get ( 'remark_showURIssues' ); ?>
+      </a>
+      ]<br/>
       <?php
    }
    if ( !$inactive_user )

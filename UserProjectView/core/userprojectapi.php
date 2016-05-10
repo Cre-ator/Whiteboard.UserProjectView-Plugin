@@ -71,13 +71,16 @@ function calc_matchcodes ( $stat_cols )
          $assigned_project_id = '';
       }
 
+      /** final user active status */
+      $no_user = get_user_active ( $user_id );
+
       /** prepare record matchcode */
       $matchcode[ $row_index ] =
          $user_id . ',' .
          $main_project_id . ',' .
          $assigned_project_id . ',' .
          $target_version_id . ',' .
-         get_user_active ( $user_id );
+         $no_user;
    }
    return $matchcode;
 }
@@ -160,7 +163,7 @@ function process_match_codes ( $matchcode, $stat_cols )
       /** fill tablerow with data */
       $data_rows[ $matchcode_row_index ][ 'user_id' ] = $user_id;
       $data_rows[ $matchcode_row_index ][ 'main_project_id' ] = $main_project_id;
-      $data_rows[ $matchcode_row_index ][ 'project_id' ] = $assigned_project_id;
+      $data_rows[ $matchcode_row_index ][ 'assigned_project_id' ] = $assigned_project_id;
       $data_rows[ $matchcode_row_index ][ 'target_version_id' ] = $target_version_id;
       $data_rows[ $matchcode_row_index ][ 'user_active' ] = $user_active;
       $data_rows[ $matchcode_row_index ][ 'no_issue' ] = false;
@@ -276,7 +279,7 @@ function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id,
       {
          $data_rows[ $additional_row_index ][ 'user_id' ] = $user_id;
          $data_rows[ $additional_row_index ][ 'main_project_id' ] = '';
-         $data_rows[ $additional_row_index ][ 'project_id' ] = '';
+         $data_rows[ $additional_row_index ][ 'assigned_project_id' ] = '';
          $data_rows[ $additional_row_index ][ 'target_version_id' ] = '';
          $data_rows[ $additional_row_index ][ 'no_user' ] = get_user_active ( $user_id );
          $data_rows[ $additional_row_index ][ 'no_issue' ] = true;
@@ -612,7 +615,8 @@ function get_user_row_cell_highlighting ( $data_row, $stat_cols, $ignore_row_col
 {
    $user_id = $data_row[ 'user_id' ];
    $no_issue = $data_row[ 'no_issue' ];
-   $assigned_project_id = $data_row[ 'project_id' ];
+   $main_project_id = $data_row[ 'main_project_id' ];
+   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $no_user = get_no_user ( $stat_cols, $user_id );
@@ -865,4 +869,19 @@ function calculate_time_difference ( $stat_issue_ids )
    $result[ 1 ] = $oldest_stat_issue_id;
 
    return $result;
+}
+
+/**
+ * @param $main_project_id
+ * @param $assigned_project_id
+ * @return mixed
+ */
+function validate_assigned_project_id ( $main_project_id, $assigned_project_id )
+{
+   if ( strlen ( $assigned_project_id ) == 0 && !is_null ( $main_project_id ) )
+   {
+      $assigned_project_id = $main_project_id;
+   }
+
+   return $assigned_project_id;
 }

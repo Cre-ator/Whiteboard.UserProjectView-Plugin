@@ -18,18 +18,22 @@ if ( !empty( $_POST[ 'project' ] ) )
    $project_id = $_POST[ 'project' ];
 }
 
+var_dump ( $record_set );
+var_dump ( $user_id );
+var_dump ( $project_id );
+
 if ( $record_set != null )
 {
    removeProjectUserSet ( $record_set );
 }
-elseif ( $user_id != null && $project_id != null )
+elseif ( check_user_id_is_valid ( $user_id ) && $project_id != null )
 {
    removeProjectUser ( $user_id, $project_id );
 }
 
-$redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';
+//$redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';
 
-html_page_top ( null, $redirect_url );
+//html_page_top ( null, $redirect_url );
 ?>
    <div align="center">
       <?php echo plugin_lang_get ( 'remove_confirm' ); ?>
@@ -48,7 +52,7 @@ function removeProjectUserSet ( $record_set )
 
    for ( $record_index = 0; $record_index < $record_count; $record_index++ )
    {
-      $record[ $record_index ] = explode ( '__', $record_set[ $record_index ] );
+      $record[ $record_index ] = explode ( '_', $record_set[ $record_index ] );
    }
 
    for ( $record_index = 0; $record_index < $record_count; $record_index++ )

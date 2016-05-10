@@ -1,5 +1,6 @@
 <?php
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
 auth_reauthenticate ();
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
