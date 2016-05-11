@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class userprojectview_database_api
+ * Class databaseapi
  *
  * Provides several functions to process data in the mantis- and plugin-database
  */
-class userprojectview_database_api
+class databaseapi
 {
    private $mysqli;
    private $dbPath;
@@ -89,7 +89,7 @@ class userprojectview_database_api
     * @param $version
     * @return mixed
     */
-   public function get_project_by_version ( $version )
+   public function get_project_id_by_version ( $version )
    {
       $project_version_table = $this->get_mantis_table ( 'project_version' );
 
@@ -188,7 +188,7 @@ class userprojectview_database_api
     *
     * @param $user_id
     * @param $project_id
-    * @return bool|mysqli_result
+    * @return bool
     */
    public function check_user_project_assignment ( $user_id, $project_id )
    {
@@ -198,8 +198,9 @@ class userprojectview_database_api
           WHERE project_id = " . $project_id . "
           AND user_id = " . $user_id;
 
-      $result = $this->mysqli->query ( $query );
+      $assoc_array = mysqli_fetch_row ( $this->mysqli->query ( $query ) );
+      $assigned_user_id = $assoc_array[ 0 ];
 
-      return $result;
+      return $assigned_user_id;
    }
 }

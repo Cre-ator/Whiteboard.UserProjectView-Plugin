@@ -1,20 +1,18 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_constant_api.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectview_database_api.php';
+require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 
 auth_reauthenticate ();
 access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
 form_security_validate ( 'plugin_UserProjectView_config_update' );
-
-
-$userprojectview_database_api = new userprojectview_database_api();
 
 $option_reset = gpc_get_bool ( 'reset', false );
 $option_change = gpc_get_bool ( 'change', false );
 
 if ( $option_reset )
 {
-   $userprojectview_database_api->reset_plugin ();
+   $databaseapi = new databaseapi();
+   $databaseapi->reset_plugin ();
 }
 
 if ( $option_change )
@@ -24,7 +22,6 @@ if ( $option_change )
    update_button ( 'ShowMenu' );
    update_button ( 'ShowInFooter' );
    update_button ( 'ShowAvatar' );
-   update_color ( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 
    update_button ( 'IAUHighlighting' );
    update_color ( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
@@ -38,6 +35,8 @@ if ( $option_change )
    update_button ( 'ShowZIU' );
    update_button ( 'ZIHighlighting' );
    update_color ( 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+
+   update_button ( 'layer_one_name' );
 
    update_color ( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 
