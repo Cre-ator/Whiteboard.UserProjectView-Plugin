@@ -18,10 +18,6 @@ if ( !empty( $_POST[ 'project' ] ) )
    $project_id = $_POST[ 'project' ];
 }
 
-var_dump ( $record_set );
-var_dump ( $user_id );
-var_dump ( $project_id );
-
 if ( $record_set != null )
 {
    removeProjectUserSet ( $record_set );
@@ -31,9 +27,9 @@ elseif ( check_user_id_is_valid ( $user_id ) && $project_id != null )
    removeProjectUser ( $user_id, $project_id );
 }
 
-//$redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';
+$redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';
 
-//html_page_top ( null, $redirect_url );
+html_page_top ( null, $redirect_url );
 ?>
    <div align="center">
       <?php echo plugin_lang_get ( 'remove_confirm' ); ?>

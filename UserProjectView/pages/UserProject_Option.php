@@ -32,7 +32,7 @@ switch ( $select )
             <table class="width50" cellspacing="1">
                <tr class="row-category">
                   <th><?php echo plugin_lang_get ( 'thead_username' ); ?></th>
-                  <th><?php echo plugin_lang_get ( 'thead_project' ); ?></th>
+                  <th><?php echo plugin_lang_get ( 'thead_layer_issue_project' ); ?></th>
                </tr>
                <?php
                for ( $recordIndex = 0;
@@ -105,7 +105,7 @@ switch ( $select )
       echo '<table class="width50" cellspacing="1">';
       echo '<tr class="row-category">';
       echo '<th>' . plugin_lang_get ( 'thead_username' ) . '</th>';
-      echo '<th>' . plugin_lang_get ( 'thead_project' ) . '</th>';
+      echo '<th>' . plugin_lang_get ( 'thead_layer_issue_project' ) . '</th>';
       echo '</tr>';
 
       for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
