@@ -22,7 +22,6 @@ if ( $option_change )
    update_button ( 'ShowMenu' );
    update_button ( 'ShowInFooter' );
    update_button ( 'ShowAvatar' );
-   update_color ( 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
 
    update_button ( 'IAUHighlighting' );
    update_color ( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
@@ -36,6 +35,8 @@ if ( $option_change )
    update_button ( 'ShowZIU' );
    update_button ( 'ZIHighlighting' );
    update_color ( 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+
+   update_button ( 'layer_one_name' );
 
    update_color ( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 

@@ -89,7 +89,7 @@ class databaseapi
     * @param $version
     * @return mixed
     */
-   public function get_project_by_version ( $version )
+   public function get_project_id_by_version ( $version )
    {
       $project_version_table = $this->get_mantis_table ( 'project_version' );
 

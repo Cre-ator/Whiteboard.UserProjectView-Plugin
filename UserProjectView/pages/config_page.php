@@ -1,5 +1,6 @@
 <?php
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
 auth_reauthenticate ();
 access_ensure_global_level ( plugin_config_get ( 'UserProjectAccessLevel' ) );
@@ -50,11 +51,6 @@ print_config_table_category_col ( 1, 1, 'config_showAvatar' );
 print_config_table_radio_button_col ( 5, 'ShowAvatar' );
 echo '</tr>';
 
-print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_BGColor' );
-print_config_table_color_picker_row ( 5, 'HeadRowColor', PLUGINS_USERPROJECTVIEW_HEADROWCOLOR );
-echo '</tr>';
-
 print_config_table_title_row ( 6, 'config_highlighting' );
 
 print_config_table_row ();
@@ -91,6 +87,24 @@ echo '</td>';
 print_config_table_radio_button_col ( 1, 'ZIHighlighting' );
 print_config_table_category_col ( 1, 1, 'config_BGColor' );
 print_config_table_color_picker_row ( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+echo '</tr>';
+
+print_config_table_title_row ( 6, 'config_layer_one_column' );
+print_config_table_row ();
+echo '<td class="category" colspan="1">';
+echo plugin_lang_get ( 'config_layer_one_column_name' );
+echo '</td>';
+echo '<td width="100px" colspan="5">';
+echo '<input type="radio" name="layer_one_name" value="0"';
+echo ( 0 == plugin_config_get ( 'layer_one_name' ) ) ? 'checked="checked"' : '';
+echo '/>' . plugin_lang_get ( 'config_layer_one_name_one' );
+echo '<input type="radio" name="layer_one_name" value="1"';
+echo ( 1 == plugin_config_get ( 'layer_one_name' ) ) ? 'checked="checked"' : '';
+echo '/>' . plugin_lang_get ( 'config_layer_one_name_two' );
+echo '<input type="radio" name="layer_one_name" value="2"';
+echo ( 2 == plugin_config_get ( 'layer_one_name' ) ) ? 'checked="checked"' : '';
+echo '/>' . plugin_lang_get ( 'config_layer_one_name_three' );
+echo '</td>';
 echo '</tr>';
 
 print_config_table_title_row ( 6, 'config_specColumns' );

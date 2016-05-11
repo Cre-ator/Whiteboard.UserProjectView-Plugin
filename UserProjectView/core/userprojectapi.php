@@ -54,22 +54,8 @@ function calc_matchcodes ( $stat_cols )
          continue;
       }
 
-      /** final main project id; target version id */
-      $main_project_id = get_main_project_id ( $assigned_project_id );
+      /** target version id */
       $target_version_id = get_target_version_id ( $target_version, $assigned_project_id );
-
-      if ( $target_version != '' )
-      {
-         /** identify main project by target version of selected issue */
-         $databaseapi = new databaseapi();
-         $main_project_id = $databaseapi->get_project_by_version ( $target_version );
-      }
-
-      /** final assigned project id */
-      if ( $assigned_project_id == $main_project_id )
-      {
-         $assigned_project_id = '';
-      }
 
       /** final user active status */
       $no_user = get_user_active ( $user_id );
@@ -77,12 +63,38 @@ function calc_matchcodes ( $stat_cols )
       /** prepare record matchcode */
       $matchcode[ $row_index ] =
          $user_id . ',' .
-         $main_project_id . ',' .
          $assigned_project_id . ',' .
          $target_version_id . ',' .
          $no_user;
    }
+
    return $matchcode;
+}
+
+/**
+ * Get the layer one column name which is defined in the plugin config area
+ *
+ * @return string
+ */
+function get_layer_one_column_name ()
+{
+   $thead_layer_one = '';
+   $layer_one_name = plugin_config_get ( 'layer_one_name' );
+
+   switch ( $layer_one_name )
+   {
+      case '0':
+         $thead_layer_one = 'config_layer_one_name_one';
+         break;
+      case '1':
+         $thead_layer_one = 'config_layer_one_name_two';
+         break;
+      case '2':
+         $thead_layer_one = 'config_layer_one_name_three';
+         break;
+   }
+
+   return $thead_layer_one;
 }
 
 /**
@@ -118,7 +130,7 @@ function get_user_active ( $user_id )
    }
    else
    {
-      return 0;
+      return null;
    }
 }
 
@@ -154,18 +166,16 @@ function process_match_codes ( $matchcode, $stat_cols )
       $matchcode_row_data_values = explode ( ',', $matchcode_row_data );
 
       $user_id = $matchcode_row_data_values[ 0 ];
-      $main_project_id = $matchcode_row_data_values[ 1 ];
-      $assigned_project_id = $matchcode_row_data_values[ 2 ];
-      $target_version_id = $matchcode_row_data_values[ 3 ];
-      $user_active = $matchcode_row_data_values[ 4 ];
+      $assigned_project_id = $matchcode_row_data_values[ 1 ];
+      $target_version_id = $matchcode_row_data_values[ 2 ];
+      $user_active = $matchcode_row_data_values[ 3 ];
       $target_version = get_target_version ( $target_version_id );
 
       /** fill tablerow with data */
       $data_rows[ $matchcode_row_index ][ 'user_id' ] = $user_id;
-      $data_rows[ $matchcode_row_index ][ 'main_project_id' ] = $main_project_id;
       $data_rows[ $matchcode_row_index ][ 'assigned_project_id' ] = $assigned_project_id;
       $data_rows[ $matchcode_row_index ][ 'target_version_id' ] = $target_version_id;
-      $data_rows[ $matchcode_row_index ][ 'user_active' ] = $user_active;
+      $data_rows[ $matchcode_row_index ][ 'no_user' ] = $user_active;
       $data_rows[ $matchcode_row_index ][ 'no_issue' ] = false;
 
       for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
@@ -175,14 +185,7 @@ function process_match_codes ( $matchcode, $stat_cols )
          if ( !is_null ( $stat_cols[ $stat_index ] ) )
          {
             $databaseapi = new databaseapi();
-            if ( $assigned_project_id == '' )
-            {
-               $data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_user_project_version_status ( $user_id, $main_project_id, $target_version, $stat_cols[ $stat_index ] );
-            }
-            else
-            {
-               $data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_cols[ $stat_index ] );
-            }
+            $data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_cols[ $stat_index ] );
          }
       }
       array_shift ( $matchcode_rows );
@@ -278,7 +281,6 @@ function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id,
       if ( intval ( $issue_count ) == 0 )
       {
          $data_rows[ $additional_row_index ][ 'user_id' ] = $user_id;
-         $data_rows[ $additional_row_index ][ 'main_project_id' ] = '';
          $data_rows[ $additional_row_index ][ 'assigned_project_id' ] = '';
          $data_rows[ $additional_row_index ][ 'target_version_id' ] = '';
          $data_rows[ $additional_row_index ][ 'no_user' ] = get_user_active ( $user_id );
@@ -306,7 +308,7 @@ function check_user_assigned_to_project_hierarchy ( $sub_project_ids, $user_id )
    $user_assigned_to_project_hierarchy = false;
    foreach ( $sub_project_ids as $sub_project_id )
    {
-      $user_is_assigned_to_project = mysqli_fetch_row ( $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id ) );
+      $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id );
       if ( !is_null ( $user_is_assigned_to_project ) )
       {
          $user_assigned_to_project_hierarchy = true;
@@ -552,19 +554,18 @@ function calculate_user_head_rows ( $data_rows )
  * @param $lang_string
  * @param $data_rows
  * @param $stat_cols
- * @param $project_id
  * @param $print_flag
  * @param $issue_age_threshold
  * @param $issue_amount_threshold
  * @param $stat_issue_count
  * @return mixed
  */
-function process_group ( $group, $data_rows, $stat_cols, $project_id, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, $lang_string, $print_flag )
+function process_group ( $group, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, $lang_string, $print_flag )
 {
    print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string );
    foreach ( $group as $data_row_index )
    {
-      $stat_issue_count = print_user_row ( $data_row_index, $data_rows, $stat_cols, $project_id, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, true, $print_flag );
+      $stat_issue_count = print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, true, $print_flag );
    }
 
    return $stat_issue_count;
@@ -615,8 +616,7 @@ function get_user_row_cell_highlighting ( $data_row, $stat_cols, $ignore_row_col
 {
    $user_id = $data_row[ 'user_id' ];
    $no_issue = $data_row[ 'no_issue' ];
-   $main_project_id = $data_row[ 'main_project_id' ];
-   $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $no_user = get_no_user ( $stat_cols, $user_id );
