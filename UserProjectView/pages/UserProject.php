@@ -448,10 +448,12 @@ function print_chackbox ( $data_row, $stat_cols )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
+   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $no_user = get_no_user ( $stat_cols, $user_id );
 
    echo '<td width="15px">';
-   if ( !$no_user )
+   if ( !$no_user && !$unreachable_issue )
    {
       ?>
       <label>
@@ -532,8 +534,10 @@ function print_user_avatar ( $data_row, $stat_cols, $detailed )
       }
       else
       {
+         $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
+         $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
          echo '<td>';
-         if ( !$no_user )
+         if ( !$no_user && !$unreachable_issue )
          {
             ?>
             <label>
