@@ -29,10 +29,9 @@ function get_stat_count ()
 /**
  * Calculate an array which contains a matchcode for each data row
  *
- * @param $stat_cols
  * @return array
  */
-function calc_matchcodes ( $stat_cols )
+function calc_matchcodes ()
 {
    $matchcode = array ();
    $per_page = 10000;
@@ -49,7 +48,7 @@ function calc_matchcodes ( $stat_cols )
       $user_id = bug_get_field ( $bug_id, 'handler_id' );
 
       /** filter config specific bug status */
-      if ( !in_array ( false, set_irrelevant ( $status, $stat_cols ) ) )
+      if ( !in_array ( false, set_irrelevant ( $status ) ) )
       {
          continue;
       }
@@ -149,10 +148,9 @@ function check_user_id_is_valid ( $user_id )
  * Extract the bundled information in the matchcode array and returns it reorganized
  *
  * @param $matchcode
- * @param $stat_cols
  * @return array
  */
-function process_match_codes ( $matchcode, $stat_cols )
+function process_match_codes ( $matchcode )
 {
    $data_rows = array ();
    $matchcode_rows = array_count_values ( $matchcode );
@@ -182,10 +180,11 @@ function process_match_codes ( $matchcode, $stat_cols )
       {
          $data_rows[ $matchcode_row_index ][ 'stat_col' . $stat_index ] = '0';
          $stat_column = 'stat_col' . $stat_index;
-         if ( !is_null ( $stat_cols[ $stat_index ] ) )
+         $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+         if ( !is_null ( $stat_status_id ) )
          {
             $databaseapi = new databaseapi();
-            $data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_cols[ $stat_index ] );
+            $data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_status_id );
          }
       }
       array_shift ( $matchcode_rows );
@@ -222,10 +221,9 @@ function get_target_version ( $target_version_id )
  * @param $data_rows
  * @param $matchcode_row_index
  * @param $project_id
- * @param $stat_cols
  * @return mixed
  */
-function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id, $stat_cols )
+function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id )
 {
    $databaseapi = new databaseapi();
 
@@ -250,7 +248,8 @@ function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id,
       {
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            $issue_count += $databaseapi->get_amount_issues_by_user_project_status ( $user_id, $project_id, $stat_cols[ $stat_index ] );
+            $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+            $issue_count += $databaseapi->get_amount_issues_by_user_project_status ( $user_id, $project_id, $stat_status_id );
          }
       }
       else
@@ -270,9 +269,10 @@ function process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id,
 
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
+            $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
             foreach ( $sub_project_ids as $sub_project_id )
             {
-               $issue_count += $databaseapi->get_amount_issues_by_user_project_status ( $user_id, $sub_project_id, $stat_cols[ $stat_index ] );
+               $issue_count += $databaseapi->get_amount_issues_by_user_project_status ( $user_id, $sub_project_id, $stat_status_id );
             }
          }
       }
@@ -553,19 +553,17 @@ function calculate_user_head_rows ( $data_rows )
  * @param $group
  * @param $lang_string
  * @param $data_rows
- * @param $stat_cols
  * @param $print_flag
- * @param $issue_age_threshold
- * @param $issue_amount_threshold
  * @param $stat_issue_count
  * @return mixed
  */
-function process_group ( $group, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, $lang_string, $print_flag )
+function process_group ( $group, $data_rows, $stat_issue_count, $lang_string, $print_flag )
 {
-   print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string );
+   print_group_head_row ( $group, $data_rows, $lang_string );
    foreach ( $group as $data_row_index )
    {
-      $stat_issue_count = print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, true, $print_flag );
+      $data_row = $data_rows[ $data_row_index ];
+      $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, true, $print_flag );
    }
 
    return $stat_issue_count;
@@ -609,17 +607,16 @@ function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_iss
  * Print a row for a given user in the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $ignore_row_color
  */
-function get_user_row_cell_highlighting ( $data_row, $stat_cols, $ignore_row_color )
+function get_user_row_cell_highlighting ( $data_row, $ignore_row_color )
 {
    $user_id = $data_row[ 'user_id' ];
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
 
    if ( !$ignore_row_color )
    {
@@ -681,15 +678,14 @@ function prepare_filter_string ( $unreachable_issue_status_count, $unreach_issue
  * Tag a bug based on his status with a flag. cause of the flag a bug can be ignored by the plugin table
  *
  * @param $bug_status
- * @param $stat_cols
  * @return array
  */
-function set_irrelevant ( $bug_status, $stat_cols )
+function set_irrelevant ( $bug_status )
 {
    $irrelevant = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      if ( $bug_status != $stat_cols[ $stat_index ] )
+      if ( $bug_status != plugin_config_get ( 'CStatSelect' . $stat_index ) )
       {
          $irrelevant[ $stat_index ] = true;
       }
@@ -819,16 +815,15 @@ function get_parent_project_id ( $project_id, $assigned_project_id, $main_projec
 /**
  * Return true if the given user is not assigned to the issues of each status column
  *
- * @param $stat_cols
  * @param $user_id
  * @return bool
  */
-function get_no_user ( $stat_cols, $user_id )
+function get_no_user ( $user_id )
 {
    $no_user = false;
-   for ( $statColIndex = 1; $statColIndex <= get_stat_count (); $statColIndex++ )
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      $spec_status = $stat_cols[ $statColIndex ];
+      $spec_status = plugin_config_get ( 'CStatSelect' . $stat_index );
       if ( $user_id == '0' && $spec_status == USERPROJECTVIEW_ASSIGNED_STATUS
          || $user_id == '0' && $spec_status == USERPROJECTVIEW_FEEDBACK_STATUS
          || $user_id == '0' && $spec_status == USERPROJECTVIEW_RESOLVED_STATUS

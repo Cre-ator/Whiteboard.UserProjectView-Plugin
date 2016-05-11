@@ -18,24 +18,14 @@ if ( ( ALL_PROJECTS == $project_id || project_exists ( $project_id ) )
    print_header_redirect ( $_SERVER[ 'REQUEST_URI' ], true, false, true );
 }
 
-$stat_cols = array ();
-$issue_amount_thresholds = array ();
-$issue_age_thresholds = array ();
-for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-{
-   $stat_cols[ $stat_index ] = plugin_config_get ( 'CStatSelect' . $stat_index );
-   $issue_amount_thresholds[ $stat_index ] = plugin_config_get ( 'IAMThreshold' . $stat_index );
-   $issue_age_thresholds[ $stat_index ] = plugin_config_get ( 'IAGThreshold' . $stat_index );
-}
-
-$matchcode = calc_matchcodes ( $stat_cols );
-$result = process_match_codes ( $matchcode, $stat_cols );
+$matchcode = calc_matchcodes ();
+$result = process_match_codes ( $matchcode );
 $data_rows = $result[ 0 ];
 $matchcode_row_index = $result[ 1 ];
 
 if ( plugin_config_get ( 'ShowZIU' ) )
 {
-   $data_rows = process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id, $stat_cols );
+   $data_rows = process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id );
 }
 
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
@@ -64,8 +54,8 @@ else
 {
    echo '<table>';
 }
-print_thead ( $stat_cols, $print );
-print_tbody ( $data_rows, $stat_cols, $issue_amount_thresholds, $issue_age_thresholds, $print );
+print_thead ( $print );
+print_tbody ( $data_rows, $print );
 echo '</table>';
 echo '</div>';
 if ( !$print )
@@ -78,10 +68,9 @@ if ( !$print )
 /**
  * Print the head of the plugin table
  *
- * @param $stat_cols
  * @param $print
  */
-function print_thead ( $stat_cols, $print )
+function print_thead ( $print )
 {
    $colspan = 8;
    if ( plugin_config_get ( 'ShowAvatar' ) )
@@ -106,9 +95,9 @@ function print_thead ( $stat_cols, $print )
    {
       ?>
       <th style="width:150px;" class="headrow_status"
-          bgcolor="<?php echo get_status_color ( $stat_cols[ $stat_index ], null, null ); ?>">
+          bgcolor="<?php echo get_status_color ( plugin_config_get ( 'CStatSelect' . $stat_index ), null, null ); ?>">
          <?php $status = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
-         echo $status [ $stat_cols[ $stat_index ] ]; ?>
+         echo $status [ plugin_config_get ( 'CStatSelect' . $stat_index ) ]; ?>
       </th>
       <?php
    }
@@ -190,12 +179,9 @@ function print_main_table_head_col ( $lang_string, $sort_val, $header_colspan )
  * Print the body of the plugin table
  *
  * @param $data_rows
- * @param $stat_cols
- * @param $issue_amount_threshold
- * @param $issue_age_threshold
  * @param $print
  */
-function print_tbody ( $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $print )
+function print_tbody ( $data_rows, $print )
 {
    $get_sort_val = $_GET[ 'sortVal' ];
    $get_sort_order = $_GET[ 'sort' ];
@@ -223,7 +209,7 @@ function print_tbody ( $data_rows, $stat_cols, $issue_amount_threshold, $issue_a
 
    echo '<tbody>';
    echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
-   print_group_head_row ( $groups[ 0 ], $data_rows, $stat_cols, 'headrow_user' );
+   print_group_head_row ( $groups[ 0 ], $data_rows, 'headrow_user' );
    $head_rows_array = calculate_user_head_rows ( $data_rows );
    foreach ( $head_rows_array as $head_row )
    {
@@ -237,17 +223,18 @@ function print_tbody ( $data_rows, $stat_cols, $issue_amount_threshold, $issue_a
          {
             if ( $head_row_counter )
             {
-               print_user_head_row ( $head_row, $user_id, $issue_amount_threshold, $print );
+               print_user_head_row ( $head_row, $user_id, $print );
                $head_row_counter = false;
             }
-            $stat_issue_count = print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, false, $print );
+            $data_row = $data_rows[ $data_row_index ];
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, false, $print );
          }
       }
    }
 
-   $stat_issue_count = process_group ( $groups[ 1 ], $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, 'headrow_no_issue', $print );
-   $stat_issue_count = process_group ( $groups[ 2 ], $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, 'headrow_del_user', $print );
-   $stat_issue_count = process_group ( $groups[ 3 ], $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, 'headrow_no_user', $print );
+   $stat_issue_count = process_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 'headrow_no_issue', $print );
+   $stat_issue_count = process_group ( $groups[ 2 ], $data_rows, $stat_issue_count, 'headrow_del_user', $print );
+   $stat_issue_count = process_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 'headrow_no_user', $print );
    print_option_panel ( $stat_issue_count, $print );
    echo '</form>';
    echo '</tbody>';
@@ -258,10 +245,9 @@ function print_tbody ( $data_rows, $stat_cols, $issue_amount_threshold, $issue_a
  *
  * @param $group
  * @param $data_rows
- * @param $stat_cols
  * @param $lang_string
  */
-function print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string )
+function print_group_head_row ( $group, $data_rows, $lang_string )
 {
    $stat_issue_count = array ();
    foreach ( $group as $data_row_index )
@@ -288,7 +274,7 @@ function print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string )
          {
             if ( $lang_string == 'headrow_del_user' && $stat_issue_count[ $stat_index ] > 0 )
             {
-               $status = $stat_cols[ $stat_index ];
+               $status = plugin_config_get ( 'CStatSelect' . $stat_index );
                if ( $status == '10' || $status == '20' || $status == '30' || $status == '40' || $status == '50' )
                {
                   echo '<td style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $stat_issue_count[ $stat_index ] . '</td>';
@@ -315,10 +301,9 @@ function print_group_head_row ( $group, $data_rows, $stat_cols, $lang_string )
  *
  * @param $head_row
  * @param $user_id
- * @param $issue_amount_threshold
  * @param $print
  */
-function print_user_head_row ( $head_row, $user_id, $issue_amount_threshold, $print )
+function print_user_head_row ( $head_row, $user_id, $print )
 {
    $filter_string = '<a href="search.php?handler_id=' . $user_id . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
    ?>
@@ -367,15 +352,33 @@ function print_user_head_row ( $head_row, $user_id, $issue_amount_threshold, $pr
          $stat_issue_count = $head_row[ 1 ];
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            $stat_issue_amount_threshold = $issue_amount_threshold[ $stat_index ];
+            $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
             if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
             {
-               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">' . $stat_issue_count[ $stat_index ] . '</td>';
+               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
             }
             else
             {
-               echo '<td class="group_row_bg">' . $stat_issue_count[ $stat_index ] . '</td>';
+               echo '<td class="group_row_bg">';
             }
+
+            if ( !$print )
+            {
+               echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) . '
+                     &amp;handler_id=' . get_link_user_id ( $user_id ) . '
+                     &amp;sticky_issues=on
+                     &amp;sortby=last_updated
+                     &amp;dir=DESC
+                     &amp;hide_status_id=-2
+                     &amp;match_type=0">';
+               echo $stat_issue_count[ $stat_index ];
+               echo '</a>';
+            }
+            else
+            {
+               echo $stat_issue_count[ $stat_index ];
+            }
+            echo '</td>';
          }
          ?>
       <td class="group_row_bg"></td>
@@ -386,20 +389,15 @@ function print_user_head_row ( $head_row, $user_id, $issue_amount_threshold, $pr
 /**
  * Print a given user row detailed
  *
- * @param $data_rows
- * @param $data_row_index
- * @param $stat_cols
- * @param $print
- * @param $issue_age_threshold
- * @param $issue_amount_threshold
+ * @param $data_row
  * @param $stat_issue_count
  * @param $detailed
+ * @param $print
  * @return mixed
  */
-function print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount_threshold, $issue_age_threshold, $stat_issue_count, $detailed, $print )
+function print_user_row ( $data_row, $stat_issue_count, $detailed, $print )
 {
-   $data_row = $data_rows[ $data_row_index ];
-   get_user_row_cell_highlighting ( $data_row, $stat_cols, true );
+   get_user_row_cell_highlighting ( $data_row, true );
    echo '<td/>';
    if ( $print )
    {
@@ -407,7 +405,7 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount
       $main_project_id = $data_row[ 'main_project_id' ];
       $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
       $user_id = get_link_user_id ( $data_row[ 'user_id' ] );
-      $no_user = get_no_user ( $stat_cols, $user_id );
+      $no_user = get_no_user ( $user_id );
       $no_issue = $data_row[ 'no_issue' ];
       $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
       $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -417,22 +415,22 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount
    {
       if ( $detailed )
       {
-         print_chackbox ( $data_row, $stat_cols );
+         print_chackbox ( $data_row );
       }
       else
       {
          echo '<td/>';
       }
-      print_user_avatar ( $data_row, $stat_cols, $detailed );
+      print_user_avatar ( $data_row, $detailed );
    }
-   print_user_name ( $data_row, $stat_cols, $print, $detailed );
-   print_real_name ( $data_row, $stat_cols, $print, $detailed );
-   print_layer_one_project ( $data_row, $stat_cols, $print );
-   print_version_layer_project ( $data_row, $stat_cols, $print );
-   print_bug_layer_project ( $data_row, $stat_cols, $print );
-   print_target_version ( $data_row, $stat_cols, $print );
-   $stat_issue_count = print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print );
-   print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print );
+   print_user_name ( $data_row, $print, $detailed );
+   print_real_name ( $data_row, $print, $detailed );
+   print_layer_one_project ( $data_row, $print );
+   print_version_layer_project ( $data_row, $print );
+   print_bug_layer_project ( $data_row, $print );
+   print_target_version ( $data_row, $print );
+   $stat_issue_count = print_amount_of_issues ( $data_row, $stat_issue_count, $print );
+   print_remark ( $data_row, $print );
    echo '</tr>';
 
    return $stat_issue_count;
@@ -442,15 +440,14 @@ function print_user_row ( $data_row_index, $data_rows, $stat_cols, $issue_amount
  * Print the checkbox in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  */
-function print_chackbox ( $data_row, $stat_cols )
+function print_chackbox ( $data_row )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
 
    echo '<td width="15px">';
    if ( !$no_user && !$unreachable_issue )
@@ -468,14 +465,13 @@ function print_chackbox ( $data_row, $stat_cols )
  * Print the avatar in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $detailed
  */
-function print_user_avatar ( $data_row, $stat_cols, $detailed )
+function print_user_avatar ( $data_row, $detailed )
 {
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
    $user_id = $data_row[ 'user_id' ];
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
@@ -554,11 +550,10 @@ function print_user_avatar ( $data_row, $stat_cols, $detailed )
  * Print the username in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  * @param $detailed
  */
-function print_user_name ( $data_row, $stat_cols, $print, $detailed )
+function print_user_name ( $data_row, $print, $detailed )
 {
    $user_id = $data_row[ 'user_id' ];
    $user_name = '';
@@ -567,7 +562,7 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
    {
       $user_name = user_get_name ( $user_id );
    }
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -610,11 +605,10 @@ function print_user_name ( $data_row, $stat_cols, $print, $detailed )
  * Print the real name in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  * @param $detailed
  */
-function print_real_name ( $data_row, $stat_cols, $print, $detailed )
+function print_real_name ( $data_row, $print, $detailed )
 {
    $user_id = $data_row[ 'user_id' ];
    $real_name = '';
@@ -623,7 +617,7 @@ function print_real_name ( $data_row, $stat_cols, $print, $detailed )
    {
       $real_name = user_get_realname ( $user_id );
    }
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -657,10 +651,9 @@ function print_real_name ( $data_row, $stat_cols, $print, $detailed )
  * Print the layer one project name in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  */
-function print_layer_one_project ( $data_row, $stat_cols, $print )
+function print_layer_one_project ( $data_row, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -679,7 +672,7 @@ function print_layer_one_project ( $data_row, $stat_cols, $print )
       $layer_one_project_name = '';
    }
 
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -710,15 +703,14 @@ function print_layer_one_project ( $data_row, $stat_cols, $print )
  * Print the main project in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  */
-function print_version_layer_project ( $data_row, $stat_cols, $print )
+function print_version_layer_project ( $data_row, $print )
 {
    $databaseapi = new databaseapi();
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $target_version_id = $data_row[ 'target_version_id' ];
    $version_assigned_project_id = '';
@@ -762,10 +754,9 @@ function print_version_layer_project ( $data_row, $stat_cols, $print )
  * Print the assigned project in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  */
-function print_bug_layer_project ( $data_row, $stat_cols, $print )
+function print_bug_layer_project ( $data_row, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -778,7 +769,7 @@ function print_bug_layer_project ( $data_row, $stat_cols, $print )
       $assigned_project_name = '';
    }
 
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -809,10 +800,9 @@ function print_bug_layer_project ( $data_row, $stat_cols, $print )
  * Print the target version in the user row of the plugin table
  *
  * @param $data_row
- * @param $stat_cols
  * @param $print
  */
-function print_target_version ( $data_row, $stat_cols, $print )
+function print_target_version ( $data_row, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -824,7 +814,7 @@ function print_target_version ( $data_row, $stat_cols, $print )
       $target_version = version_get_field ( $target_version_id, 'version' );
       $target_version_date = date ( 'Y-m-d', version_get_field ( $target_version_id, 'date_order' ) );
    }
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
@@ -858,13 +848,11 @@ function print_target_version ( $data_row, $stat_cols, $print )
  * Print the amount of issues for each specified status in the user row of the plugin table
  *
  * @param $data_row
- * @param $issue_amount_threshold
- * @param $stat_cols
  * @param $stat_issue_count
  * @param $print
  * @return mixed
  */
-function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols, $stat_issue_count, $print )
+function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
 {
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $target_version_id = $data_row[ 'target_version_id' ];
@@ -875,15 +863,17 @@ function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols
    }
 
    $stat_issue_count_array = array ();
+   $issue_amount_thresholds = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
       $stat_issue_count_array[ $stat_index ] = $data_row[ 'stat_col' . $stat_index ];
+      $issue_amount_thresholds[ $stat_index ] = plugin_config_get ( 'IAMThreshold' . $stat_index );
    }
 
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      $stat_issue_amount_threshold = $issue_amount_threshold[ $stat_index ];
-      $stat_status_id = $stat_cols[ $stat_index ];
+      $stat_issue_amount_threshold = $issue_amount_thresholds[ $stat_index ];
+      $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
       $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
       $stat_issue_count[ $stat_index ] += $temp_stat_issue_count;
       if ( $stat_issue_amount_threshold < $temp_stat_issue_count && $stat_issue_amount_threshold > 0 )
@@ -892,7 +882,7 @@ function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols
       }
       else
       {
-         echo '<td style="background-color:' . get_status_color ( $stat_cols[ $stat_index ], null, null ) . '; width:150px;">';
+         echo '<td style="background-color:' . get_status_color ( $stat_status_id, null, null ) . '; width:150px;">';
       }
 
       if ( !$print )
@@ -925,11 +915,9 @@ function print_amount_of_issues ( $data_row, $issue_amount_threshold, $stat_cols
  * Print additional information (remarks) in the user row of the plugin table
  *
  * @param $data_row
- * @param $issue_age_threshold
- * @param $stat_cols
  * @param $print
  */
-function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
+function print_remark ( $data_row, $print )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -939,7 +927,7 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
    {
       $target_version = version_get_field ( $target_version_id, 'version' );
    }
-   $no_user = get_no_user ( $stat_cols, $user_id );
+   $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
 
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
@@ -948,13 +936,13 @@ function print_remark ( $data_row, $issue_age_threshold, $stat_cols, $print )
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      $stat_issue_age_threshold = $issue_age_threshold[ $stat_index ];
+      $stat_issue_age_threshold = plugin_config_get ( 'IAGThreshold' . $stat_index );
       if ( $assigned_project_id == null )
       {
          continue;
       }
 
-      $stat_status_id = $stat_cols[ $stat_index ];
+      $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
       if ( $stat_status_id == USERPROJECTVIEW_ASSIGNED_STATUS && $stat_issue_age_threshold > 0
          || $stat_status_id == USERPROJECTVIEW_FEEDBACK_STATUS && $stat_issue_age_threshold > 0
          || $stat_status_id == 40 && $stat_issue_age_threshold > 0
