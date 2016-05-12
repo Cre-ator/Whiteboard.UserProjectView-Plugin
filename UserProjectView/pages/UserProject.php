@@ -84,14 +84,14 @@ function print_thead ( $print )
    print_main_table_head_row ( $dynamic_colspan, $print );
 
    echo '<tr>';
-   print_main_table_head_col ( 'thead_username', 'userName', 3 );
+   print_main_table_head_col ( 'thead_username', 'userName', plugin_config_get ( 'ShowAvatar' ) ? 3 : 2 );
    print_main_table_head_col ( 'thead_realname', 'realName', null );
-   echo '<th colspan="' . ( 5 + get_stat_count () ) . '" class="headrow"></th>';
+   echo '<th colspan="' . ( plugin_config_get ( 'ShowAvatar' ) ? 6 : 5 + get_stat_count () ) . '" class="headrow"></th>';
    echo '</tr>';
 
    echo '<tr>';
    echo '<th></th>';
-   echo '<th colspan="2" class="headrow"></th>';
+   echo '<th colspan="' . ( plugin_config_get ( 'ShowAvatar' ) ? 2 : 1 ) . '" class="headrow"></th>';
    echo '<th colspan="3" class="headrow">' . plugin_lang_get ( get_layer_one_column_name () ) . '</th>';
    print_main_table_head_col ( 'thead_layer_version_project', 'mainProject', null );
    print_main_table_head_col ( 'thead_layer_issue_project', 'assignedProject', null );
@@ -333,77 +333,77 @@ function print_user_head_row ( $head_row, $user_id, $print )
    <tr class="clickable" data-level="1" data-status="0">
       <td style="max-width:15px;"></td>
       <td class="icon"></td>
-      <td class="group_row_bg" align="center" style="max-width:25px;">
-         <?php
-         if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
-         {
-            $avatar = user_get_avatar ( $user_id );
-            if ( $print )
-            {
-               echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
-            }
-            else
-            {
-               echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
-            }
-         }
-         echo '</td>';
-
-         echo '<td class="group_row_bg">';
+      <?php
+      if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
+      {
+         echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
+         $avatar = user_get_avatar ( $user_id );
          if ( $print )
          {
-            echo user_get_name ( $user_id );
+            echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
          }
          else
          {
-            echo $filter_string . user_get_name ( $user_id ) . '</a>';
+            echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
          }
          echo '</td>';
+      }
 
-         echo '<td class="group_row_bg">';
-         if ( $print )
+      echo '<td class="group_row_bg">';
+      if ( $print )
+      {
+         echo user_get_name ( $user_id );
+      }
+      else
+      {
+         echo $filter_string . user_get_name ( $user_id ) . '</a>';
+      }
+      echo '</td>';
+
+      echo '<td class="group_row_bg">';
+      if ( $print )
+      {
+         echo user_get_realname ( $user_id );
+      }
+      else
+      {
+         echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+      }
+      echo '</td>';
+
+      echo '<td class="group_row_bg" colspan="4"/>';
+      $stat_issue_count = $head_row[ 1 ];
+      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      {
+         $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
+         if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
          {
-            echo user_get_realname ( $user_id );
+            echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
          }
          else
          {
-            echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+            echo '<td class="group_row_bg">';
          }
-         echo '</td>';
 
-         echo '<td class="group_row_bg" colspan="4"/>';
-         $stat_issue_count = $head_row[ 1 ];
-         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
          {
-            $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
-            if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
-            {
-               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
-            }
-            else
-            {
-               echo '<td class="group_row_bg">';
-            }
-
-            if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
-            {
-               echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) . '
+            echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) . '
                      &amp;handler_id=' . get_link_user_id ( $user_id ) . '
                      &amp;sticky_issues=on
                      &amp;sortby=last_updated
                      &amp;dir=DESC
                      &amp;hide_status_id=-2
                      &amp;match_type=0">';
-               echo $stat_issue_count[ $stat_index ];
-               echo '</a>';
-            }
-            else
-            {
-               echo $stat_issue_count[ $stat_index ];
-            }
-            echo '</td>';
+            echo $stat_issue_count[ $stat_index ];
+            echo '</a>';
          }
-         ?>
+         else
+         {
+            echo $stat_issue_count[ $stat_index ];
+         }
+         echo '</td>';
+      }
+      ?>
       <td class="group_row_bg"></td>
    </tr>
    <?php
