@@ -32,7 +32,7 @@ switch ( $select )
             <table class="width50" cellspacing="1">
                <tr class="row-category">
                   <th><?php echo plugin_lang_get ( 'thead_username' ); ?></th>
-                  <th><?php echo plugin_lang_get ( 'thead_layer_issue_project' ); ?></th>
+                  <th><?php echo plugin_lang_get ( 'config_layer_one_name_two' ); ?></th>
                </tr>
                <?php
                for ( $recordIndex = 0;
@@ -105,12 +105,12 @@ switch ( $select )
       echo '<table class="width50" cellspacing="1">';
       echo '<tr class="row-category">';
       echo '<th>' . plugin_lang_get ( 'thead_username' ) . '</th>';
-      echo '<th>' . plugin_lang_get ( 'thead_layer_issue_project' ) . '</th>';
+      echo '<th>' . plugin_lang_get ( 'config_layer_one_name_two' ) . '</th>';
       echo '</tr>';
 
       for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
       {
-         $record[ $recordIndex ] = explode ( '__', $selected_values[ $recordIndex ] );
+         $record[ $recordIndex ] = explode ( '_', $selected_values[ $recordIndex ] );
 
          $user_id = $record[ $recordIndex ][ 0 ];
          $project_id = $record[ $recordIndex ][ 1 ];

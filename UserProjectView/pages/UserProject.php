@@ -79,14 +79,20 @@ function print_thead ( $print )
    }
 
    $dynamic_colspan = get_stat_count () + $colspan;
-   $header_colspan = $colspan - 6;
 
    echo '<thead>';
    print_main_table_head_row ( $dynamic_colspan, $print );
+
    echo '<tr>';
-   print_main_table_head_col ( 'thead_username', 'userName', $header_colspan );
+   print_main_table_head_col ( 'thead_username', 'userName', 3 );
    print_main_table_head_col ( 'thead_realname', 'realName', null );
-   print_main_table_head_col ( get_layer_one_column_name (), 'mainProject', null );
+   echo '<th colspan="' . ( 5 + get_stat_count () ) . '" class="headrow"></th>';
+   echo '</tr>';
+
+   echo '<tr>';
+   echo '<th></th>';
+   echo '<th colspan="2" class="headrow"></th>';
+   echo '<th colspan="3" class="headrow">' . plugin_lang_get ( get_layer_one_column_name () ) . '</th>';
    print_main_table_head_col ( 'thead_layer_version_project', 'mainProject', null );
    print_main_table_head_col ( 'thead_layer_issue_project', 'assignedProject', null );
    print_main_table_head_col ( 'thead_targetversion', 'targetVersion', null );
@@ -205,39 +211,56 @@ function print_tbody ( $data_rows, $print )
    $groups[ 3 ] = array ();
    $groups = assign_groups ( $groups, $data_rows );
 
-   /** process each group */
+   echo '<tbody><form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
 
-   echo '<tbody>';
-   echo '<form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
-   print_group_head_row ( $groups[ 0 ], $data_rows, 'headrow_user' );
-   $head_rows_array = calculate_user_head_rows ( $data_rows );
+   /** GROUP 0 */
+   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, true, $print );
+   /** GROUP 1 */
+   $stat_issue_count = process_general_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 1, 'headrow_no_issue', $print );
+   /** GROUP 2 */
+   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, false, $print );
+   /** GROUP 3 */
+   $stat_issue_count = process_general_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 3, 'headrow_no_user', $print );
+   /** OPTION PANEL */
+   print_option_panel ( $stat_issue_count, $print );
+
+   echo '</form></tbody>';
+}
+
+/**
+ * @param $group
+ * @param $data_rows
+ * @param $stat_issue_count
+ * @param $valid_flag
+ * @param $print
+ * @return mixed
+ */
+function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_flag, $print )
+{
+   print_group_head_row ( $group, $data_rows, 'headrow_del_user' );
+   $head_rows_array = calculate_user_head_rows ( $data_rows, $valid_flag );
    foreach ( $head_rows_array as $head_row )
    {
       $head_row_user_id = $head_row[ 0 ];
-      $head_row_counter = true;
-      for ( $group_index = 0; $group_index < count ( $groups[ 0 ] ); $group_index++ )
+      $counter = true;
+      for ( $group_index = 0; $group_index < count ( $group ); $group_index++ )
       {
-         $data_row_index = $groups[ 0 ][ $group_index ];
+         $data_row_index = $group[ $group_index ];
          $user_id = $data_rows[ $data_row_index ][ 'user_id' ];
          if ( $user_id == $head_row_user_id )
          {
-            if ( $head_row_counter )
+            if ( $counter )
             {
                print_user_head_row ( $head_row, $user_id, $print );
-               $head_row_counter = false;
+               $counter = false;
             }
             $data_row = $data_rows[ $data_row_index ];
-            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, false, $print );
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0, $print );
          }
       }
    }
 
-   $stat_issue_count = process_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 'headrow_no_issue', $print );
-   $stat_issue_count = process_group ( $groups[ 2 ], $data_rows, $stat_issue_count, 'headrow_del_user', $print );
-   $stat_issue_count = process_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 'headrow_no_user', $print );
-   print_option_panel ( $stat_issue_count, $print );
-   echo '</form>';
-   echo '</tbody>';
+   return $stat_issue_count;
 }
 
 /**
@@ -391,11 +414,11 @@ function print_user_head_row ( $head_row, $user_id, $print )
  *
  * @param $data_row
  * @param $stat_issue_count
- * @param $detailed
+ * @param $group_index
  * @param $print
  * @return mixed
  */
-function print_user_row ( $data_row, $stat_issue_count, $detailed, $print )
+function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
 {
    get_user_row_cell_highlighting ( $data_row, true );
    echo '<td/>';
@@ -409,11 +432,11 @@ function print_user_row ( $data_row, $stat_issue_count, $detailed, $print )
       $no_issue = $data_row[ 'no_issue' ];
       $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
       $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-      get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+      get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
    }
    else
    {
-      if ( $detailed )
+      if ( $group_index > 0 )
       {
          print_chackbox ( $data_row );
       }
@@ -421,11 +444,16 @@ function print_user_row ( $data_row, $stat_issue_count, $detailed, $print )
       {
          echo '<td/>';
       }
-      print_user_avatar ( $data_row, $detailed );
+      print_user_avatar ( $data_row, $group_index );
    }
-   print_user_name ( $data_row, $print, $detailed );
-   print_real_name ( $data_row, $print, $detailed );
-   print_layer_one_project ( $data_row, $print );
+
+   if ( $group_index == 1 || $group_index == 2 )
+   {
+      print_user_name ( $data_row, $print, $group_index );
+      print_real_name ( $data_row, $print, $group_index );
+   }
+
+   print_layer_one_project ( $data_row, $print, $group_index );
    print_version_layer_project ( $data_row, $print );
    print_bug_layer_project ( $data_row, $print );
    print_target_version ( $data_row, $print );
@@ -468,9 +496,9 @@ function print_chackbox ( $data_row )
  * Print the avatar in the user row of the plugin table
  *
  * @param $data_row
- * @param $detailed
+ * @param $group_index
  */
-function print_user_avatar ( $data_row, $detailed )
+function print_user_avatar ( $data_row, $group_index )
 {
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
    $user_id = $data_row[ 'user_id' ];
@@ -482,7 +510,7 @@ function print_user_avatar ( $data_row, $detailed )
 
    if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
    {
-      if ( $detailed )
+      if ( $group_index > 0 )
       {
          if ( ( !user_exists ( $user_id ) && !$no_user )
             || ( check_user_id_is_valid ( $user_id ) && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
@@ -552,9 +580,9 @@ function print_user_avatar ( $data_row, $detailed )
  *
  * @param $data_row
  * @param $print
- * @param $detailed
+ * @param $group_index
  */
-function print_user_name ( $data_row, $print, $detailed )
+function print_user_name ( $data_row, $print, $group_index )
 {
    $user_id = $data_row[ 'user_id' ];
    $user_name = '';
@@ -569,9 +597,9 @@ function print_user_name ( $data_row, $print, $detailed )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
 
-   if ( $detailed )
+   if ( $group_index > 0 )
    {
       if ( access_has_global_level ( $access_level ) && !$print )
       {
@@ -610,9 +638,9 @@ function print_user_name ( $data_row, $print, $detailed )
  *
  * @param $data_row
  * @param $print
- * @param $detailed
+ * @param $group_index
  */
-function print_real_name ( $data_row, $print, $detailed )
+function print_real_name ( $data_row, $print, $group_index )
 {
    $user_id = $data_row[ 'user_id' ];
    $real_name = '';
@@ -627,9 +655,9 @@ function print_real_name ( $data_row, $print, $detailed )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
 
-   if ( $detailed )
+   if ( $group_index > 0 )
    {
       if ( access_has_global_level ( $access_level ) && !$print )
       {
@@ -654,8 +682,9 @@ function print_real_name ( $data_row, $print, $detailed )
  *
  * @param $data_row
  * @param $print
+ * @param $group_index
  */
-function print_layer_one_project ( $data_row, $print )
+function print_layer_one_project ( $data_row, $print, $group_index )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -679,8 +708,13 @@ function print_layer_one_project ( $data_row, $print )
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
+   $colspan = 1;
+   if ( $group_index == 0 || $group_index == 3 )
+   {
+      $colspan = 3;
+   }
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?project_id=' . $layer_one_project_id .
@@ -729,7 +763,7 @@ function print_version_layer_project ( $data_row, $print )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?project_id=' . $version_assigned_project_id .
@@ -773,7 +807,7 @@ function print_bug_layer_project ( $data_row, $print )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?project_id=' . $assigned_project_id .
@@ -816,7 +850,7 @@ function print_target_version ( $data_row, $print )
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
    echo $target_version_date . ' ';
    if ( access_has_global_level ( $access_level ) && !$print )
    {
@@ -925,7 +959,7 @@ function print_remark ( $data_row, $print )
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
+   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
       $stat_issue_age_threshold = plugin_config_get ( 'IAGThreshold' . $stat_index );
