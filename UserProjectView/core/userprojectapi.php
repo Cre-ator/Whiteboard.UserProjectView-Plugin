@@ -478,8 +478,10 @@ function assign_groups ( $groups, $data_rows )
  * Get an array with the head row data for each user
  *
  * @param $data_rows
+ * @param $valid_flag
  * @return array
  */
+function calculate_user_head_rows ( $data_rows, $valid_flag )
 {
    $head_rows_array = array ();
    for ( $data_row_index = 0; $data_row_index < count ( $data_rows ); $data_row_index++ )
@@ -490,6 +492,7 @@ function assign_groups ( $groups, $data_rows )
          continue;
       }
 
+      if ( $valid_flag )
       {
          if ( !user_exists ( $user_id ) || !user_is_enabled ( $user_id ) )
          {
