@@ -362,7 +362,7 @@ function print_user_head_row ( $head_row, $user_id, $print )
                echo '<td class="group_row_bg">';
             }
 
-            if ( !$print )
+            if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
             {
                echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) . '
                      &amp;handler_id=' . get_link_user_id ( $user_id ) . '
@@ -879,7 +879,7 @@ function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
          echo '<td style="background-color:' . get_status_color ( $stat_status_id, null, null ) . '; width:150px;">';
       }
 
-      if ( !$print )
+      if ( !$print && ( $temp_stat_issue_count > 0 ) )
       {
          echo '<a href="search.php?project_id=' . $assigned_project_id .
             '&amp;status_id=' . $stat_status_id .
@@ -890,7 +890,7 @@ function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
             '&amp;dir=DESC' .
             '&amp;hide_status_id=-2' .
             '&amp;match_type=0">';
-         echo $target_version;
+         echo $temp_stat_issue_count;
          echo '</a>';
       }
       else
