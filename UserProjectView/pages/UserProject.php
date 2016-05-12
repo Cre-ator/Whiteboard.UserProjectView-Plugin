@@ -448,16 +448,19 @@ function print_chackbox ( $data_row )
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $no_user = get_no_user ( $user_id );
-
+   $no_issue = $data_row[ 'no_issue' ];
    echo '<td width="15px">';
-   if ( !$no_user && !$unreachable_issue )
+   echo '<label>';
+   if ( $no_issue && ( helper_get_current_project () != 0 ) )
    {
-      ?>
-      <label>
-         <input type="checkbox" name="dataRow[]" value="<?php echo $user_id . '_' . $assigned_project_id; ?>"/>
-      </label>
-      <?php
+      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . helper_get_current_project () . '"/>';
    }
+
+   if ( !$no_user && !$unreachable_issue && !$no_issue )
+   {
+      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . $assigned_project_id . '"/>';
+   }
+   echo '</label>';
    echo '</td>';
 }
 
@@ -535,11 +538,9 @@ function print_user_avatar ( $data_row, $detailed )
          echo '<td>';
          if ( !$no_user && !$unreachable_issue )
          {
-            ?>
-            <label>
-               <input type="checkbox" name="dataRow[]" value="<?php echo $user_id . '_' . $assigned_project_id; ?>">
-            </label>
-            <?php
+            echo '<label>';
+            echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . $assigned_project_id . '"/>';
+            echo '</label>';
          }
          echo '</td>';
       }
@@ -575,7 +576,10 @@ function print_user_name ( $data_row, $print, $detailed )
       if ( access_has_global_level ( $access_level ) && !$print )
       {
          echo '<a href="search.php?handler_id=' . get_link_user_id ( $user_id ) .
-            '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
+            '&amp;sortby=last_updated' .
+            '&amp;dir=DESC' .
+            '&amp;hide_status_id=-2' .
+            '&amp;match_type=0">';
          if ( check_user_id_is_valid ( $user_id ) )
          {
             echo $user_name;
@@ -629,15 +633,13 @@ function print_real_name ( $data_row, $print, $detailed )
    {
       if ( access_has_global_level ( $access_level ) && !$print )
       {
-         ?>
-         <a href="search.php?handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                     &amp;sortby=last_updated
-                     &amp;dir=DESC
-                     &amp;hide_status_id=-2
-                     &amp;match_type=0">
-            <?php echo $real_name; ?>
-         </a>
-         <?php
+         echo '<a href="search.php?handler_id=' . get_link_user_id ( $user_id ) .
+            '&amp;sortby=last_updated' .
+            '&amp;dir=DESC' .
+            '&amp;hide_status_id=-2' .
+            '&amp;match_type=0">';
+         echo $real_name;
+         echo '</a>';
       }
       else
       {
@@ -681,16 +683,14 @@ function print_layer_one_project ( $data_row, $print )
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
-      ?>
-      <a href="search.php?project_id=<?php echo $layer_one_project_id; ?>
-                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                  &amp;sortby=last_updated
-                  &amp;dir=DESC
-                  &amp;hide_status_id=-2
-                  &amp;match_type=0">
-         <?php echo $layer_one_project_name; ?>
-      </a>
-      <?php
+      echo '<a href="search.php?project_id=' . $layer_one_project_id .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo $layer_one_project_name;
+      echo '</a>';
    }
    else
    {
@@ -732,16 +732,14 @@ function print_version_layer_project ( $data_row, $print )
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
-      ?>
-      <a href="search.php?project_id=<?php echo $version_assigned_project_id; ?>
-                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                  &amp;sortby=last_updated
-                  &amp;dir=DESC
-                  &amp;hide_status_id=-2
-                  &amp;match_type=0">
-         <?php echo $version_assigned_project_name; ?>
-      </a>
-      <?php
+      echo '<a href="search.php?project_id=' . $version_assigned_project_id .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo $version_assigned_project_name;
+      echo '</a>';
    }
    else
    {
@@ -778,16 +776,14 @@ function print_bug_layer_project ( $data_row, $print )
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
-      ?>
-      <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                  &amp;sortby=last_updated
-                  &amp;dir=DESC
-                  &amp;hide_status_id=-2
-                  &amp;match_type=0">
-         <?php echo $assigned_project_name; ?>
-      </a>
-      <?php
+      echo '<a href="search.php?project_id=' . $assigned_project_id .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo $assigned_project_name;
+      echo '</a>';
    }
    else
    {
@@ -824,18 +820,16 @@ function print_target_version ( $data_row, $print )
    echo $target_version_date . ' ';
    if ( access_has_global_level ( $access_level ) && !$print )
    {
-      ?>
-      <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                  &amp;sticky_issues=on
-                  &amp;target_version=<?php echo $target_version; ?>
-                  &amp;sortby=last_updated
-                  &amp;dir=DESC
-                  &amp;hide_status_id=-2
-                  &amp;match_type=0">
-         <?php echo $target_version; ?>
-      </a>
-      <?php
+      echo '<a href="search.php?project_id=' . $assigned_project_id .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sticky_issues=on' .
+         '&amp;target_version=' . $target_version .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo $target_version;
+      echo '</a>';
    }
    else
    {
@@ -887,19 +881,17 @@ function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
 
       if ( !$print )
       {
-         ?>
-         <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                     &amp;status_id=<?php echo $stat_status_id; ?>
-                     &amp;handler_id=<?php echo get_link_user_id ( $data_row[ 'user_id' ] ); ?>
-                     &amp;sticky_issues=on
-                     &amp;target_version=<?php echo $target_version; ?>
-                     &amp;sortby=last_updated
-                     &amp;dir=DESC
-                     &amp;hide_status_id=-2
-                     &amp;match_type=0">
-            <?php echo $temp_stat_issue_count; ?>
-         </a>
-         <?php
+         echo '<a href="search.php?project_id=' . $assigned_project_id .
+            '&amp;status_id=' . $stat_status_id .
+            '&amp;handler_id=' . get_link_user_id ( $data_row[ 'user_id' ] ) .
+            '&amp;sticky_issues=on' .
+            '&amp;target_version=' . $target_version .
+            '&amp;sortby=last_updated' .
+            '&amp;dir=DESC' .
+            '&amp;hide_status_id=-2' .
+            '&amp;match_type=0">';
+         echo $target_version;
+         echo '</a>';
       }
       else
       {
@@ -965,24 +957,22 @@ function print_remark ( $data_row, $print )
 
             if ( $stat_time_difference > $stat_issue_age_threshold && !$print )
             {
-               ?>
-               <a href="search.php?project_id=<?php echo $assigned_project_id; ?>
-                           &amp;search=<?php echo $stat_oldest_issue_id; ?>
-                           &amp;status_id=<?php echo $stat_status_id; ?>
-                           &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                           &amp;sticky_issues=on&target_version=<?php echo $target_version; ?>
-                           &amp;sortby=last_updated
-                           &amp;dir=DESC
-                           &amp;hide_status_id=-2
-                           &amp;match_type=0">
-                  <?php $stat_issue_id_db_result = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
-                  echo $stat_issue_id_db_result [ $stat_status_id ] .
-                     ' ' . plugin_lang_get ( 'remark_since' ) . ' ' . $stat_time_difference .
-                     ' ' . plugin_lang_get ( 'remark_day' );
-                  ?>
-                  <br/>
-               </a>
-               <?php
+               $stat_issue_id_db_result = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
+               echo '<a href="search.php?project_id=' . $assigned_project_id .
+                  '&amp;search=' . $stat_oldest_issue_id .
+                  '&amp;status_id=' . $stat_status_id .
+                  '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+                  '&amp;sticky_issues=on' .
+                  '&amp;target_version=' . $target_version .
+                  '&amp;sortby=last_updated' .
+                  '&amp;dir=DESC' .
+                  '&amp;hide_status_id=-2' .
+                  '&amp;match_type=0">';
+               echo $stat_issue_id_db_result [ $stat_status_id ] .
+                  ' ' . plugin_lang_get ( 'remark_since' ) . ' ' . $stat_time_difference .
+                  ' ' . plugin_lang_get ( 'remark_day' );
+               echo '<br/>';
+               echo '</a>';
             }
             else
             {
@@ -999,20 +989,19 @@ function print_remark ( $data_row, $print )
    {
       $unreachable_issue_status = plugin_config_get ( 'URIThreshold' );
       echo plugin_lang_get ( 'remark_noProject' );
-      ?> [
-      <a href="search.php?project_id=<?php echo $assigned_project_id .
-         prepare_filter_string ( count ( $unreachable_issue_status ), $unreachable_issue_status ); ?>
-                  &amp;handler_id=<?php echo get_link_user_id ( $user_id ); ?>
-                  &amp;sticky_issues=on
-                  &amp;target_version=<?php echo $target_version; ?>
-                  &amp;sortby=last_updated
-                  &amp;dir=DESC
-                  &amp;hide_status_id=-2
-                  &amp;match_type=0">
-         <?php echo plugin_lang_get ( 'remark_showURIssues' ); ?>
-      </a>
-      ]<br/>
-      <?php
+
+      echo '&nbsp[<a href="search.php?project_id=' . $assigned_project_id .
+         prepare_filter_string ( count ( $unreachable_issue_status ), $unreachable_issue_status ) .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sticky_issues=on' .
+         '&amp;target_version=' . $target_version .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo plugin_lang_get ( 'remark_showURIssues' );
+      echo '</a>]';
+      echo '<br/>';
    }
    if ( $user_id > 0 )
    {
