@@ -86,7 +86,7 @@ function print_thead ( $print )
    echo '<tr>';
    print_main_table_head_col ( 'thead_username', 'userName', plugin_config_get ( 'ShowAvatar' ) ? 3 : 2 );
    print_main_table_head_col ( 'thead_realname', 'realName', null );
-   echo '<th colspan="' . ( plugin_config_get ( 'ShowAvatar' ) ? 6 : 5 + get_stat_count () ) . '" class="headrow"></th>';
+   echo '<th colspan="' . ( 6 + get_stat_count () ) . '" class="headrow"></th>';
    echo '</tr>';
 
    echo '<tr>';
@@ -132,7 +132,8 @@ function print_main_table_head_row ( $dynamic_colspan, $print )
       {
          ?>
          <td>
-            <form action="<?php echo plugin_page ( 'UserProject' ); ?>&amp;sortVal=userName&amp;sort=ASC" method="post">
+            <form action="<?php echo plugin_page ( 'UserProject' ); ?>&amp;sortVal=userName&amp;sort=ASC"
+                  method="post">
                <input type="submit" name="print" class="button" value="<?php echo lang_get ( 'print' ); ?>"/>
             </form>
          </td>
@@ -214,11 +215,11 @@ function print_tbody ( $data_rows, $print )
    echo '<tbody><form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
 
    /** GROUP 0 */
-   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, true, $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, true, 'headrow_user', $print );
    /** GROUP 1 */
    $stat_issue_count = process_general_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 1, 'headrow_no_issue', $print );
    /** GROUP 2 */
-   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, false, $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, false, 'headrow_del_user', $print );
    /** GROUP 3 */
    $stat_issue_count = process_general_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 3, 'headrow_no_user', $print );
    /** OPTION PANEL */
@@ -232,12 +233,13 @@ function print_tbody ( $data_rows, $print )
  * @param $data_rows
  * @param $stat_issue_count
  * @param $valid_flag
+ * @param $group_name
  * @param $print
  * @return mixed
  */
-function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_flag, $print )
+function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_flag, $group_name, $print )
 {
-   print_group_head_row ( $group, $data_rows, 'headrow_del_user' );
+   print_group_head_row ( $group, $data_rows, $group_name );
    $head_rows_array = calculate_user_head_rows ( $data_rows, $valid_flag );
    foreach ( $head_rows_array as $head_row )
    {
@@ -268,9 +270,9 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_
  *
  * @param $group
  * @param $data_rows
- * @param $lang_string
+ * @param $group_name
  */
-function print_group_head_row ( $group, $data_rows, $lang_string )
+function print_group_head_row ( $group, $data_rows, $group_name )
 {
    $stat_issue_count = array ();
    foreach ( $group as $data_row_index )
@@ -291,11 +293,12 @@ function print_group_head_row ( $group, $data_rows, $lang_string )
       ?>
       <tr class="clickable" data-level="0" data-status="0">
          <td class="icon"></td>
-         <td class="group_row_bg" colspan="<?php echo $colspan; ?>"><?php echo plugin_lang_get ( $lang_string ); ?></td>
+         <td class="group_row_bg"
+             colspan="<?php echo $colspan; ?>"><?php echo plugin_lang_get ( $group_name ); ?></td>
          <?php
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            if ( $lang_string == 'headrow_del_user' && $stat_issue_count[ $stat_index ] > 0 )
+            if ( $group_name == 'headrow_del_user' && $stat_issue_count[ $stat_index ] > 0 )
             {
                $status = plugin_config_get ( 'CStatSelect' . $stat_index );
                if ( $status == '10' || $status == '20' || $status == '30' || $status == '40' || $status == '50' )
@@ -328,7 +331,7 @@ function print_group_head_row ( $group, $data_rows, $lang_string )
  */
 function print_user_head_row ( $head_row, $user_id, $print )
 {
-   $filter_string = '<a href="search.php?handler_id=' . $user_id . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
+   $filter_string = '<a href="search.php?handler_id=' . get_link_user_id ( $user_id ) . '&amp;sortby=last_updated&amp;dir=DESC&amp;hide_status_id=-2&amp;match_type=0">';
    ?>
    <tr class="clickable" data-level="1" data-status="0">
       <td style="max-width:15px;"></td>
@@ -337,14 +340,17 @@ function print_user_head_row ( $head_row, $user_id, $print )
       if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
       {
          echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
-         $avatar = user_get_avatar ( $user_id );
-         if ( $print )
+         if ( check_user_id_is_valid ( $user_id ) )
          {
-            echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
-         }
-         else
-         {
-            echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
+            $avatar = user_get_avatar ( $user_id );
+            if ( $print )
+            {
+               echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
+            }
+            else
+            {
+               echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
+            }
          }
          echo '</td>';
       }
@@ -352,22 +358,42 @@ function print_user_head_row ( $head_row, $user_id, $print )
       echo '<td class="group_row_bg">';
       if ( $print )
       {
-         echo user_get_name ( $user_id );
+         if ( user_exists ( $user_id ) )
+         {
+            echo user_get_name ( $user_id );
+         }
+         else
+         {
+            echo '<s>' . user_get_name ( $user_id ) . '</s>';
+         }
       }
       else
       {
-         echo $filter_string . user_get_name ( $user_id ) . '</a>';
+         if ( user_exists ( $user_id ) )
+         {
+            echo $filter_string . user_get_name ( $user_id );
+         }
+         else
+         {
+            echo '<s>' . $filter_string . user_get_name ( $user_id ) . '</s></a>';
+         }
       }
       echo '</td>';
 
       echo '<td class="group_row_bg">';
       if ( $print )
       {
-         echo user_get_realname ( $user_id );
+         if ( check_user_id_is_valid ( $user_id ) )
+         {
+            echo user_get_realname ( $user_id );
+         }
       }
       else
       {
-         echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+         if ( check_user_id_is_valid ( $user_id ) )
+         {
+            echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+         }
       }
       echo '</td>';
 
@@ -436,7 +462,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
    }
    else
    {
-      if ( $group_index > 0 )
+      if ( $group_index == 1 || $group_index == 2 )
       {
          print_chackbox ( $data_row );
       }
@@ -447,16 +473,19 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
       print_user_avatar ( $data_row, $group_index );
    }
 
-   if ( $group_index == 1 || $group_index == 2 )
+   if ( $group_index == 1 )
    {
       print_user_name ( $data_row, $print, $group_index );
       print_real_name ( $data_row, $print, $group_index );
    }
 
    print_layer_one_project ( $data_row, $print, $group_index );
-   print_version_layer_project ( $data_row, $print );
-   print_bug_layer_project ( $data_row, $print );
-   print_target_version ( $data_row, $print );
+   if ( $group_index != 1 )
+   {
+      print_version_layer_project ( $data_row, $print );
+      print_bug_layer_project ( $data_row, $print );
+      print_target_version ( $data_row, $print );
+   }
    $stat_issue_count = print_amount_of_issues ( $data_row, $stat_issue_count, $print );
    print_remark ( $data_row, $print );
    echo '</tr>';
@@ -513,7 +542,7 @@ function print_user_avatar ( $data_row, $group_index )
       if ( $group_index > 0 )
       {
          if ( ( !user_exists ( $user_id ) && !$no_user )
-            || ( check_user_id_is_valid ( $user_id ) && user_get_field ( $user_id, 'enabled' ) == '0' && plugin_config_get ( 'IAUHighlighting' ) )
+            || ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
          )
          {
             echo '<td align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
@@ -712,6 +741,10 @@ function print_layer_one_project ( $data_row, $print, $group_index )
    if ( $group_index == 0 || $group_index == 3 )
    {
       $colspan = 3;
+   }
+   elseif ( $group_index == 1 )
+   {
+      $colspan = 4;
    }
 
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan );
