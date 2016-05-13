@@ -453,12 +453,13 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
       echo '<td/>';
       $main_project_id = $data_row[ 'main_project_id' ];
       $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
-      $user_id = get_link_user_id ( $data_row[ 'user_id' ] );
+      $user_id = $data_row[ 'user_id' ];
       $no_user = get_no_user ( $user_id );
       $no_issue = $data_row[ 'no_issue' ];
       $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
       $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
       get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1 );
+      echo '</td>';
    }
    else
    {
