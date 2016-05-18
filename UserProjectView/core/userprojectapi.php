@@ -436,8 +436,6 @@ function assign_groups ( $groups, $data_rows )
                }
 
                /** user hat issues */
-               /** TODO user ohne projektzuweisung werden angezeigt
-                */
                if ( $stat_issue_count > 0 )
                {
                   array_push ( $group_user_with_issue, $data_row_index );
@@ -580,6 +578,69 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
 }
 
 /**
+ * generates a string which can be used for status specified links
+ *
+ * @return string
+ */
+function generate_status_link ()
+{
+   $status_link = '';
+   if ( get_stat_count () == 1 )
+   {
+      $status_link .= 'status_id=' . plugin_config_get ( 'CStatSelect1' );
+   }
+   else
+   {
+      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      {
+         if ( $stat_index < 2 )
+         {
+            $status_link .= 'status_id[]=' . plugin_config_get ( 'CStatSelect' . $stat_index );
+         }
+         else
+         {
+            $status_link .= '&amp;status_id[]=' . plugin_config_get ( 'CStatSelect' . $stat_index );
+         }
+      }
+   }
+
+   return $status_link;
+}
+
+/**
+ * Get the depth level of the project hierarchy
+ *
+ * @param $project_id
+ * @param $project_hierarchy_depth
+ * @return int
+ */
+function get_project_hierarchy_depth ( $project_id, $project_hierarchy_depth )
+{
+   if ( $project_id == 0 )
+   {
+      return 3;
+   }
+   else
+   {
+      $sub_project_ids = project_hierarchy_get_subprojects ( $project_id );
+      if ( !empty( $sub_project_ids ) )
+      {
+         $project_hierarchy_depth++;
+         foreach ( $sub_project_ids as $sub_project_id )
+         {
+            return $project_hierarchy_depth = get_project_hierarchy_depth ( $sub_project_id, $project_hierarchy_depth );
+         }
+      }
+      else
+      {
+         return $project_hierarchy_depth;
+      }
+   }
+
+   return null;
+}
+
+/**
  * Get the specific cell colour  for each situation (no issues, etc.. )
  *
  * @param $user_id
@@ -587,30 +648,31 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
  * @param $no_issue
  * @param $unreachable_issue
  * @param $colspan
+ * @param $class
  */
-function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan )
+function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
 {
    if ( ( !user_exists ( $user_id ) && !$no_user )
       || ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
-      echo '<td colspan="' . $colspan . '" align="center" width="25px" style="white-space:nowrap; background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
    }
    elseif ( $no_issue && plugin_config_get ( 'ZIHighlighting' ) )
    {
-      echo '<td colspan="' . $colspan . '" align="center" width="25px" style="white-space:nowrap; background-color:' . plugin_config_get ( 'ZIHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'ZIHBGColor' ) . '">';
    }
    elseif ( $no_user && plugin_config_get ( 'NUIHighlighting' ) )
    {
-      echo '<td colspan="' . $colspan . '" align="center" width="25px" style="white-space:nowrap; background-color:' . plugin_config_get ( 'NUIHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'NUIHBGColor' ) . '">';
    }
    elseif ( $unreachable_issue && plugin_config_get ( 'URIUHighlighting' ) )
    {
-      echo '<td colspan="' . $colspan . '" align="center" width="25px" style="white-space:nowrap; background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
    }
    else
    {
-      echo '<td colspan="' . $colspan . '" class="user_row_bg" style="white-space:nowrap">';
+      echo '<td class="' . $class . '" colspan="' . $colspan . '" class="user_row_bg">';
    }
 }
 
@@ -717,13 +779,13 @@ function set_irrelevant ( $bug_status )
  */
 function get_main_project_id ( $assigned_project_id )
 {
-   $parent_project = project_hierarchy_get_parent ( $assigned_project_id, false );
    if ( project_hierarchy_is_toplevel ( $assigned_project_id ) )
    {
       $bug_main_project_id = $assigned_project_id;
    }
    else
    {
+      $parent_project = project_hierarchy_get_parent ( $assigned_project_id, false );
       /** selected project is subproject */
       while ( project_hierarchy_is_toplevel ( $parent_project, false ) == false )
       {
