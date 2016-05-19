@@ -519,12 +519,12 @@ function print_chackbox ( $data_row )
    echo '<label>';
    if ( $no_issue && ( helper_get_current_project () != 0 ) )
    {
-      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . helper_get_current_project () . '"/>';
+      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . ',' . helper_get_current_project () . '"/>';
    }
 
    if ( !$no_user && !$unreachable_issue && !$no_issue )
    {
-      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . $assigned_project_id . '"/>';
+      echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . ',' . $assigned_project_id . '"/>';
    }
    echo '</label>';
    echo '</td>';
