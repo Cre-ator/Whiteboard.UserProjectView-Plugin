@@ -72,28 +72,9 @@ if ( !$print )
  */
 function print_thead ( $print )
 {
-   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project (), 1 );
-   $colspan = 6;
-   if ( plugin_config_get ( 'ShowAvatar' ) )
-   {
-      $colspan++;
-   }
-
-   if ( $project_hierarchy_depth > 1 )
-   {
-      $colspan++;
-   }
-   if ( $project_hierarchy_depth > 2 )
-   {
-      $colspan++;
-   }
-   var_dump ( $project_hierarchy_depth );
-
-   $dynamic_colspan = get_stat_count () + $colspan;
-
+   $dynamic_colspan = get_stat_count () + get_project_hierarchy_spec_colspan ( 6, true );
    echo '<thead>';
    print_main_table_head_row ( $dynamic_colspan, $print );
-
    echo '<tr>';
    print_main_table_head_col ( 'thead_username', 'userName', plugin_config_get ( 'ShowAvatar' ) ? 3 : 2 );
    print_main_table_head_col ( 'thead_realname', 'realName', null );
@@ -104,6 +85,7 @@ function print_thead ( $print )
    echo '<th></th>';
    echo '<th colspan="' . ( plugin_config_get ( 'ShowAvatar' ) ? 2 : 1 ) . '" class="headrow"></th>';
    echo '<th colspan="3" class="headrow">' . plugin_lang_get ( get_layer_one_column_name () ) . '</th>';
+   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project () );
    if ( $project_hierarchy_depth > 1 )
    {
       print_main_table_head_col ( 'thead_layer_issue_project', 'assignedProject', null );
@@ -302,16 +284,11 @@ function print_group_head_row ( $group, $data_rows, $group_name )
 
    if ( !empty( $stat_issue_count ) )
    {
-      $colspan = 7;
-      if ( plugin_config_get ( 'ShowAvatar' ) )
-      {
-         $colspan = 8;
-      }
       ?>
       <tr class="clickable" data-level="0" data-status="0">
          <td class="icon"></td>
          <td class="group_row_bg"
-             colspan="<?php echo $colspan; ?>"><?php echo plugin_lang_get ( $group_name ); ?></td>
+             colspan="<?php echo get_project_hierarchy_spec_colspan ( 5, true ); ?>"><?php echo plugin_lang_get ( $group_name ); ?></td>
          <?php
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
@@ -419,7 +396,7 @@ function print_user_head_row ( $head_row, $user_id, $print )
       }
       echo '</td>';
 
-      echo '<td class="group_row_bg" colspan="4"/>';
+      echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
       $stat_issue_count = $head_row[ 1 ];
       for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
       {
@@ -503,7 +480,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
    }
 
    print_layer_one_project ( $data_row, $print, $group_index );
-   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project (), 1 );
+   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project () );
    if ( $group_index != 1 )
    {
       if ( $project_hierarchy_depth > 1 )
@@ -732,7 +709,7 @@ function print_layer_one_project ( $data_row, $print, $group_index )
    }
    elseif ( $group_index == 1 )
    {
-      $colspan = 4;
+      $colspan = get_project_hierarchy_spec_colspan ( 2, false );
    }
 
    get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, 'normalwrap' );
@@ -1090,15 +1067,9 @@ function print_remark ( $data_row, $print )
 function print_option_panel ( $stat_issue_count, $print )
 {
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
-   $colspan = 9;
-   if ( plugin_config_get ( 'ShowAvatar' ) )
-   {
-      $colspan = 10;
-   }
-   $footer_colspan = $colspan - 1;
    ?>
    <tr>
-      <td colspan="<?php echo $footer_colspan; ?>">
+      <td colspan="<?php echo get_project_hierarchy_spec_colspan ( 6, true ); ?>">
          <?php
          if ( !$print )
          {

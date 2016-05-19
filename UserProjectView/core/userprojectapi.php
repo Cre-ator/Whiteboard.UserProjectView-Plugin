@@ -611,33 +611,60 @@ function generate_status_link ()
  * Get the depth level of the project hierarchy
  *
  * @param $project_id
- * @param $project_hierarchy_depth
  * @return int
  */
-function get_project_hierarchy_depth ( $project_id, $project_hierarchy_depth )
+function get_project_hierarchy_depth ( $project_id )
 {
+   $project_hierarchy_depth = 1;
    if ( $project_id == 0 )
    {
-      return 3;
+      $project_hierarchy_depth = 3;
    }
    else
    {
-      $sub_project_ids = project_hierarchy_get_subprojects ( $project_id );
+      $top_level_project = get_main_project_id ( $project_id );
+      $sub_project_ids = project_hierarchy_get_subprojects ( $top_level_project );
       if ( !empty( $sub_project_ids ) )
       {
          $project_hierarchy_depth++;
          foreach ( $sub_project_ids as $sub_project_id )
          {
-            return $project_hierarchy_depth = get_project_hierarchy_depth ( $sub_project_id, $project_hierarchy_depth );
+            if ( !empty( project_hierarchy_get_subprojects ( $sub_project_id ) ) )
+            {
+               $project_hierarchy_depth++;
+               break;
+            }
          }
-      }
-      else
-      {
-         return $project_hierarchy_depth;
       }
    }
 
-   return null;
+   return $project_hierarchy_depth;
+}
+
+/**
+ * Checks the project hierarchy and returns the nessecary colspan.
+ *
+ * @param $colspan
+ * @param $avatar_flag
+ * @return mixed
+ */
+function get_project_hierarchy_spec_colspan ( $colspan, $avatar_flag )
+{
+   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project () );
+   if ( $avatar_flag && plugin_config_get ( 'ShowAvatar' ) )
+   {
+      $colspan++;
+   }
+   if ( $project_hierarchy_depth > 1 )
+   {
+      $colspan++;
+   }
+   if ( $project_hierarchy_depth > 2 )
+   {
+      $colspan++;
+   }
+
+   return $colspan;
 }
 
 /**
