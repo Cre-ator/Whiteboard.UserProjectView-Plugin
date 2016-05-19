@@ -4,15 +4,18 @@ require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
 auth_reauthenticate ();
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
+?>
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+   <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>
+   <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
+<?php
 html_page_top2 ();
-
 if ( plugin_is_installed ( 'WhiteboardMenu' ) && file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
 {
    require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
    $whiteboard_print_api = new whiteboard_print_api();
    $whiteboard_print_api->printWhiteboardMenu ();
 }
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
 $selected_values = null;
 if ( !empty( $_POST[ 'dataRow' ] ) )
 {
@@ -20,6 +23,48 @@ if ( !empty( $_POST[ 'dataRow' ] ) )
 }
 $record_count = count ( $selected_values );
 $select = strtolower ( $_POST[ 'option' ] );
+
+/** prepare user groups */
+$user_group = prepare_user_project_remove_group ( $selected_values );
+var_dump ( $user_group );
+
+echo '<div align="center">';
+echo '<hr size="1" width="50%"/>';
+echo plugin_lang_get ( 'remove_quest' ) . '<br/><br/>';
+echo '<form action="' . plugin_page ( 'UserProject_RemoveSubmit' ) . '" method="post">';
+echo '<table class="width50" cellspacing="1">';
+echo '<thead>';
+echo '<tr class="row-category">';
+echo '<th></th>';
+echo '<th colspan="2">' . plugin_lang_get ( 'thead_username' ) . '</th>';
+echo '<th>' . plugin_lang_get ( 'thead_realname' ) . '</th>';
+echo '<th>' . plugin_lang_get ( 'config_layer_one_name_two' ) . '</th>';
+echo '</tr>';
+echo '</thead>';
+
+/** process user groups */
+echo '<tbody>';
+foreach ( $user_group as $user )
+{
+   $user_id = $user[ 0 ];
+   $project_ids = explode ( ',', $user[ 1 ] );
+
+   echo '<tr class="clickable" data-level="0" data-status="0">';
+   echo '<td class="icon"></td>';
+   echo '<td>';
+   $avatar = user_get_avatar ( $user_id );
+   echo '<img class="avatar" src="' . $avatar [ 0 ] . '" />';
+   echo '</td>';
+   echo '<td>';
+   echo user_get_name ( $user_id );
+   echo '</td>';
+   echo '<td>';
+   echo user_get_realname ( $user_id );
+   echo '</td>';
+   echo '<td></td>';
+   echo '</tr>';
+}
+echo '</tbody>';
 
 switch ( $select )
 {
@@ -35,16 +80,14 @@ switch ( $select )
                   <th><?php echo plugin_lang_get ( 'config_layer_one_name_two' ); ?></th>
                </tr>
                <?php
-               for ( $recordIndex = 0;
-                     $recordIndex < $record_count;
-                     $recordIndex++ )
+               for ( $record_index = 0; $record_index < $record_count; $record_index++ )
                {
-                  $record[ $recordIndex ] = explode ( '_', $selected_values[ $recordIndex ] );
+                  $record[ $record_index ] = explode ( '_', $selected_values[ $record_index ] );
 
-                  $user_id = $record[ $recordIndex ][ 0 ];
-                  $project_id = $record[ $recordIndex ][ 1 ];
+                  $user_id = $record[ $record_index ][ 0 ];
+                  $project_id = $record[ $record_index ][ 1 ];
                   ?>
-                  <input type="hidden" name="recordSet[]" value="<?php echo $selected_values[ $recordIndex ]; ?>"/>
+                  <input type="hidden" name="recordSet[]" value="<?php echo $selected_values[ $record_index ]; ?>"/>
                   <?php
                   if ( is_mantis_rel () )
                   {
@@ -108,12 +151,12 @@ switch ( $select )
       echo '<th>' . plugin_lang_get ( 'config_layer_one_name_two' ) . '</th>';
       echo '</tr>';
 
-      for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
+      for ( $record_index = 0; $record_index < $record_count; $record_index++ )
       {
-         $record[ $recordIndex ] = explode ( '_', $selected_values[ $recordIndex ] );
+         $record[ $record_index ] = explode ( '_', $selected_values[ $record_index ] );
 
-         $user_id = $record[ $recordIndex ][ 0 ];
-         $project_id = $record[ $recordIndex ][ 1 ];
+         $user_id = $record[ $record_index ][ 0 ];
+         $project_id = $record[ $record_index ][ 1 ];
 
          $sub_projects = array ();
          array_push ( $sub_projects, $project_id );

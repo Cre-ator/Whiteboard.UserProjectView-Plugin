@@ -667,6 +667,46 @@ function get_project_hierarchy_spec_colspan ( $colspan, $avatar_flag )
    return $colspan;
 }
 
+function prepare_user_project_remove_group ( $selected_values )
+{
+   $record_count = count ( $selected_values );
+   $user_group = array ();
+   for ( $record_index = 0; $record_index < $record_count; $record_index++ )
+   {
+      $user_hash = array ();
+      $record[ $record_index ] = explode ( '_', $selected_values[ $record_index ] );
+      $act_user_id = $record[ $record_index ][ 0 ];
+      $act_project_id = $record[ $record_index ][ 1 ];
+
+      if ( $record_index > 0 )
+      {
+         if ( $user_group[ $record_index - 1 ][ 0 ] == $act_user_id )
+         {
+            $tmp_project_ids = $user_group[ $record_index - 1 ][ 1 ];
+            $tmp_project_ids .= ',' . $act_project_id;
+            $user_group[ $record_index - 1 ][ 1 ] = $tmp_project_ids;
+         }
+         else
+         {
+            $user_hash[ 0 ] = $act_user_id;
+            $user_hash[ 1 ] = $act_project_id;
+         }
+      }
+      else
+      {
+         $user_hash[ 0 ] = $act_user_id;
+         $user_hash[ 1 ] = $act_project_id;
+      }
+
+      if ( !empty( $user_hash ) )
+      {
+         array_push ( $user_group, $user_hash );
+      }
+   }
+
+   return $user_group;
+}
+
 /**
  * Get the specific cell colour  for each situation (no issues, etc.. )
  *
