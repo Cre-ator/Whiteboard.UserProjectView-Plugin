@@ -1,4 +1,7 @@
 <?php
+
+//echo '<script type="text/javascript">setcookie();</script>';
+
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
@@ -32,6 +35,7 @@ html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
 ?>
    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
    <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>
+   <script type="text/javascript" src="plugins/UserProjectView/javascript/cookie.js"></script>
    <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
 <?php
 if ( !$print )
@@ -62,6 +66,17 @@ if ( !$print )
 {
    html_page_bottom1 ();
 }
+
+?>
+   <script type="text/javascript">
+      linearray = [];
+      if ( is_cookie_enabled () )
+      {
+         set_cookie ( 'test', get_cookie ( 'test' ) + 'miau', 1 );
+         document.write ( '<li>cookies:<pre>' + ((document.cookie) ? document.cookie.replace ( /;/g, '\n' ) : 'keine vorhanden') + '</pre></li>' );
+      }
+   </script>
+<?php
 
 /** ********************* table head area *************************************************************************** */
 
