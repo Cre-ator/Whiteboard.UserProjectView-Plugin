@@ -719,27 +719,33 @@ function prepare_user_project_remove_group ( $selected_values )
  */
 function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
 {
-   if ( ( !user_exists ( $user_id ) && !$no_user )
-      || ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
+   if (
+      ( !user_exists ( $user_id ) && !$no_user ) ||
+      ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
-      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
    }
    elseif ( $no_issue && plugin_config_get ( 'ZIHighlighting' ) )
    {
-      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'ZIHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color:' . plugin_config_get ( 'ZIHBGColor' ) . '">';
    }
    elseif ( $no_user && plugin_config_get ( 'NUIHighlighting' ) )
    {
-      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'NUIHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color:' . plugin_config_get ( 'NUIHBGColor' ) . '">';
    }
    elseif ( $unreachable_issue && plugin_config_get ( 'URIUHighlighting' ) )
    {
-      echo '<td class="' . $class . '" colspan="' . $colspan . '" align="center" width="25px" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
    }
    else
    {
-      echo '<td class="' . $class . '" colspan="' . $colspan . '" class="user_row_bg">';
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color: #e0e0e0">';
    }
 }
 
