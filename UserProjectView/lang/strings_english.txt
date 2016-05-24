@@ -56,6 +56,6 @@ $s_plugin_UserProjectView_config_specColumns = 'Configuration for specific colum
 $s_plugin_UserProjectView_config_URIFilter = 'Filter status for unreachable issues';
 $s_plugin_UserProjectView_config_layer_one_column = 'Layer 1 Tag';
 $s_plugin_UserProjectView_config_layer_one_column_name = 'Name';
-$s_plugin_UserProjectView_config_layer_one_name_one = 'Main Projejt';
+$s_plugin_UserProjectView_config_layer_one_name_one = 'Main Project';
 $s_plugin_UserProjectView_config_layer_one_name_two = 'Project';
 $s_plugin_UserProjectView_config_layer_one_name_three = 'Customer';
