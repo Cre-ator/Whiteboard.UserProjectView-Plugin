@@ -1,7 +1,5 @@
 <?php
 
-//echo '<script type="text/javascript">setcookie();</script>';
-
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
