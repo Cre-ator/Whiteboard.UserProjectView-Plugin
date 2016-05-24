@@ -67,15 +67,15 @@ if ( !$print )
    html_page_bottom1 ();
 }
 
-?>
-   <script type="text/javascript">
-      linearray = [];
-      if ( is_cookie_enabled () )
-      {
-         set_cookie ( 'test', get_cookie ( 'test' ) + 'miau', 1 );
-         document.write ( '<li>cookies:<pre>' + ((document.cookie) ? document.cookie.replace ( /;/g, '\n' ) : 'keine vorhanden') + '</pre></li>' );
-      }
-   </script>
+//?>
+<!--   <script type="text/javascript">-->
+<!--      linearray = [];-->
+<!--      if ( is_cookie_enabled () )-->
+<!--      {-->
+<!--         set_cookie ( 'test', get_cookie ( 'test' ) + 'miau', 1 );-->
+<!--         document.write ( '<li>cookies:<pre>' + ((document.cookie) ? document.cookie.replace ( /;/g, '\n' ) : 'keine vorhanden') + '</pre></li>' );-->
+<!--      }-->
+<!--   </script>-->
 <?php
 
 /** ********************* table head area *************************************************************************** */
