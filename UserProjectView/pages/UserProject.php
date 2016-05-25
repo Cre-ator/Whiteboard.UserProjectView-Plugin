@@ -66,17 +66,6 @@ if ( !$print )
    html_page_bottom1 ();
 }
 
-//?>
-   <!--   <script type="text/javascript">-->
-   <!--      linearray = [];-->
-   <!--      if ( is_cookie_enabled () )-->
-   <!--      {-->
-   <!--         set_cookie ( 'test', get_cookie ( 'test' ) + 'miau', 1 );-->
-   <!--         document.write ( '<li>cookies:<pre>' + ((document.cookie) ? document.cookie.replace ( /;/g, '\n' ) : 'keine vorhanden') + '</pre></li>' );-->
-   <!--      }-->
-   <!--   </script>-->
-<?php
-
 /** ********************* table head area *************************************************************************** */
 
 /**
@@ -315,8 +304,8 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
                   $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
                }
             }
-            /** Group 3 - ignore issue count for valid status */
-            elseif ( $group_index == 3 )
+            /** Group 2 - ignore issue count for valid status */
+            elseif ( $group_index == 2 )
             {
                if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) )
                {
@@ -465,8 +454,19 @@ function print_user_head_row ( $head_row, $user_id, $print )
          echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
+            /** Group 0 - ignore issue count for ignored status */
+            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) && ( check_user_id_is_valid ( $user_id ) ) )
+            {
+               $spec_stat_issue_count = 0;
+            }
+            /** Group 2 - ignore issue count for valid status */
+            else
+            {
+               $spec_stat_issue_count = $stat_issue_count[ $stat_index ];
+            }
+
             $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
-            if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
+            if ( $stat_issue_amount_threshold <= $spec_stat_issue_count && $stat_issue_amount_threshold > 0 )
             {
                echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
             }
@@ -475,7 +475,7 @@ function print_user_head_row ( $head_row, $user_id, $print )
                echo '<td class="group_row_bg">';
             }
 
-            if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
+            if ( !$print && ( $spec_stat_issue_count > 0 ) )
             {
                echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) .
                   '&amp;handler_id=' . get_link_user_id ( $user_id ) .
@@ -484,12 +484,12 @@ function print_user_head_row ( $head_row, $user_id, $print )
                   '&amp;dir=DESC' .
                   '&amp;hide_status_id=-2' .
                   '&amp;match_type=0">';
-               echo $stat_issue_count[ $stat_index ];
+               echo $spec_stat_issue_count;
                echo '</a>';
             }
             else
             {
-               echo $stat_issue_count[ $stat_index ];
+               echo $spec_stat_issue_count;
             }
             echo '</td>';
          }
@@ -532,7 +532,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
    }
    else
    {
-      if ( $group_index == 1 || $group_index == 2 )
+      if ( $group_index == 1 )
       {
          print_chackbox ( $data_row );
       }
@@ -565,7 +565,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
 
       print_target_version ( $data_row, $print );
    }
-   $stat_issue_count = print_amount_of_issues ( $data_row, $stat_issue_count, $print );
+   $stat_issue_count = print_amount_of_issues ( $data_row, $stat_issue_count, $group_index, $print );
    print_remark ( $data_row, $print );
    echo '</tr>';
 
@@ -949,10 +949,11 @@ function print_target_version ( $data_row, $print )
  *
  * @param $data_row
  * @param $stat_issue_count
+ * @param $group_index
  * @param $print
  * @return mixed
  */
-function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
+function print_amount_of_issues ( $data_row, $stat_issue_count, $group_index, $print )
 {
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $target_version_id = $data_row[ 'target_version_id' ];
@@ -970,11 +971,30 @@ function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
       $issue_amount_thresholds[ $stat_index ] = plugin_config_get ( 'IAMThreshold' . $stat_index );
    }
 
+   $user_id = $data_row[ 'user_id' ];
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
+      if ( $group_index == 0 )
+      {
+         /** Group 0 - ignore issue count for ignored status */
+         if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) && ( check_user_id_is_valid ( $user_id ) ) )
+         {
+            $temp_stat_issue_count = 0;
+         }
+         /** Group 2 - ignore issue count for valid status */
+         else
+         {
+            $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
+         }
+      }
+      /** other groups - get issue count for all status */
+      else
+      {
+         $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
+      }
+
       $stat_issue_amount_threshold = $issue_amount_thresholds[ $stat_index ];
       $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
-      $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
       $stat_issue_count[ $stat_index ] += $temp_stat_issue_count;
       if ( $stat_issue_amount_threshold < $temp_stat_issue_count && $stat_issue_amount_threshold > 0 )
       {
@@ -1004,7 +1024,6 @@ function print_amount_of_issues ( $data_row, $stat_issue_count, $print )
          echo $temp_stat_issue_count;
       }
       echo '</td>';
-
    }
    return $stat_issue_count;
 }
