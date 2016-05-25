@@ -24,9 +24,9 @@ else
    echo '<div class="form-container">';
    echo '<table>';
 }
-print_config_table_title_row ( 6, 'config_caption' );
+print_config_table_title_row ( 5, 'config_caption' );
 print_config_table_row ();
-echo '<td class="category" colspan="1">';
+echo '<td class="category" colspan="2">';
 echo '<span class="required">*</span>' . plugin_lang_get ( 'config_accesslevel' );
 echo '</td>';
 echo '<td width="100px" colspan="5">';
@@ -37,50 +37,50 @@ echo '</td>';
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_showMenu' );
-print_config_table_radio_button_col ( 5, 'ShowMenu' );
+print_config_table_category_col ( 2, 1, 'config_showMenu' );
+print_config_table_radio_button_col ( 3, 'ShowMenu' );
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_showFooter' );
-print_config_table_radio_button_col ( 5, 'ShowInFooter' );
+print_config_table_category_col ( 2, 1, 'config_showFooter' );
+print_config_table_radio_button_col ( 3, 'ShowInFooter' );
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_showAvatar' );
-print_config_table_radio_button_col ( 5, 'ShowAvatar' );
+print_config_table_category_col ( 2, 1, 'config_showAvatar' );
+print_config_table_radio_button_col ( 3, 'ShowAvatar' );
 echo '</tr>';
 
-print_config_table_title_row ( 6, 'config_highlighting' );
+print_config_table_title_row ( 5, 'config_highlighting' );
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_IAUHighlighting' );
+print_config_table_category_col ( 2, 1, 'config_IAUHighlighting' );
 print_config_table_radio_button_col ( 1, 'IAUHighlighting' );
 print_config_table_category_col ( 1, 1, 'config_BGColor' );
-print_config_table_color_picker_row ( 3, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+print_config_table_color_picker_row ( 1, 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_URIUHighlighting' );
+print_config_table_category_col ( 2, 1, 'config_URIUHighlighting' );
 print_config_table_radio_button_col ( 1, 'URIUHighlighting' );
 print_config_table_category_col ( 1, 1, 'config_BGColor' );
-print_config_table_color_picker_row ( 3, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+print_config_table_color_picker_row ( 1, 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_NUIHighlighting' );
+print_config_table_category_col ( 2, 1, 'config_NUIHighlighting' );
 print_config_table_radio_button_col ( 1, 'NUIHighlighting' );
 print_config_table_category_col ( 1, 1, 'config_BGColor' );
-print_config_table_color_picker_row ( 3, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+print_config_table_color_picker_row ( 1, 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
 echo '</tr>';
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_showZIU' );
-print_config_table_radio_button_col ( 5, 'ShowZIU' );
+print_config_table_category_col ( 2, 1, 'config_showZIU' );
+print_config_table_radio_button_col ( 3, 'ShowZIU' );
 echo '</tr>';
 
 print_config_table_row ();
-echo '<td class="category" colspan="1">';
+echo '<td class="category" colspan="2">';
 echo plugin_lang_get ( 'config_ZIHighlighting' ) . '<br/>';
 echo '<span class="small">' . plugin_lang_get ( 'config_ZIUExpl' ) . '</span>';
 echo '</td>';
@@ -89,12 +89,12 @@ print_config_table_category_col ( 1, 1, 'config_BGColor' );
 print_config_table_color_picker_row ( 3, 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
 echo '</tr>';
 
-print_config_table_title_row ( 6, 'config_layer_one_column' );
+print_config_table_title_row ( 5, 'config_layer_one_column' );
 print_config_table_row ();
-echo '<td class="category" colspan="1">';
+echo '<td class="category" colspan="2">';
 echo plugin_lang_get ( 'config_layer_one_column_name' );
 echo '</td>';
-echo '<td width="100px" colspan="5">';
+echo '<td width="100px" colspan="3">';
 echo '<input type="radio" name="layer_one_name" value="0"';
 echo ( 0 == plugin_config_get ( 'layer_one_name' ) ) ? 'checked="checked"' : '';
 echo '/>' . plugin_lang_get ( 'config_layer_one_name_one' );
@@ -107,10 +107,10 @@ echo '/>' . plugin_lang_get ( 'config_layer_one_name_three' );
 echo '</td>';
 echo '</tr>';
 
-print_config_table_title_row ( 6, 'config_specColumns' );
+print_config_table_title_row ( 5, 'config_specColumns' );
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_CAmount' );
+print_config_table_category_col ( 2, 1, 'config_CAmount' );
 echo '<td width="100px" colspan="1" rowspan="1">';
 ?>
    <label><input type="number" name="CAmount"
@@ -123,20 +123,27 @@ print_config_table_category_col ( 1, 1, 'config_BGColor' );
 print_config_table_color_picker_row ( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 echo '</tr>';
 
+if ( plugin_config_get ( 'CAmount' ) > 0 )
+{
+   echo '<tr>';
+   echo '<td class="category">' . plugin_lang_get ( 'config_CStat_Col' ) . '</td>';
+   echo '<td class="category">' . plugin_lang_get ( 'config_CStat_Stat' ) . '</td>';
+   echo '<td class="category">' . plugin_lang_get ( 'config_IAMThreshold' ) . '<br><span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span></td>';
+   echo '<td class="category">' . plugin_lang_get ( 'config_IAGThreshold' ) . '<br><span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span></td>';
+   echo '<td class="category">' . plugin_lang_get ( 'config_CStat_Ign' ) . '</td>';
+   echo '</tr>';
+}
+
 for ( $columnIndex = 1; $columnIndex <= plugin_config_get ( 'CAmount' ); $columnIndex++ )
 {
    print_config_table_row ();
    echo '<td class="category" colspan="1" rowspan="1">';
-   echo plugin_lang_get ( 'config_CStatSelect' ) . ' ' . $columnIndex . ':';
+   echo $columnIndex;
    echo '</td>';
    echo '<td valign="top" width="100px" colspan="1" rowspan="1">';
    echo '<select name="CStatSelect' . $columnIndex . '">';
    print_enum_string_option_list ( 'status', plugin_config_get ( 'CStatSelect' . $columnIndex ) );
    echo '</select>';
-   echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get ( 'config_IAMThreshold' ) . '<br>';
-   echo '<span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span>';
    echo '</td>';
    echo '<td  colspan="1">';
    ?>
@@ -144,24 +151,22 @@ for ( $columnIndex = 1; $columnIndex <= plugin_config_get ( 'CAmount' ); $column
                  value="<?php echo plugin_config_get ( 'IAMThreshold' . $columnIndex, 5 ); ?>" min="0"/></label>
    <?php
    echo '</td>';
-   echo '<td class="category" colspan="1">';
-   echo plugin_lang_get ( 'config_IAGThreshold' ) . '<br>';
-   echo '<span class="small">' . plugin_lang_get ( 'config_IAGMThresholdExpl' ) . '</span>';
-   echo '</td>';
    echo '<td  colspan="1">';
    ?>
    <label><input type="number" name="IAGThreshold<?php echo $columnIndex ?>"
                  value="<?php echo plugin_config_get ( 'IAGThreshold' . $columnIndex, 30 ); ?>" min="0"/></label>
    <?php
    echo '</td>';
+   print_config_table_radio_button_col ( 1, 'CStatIgn' . $columnIndex );
+
    echo '</tr>';
 }
 
-print_config_table_title_row ( 6, 'config_URIFilter' );
+print_config_table_title_row ( 5, 'config_URIFilter' );
 
 print_config_table_row ();
-print_config_table_category_col ( 1, 1, 'config_URIThreshold' );
-echo '<td valign="top" width="100px" colspan="7">';
+print_config_table_category_col ( 2, 1, 'config_URIThreshold' );
+echo '<td valign="top" width="100px" colspan="3">';
 echo '<select name="URIThreshold[]" multiple="multiple">';
 print_enum_string_option_list ( 'status', plugin_config_get ( 'URIThreshold', 50 ) );
 echo '</select>';
@@ -169,7 +174,7 @@ echo '</td>';
 echo '</tr>';
 
 echo '<tr>';
-echo '<td class="center" colspan="6">';
+echo '<td class="center" colspan="5">';
 echo '<input type="submit" name="change" class="button" value="' . lang_get ( 'update_prefs_button' ) . '"/>' . ' ';
 echo '<input type="submit" name="reset" class="button" value="' . lang_get ( 'reset_prefs_button' ) . '"/>';
 echo '</td>';

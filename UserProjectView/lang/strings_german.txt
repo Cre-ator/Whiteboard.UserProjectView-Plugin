@@ -59,3 +59,8 @@ $s_plugin_UserProjectView_config_layer_one_column_name = 'Name';
 $s_plugin_UserProjectView_config_layer_one_name_one = 'Hauptprojekt';
 $s_plugin_UserProjectView_config_layer_one_name_two = 'Projekt';
 $s_plugin_UserProjectView_config_layer_one_name_three = 'Kunde';
+
+
+$s_plugin_UserProjectView_config_CStat_Col = 'Spalte';
+$s_plugin_UserProjectView_config_CStat_Stat = 'Status';
+$s_plugin_UserProjectView_config_CStat_Ign = 'Zuweisung ignorieren';

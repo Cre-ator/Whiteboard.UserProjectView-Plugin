@@ -228,11 +228,11 @@ function print_tbody ( $data_rows, $print )
    echo '<tbody><form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
 
    /** GROUP 0 */
-   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, true, 'headrow_user', $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, 0, true, 'headrow_user', $print );
    /** GROUP 1 */
    $stat_issue_count = process_general_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 1, 'headrow_no_issue', $print );
    /** GROUP 2 */
-   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, false, 'headrow_del_user', $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, 2, false, 'headrow_del_user', $print );
    /** GROUP 3 */
    $stat_issue_count = process_general_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 3, 'headrow_no_user', $print );
    /** OPTION PANEL */
@@ -245,14 +245,15 @@ function print_tbody ( $data_rows, $print )
  * @param $group
  * @param $data_rows
  * @param $stat_issue_count
+ * @param $group_index
  * @param $valid_flag
  * @param $group_name
  * @param $print
  * @return mixed
  */
-function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_flag, $group_name, $print )
+function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_index, $valid_flag, $group_name, $print )
 {
-   print_group_head_row ( $group, $data_rows, $group_name );
+   print_group_head_row ( $group, $data_rows, $group_index, $group_name );
    $head_rows_array = calculate_user_head_rows ( $data_rows, $valid_flag );
    foreach ( $head_rows_array as $head_row )
    {
@@ -283,9 +284,10 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_
  *
  * @param $group
  * @param $data_rows
+ * @param $group_index
  * @param $group_name
  */
-function print_group_head_row ( $group, $data_rows, $group_name )
+function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
 {
    $stat_issue_count = array ();
    $stat_issue_count[ 1 ] = 0;
@@ -300,7 +302,36 @@ function print_group_head_row ( $group, $data_rows, $group_name )
       {
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            $stat_issue_count[ $stat_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+            $spec_stat_issue_count = $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+            /** Group 0 - ignore issue count for ignored status */
+            if ( $group_index == 0 )
+            {
+               if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) )
+               {
+                  $stat_issue_count[ $stat_index ] += 0;
+               }
+               else
+               {
+                  $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
+               }
+            }
+            /** Group 3 - ignore issue count for valid status */
+            elseif ( $group_index == 3 )
+            {
+               if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) )
+               {
+                  $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
+               }
+               else
+               {
+                  $stat_issue_count[ $stat_index ] += 0;
+               }
+            }
+            /** other groups - get issue count for all status */
+            else
+            {
+               $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
+            }
          }
       }
       else

@@ -442,19 +442,40 @@ function assign_groups ( $groups, $data_rows )
             /** user ist aktiv */
             if ( user_is_enabled ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
             {
-               $stat_issue_count = 0;
+               /** todo */
+               $valid_stat_issue_count = 0;
+               $ignored_stat_issue_count = 0;
                for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
                {
-                  $stat_issue_count += $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+                  $spec_stat_issue_count = $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+                  if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) )
+                  {
+                     $ignored_stat_issue_count += $spec_stat_issue_count;
+                  }
+                  else
+                  {
+                     $valid_stat_issue_count += $spec_stat_issue_count;
+                  }
                }
 
-               /** user hat issues */
-               if ( $stat_issue_count > 0 )
+               /** user hat ausschließlich berücksichtigte issues */
+               if ( $valid_stat_issue_count > 0 && $ignored_stat_issue_count == 0 )
                {
                   array_push ( $group_user_with_issue, $data_row_index );
                }
+               /** user hat ausschließlich ignorierte issues */
+               elseif ( $valid_stat_issue_count == 0 && $ignored_stat_issue_count > 0 )
+               {
+                  array_push ( $group_issues_without_user, $data_row_index );
+               }
+               /** user hat sowohl berücksichtigte, als auch ignorierte issues */
+               elseif ( $valid_stat_issue_count > 0 && $ignored_stat_issue_count > 0 )
+               {
+                  array_push ( $group_user_with_issue, $data_row_index );
+                  array_push ( $group_issues_without_user, $data_row_index );
+               }
                /** user hat keine issues */
-               else
+               elseif ( $valid_stat_issue_count == 0 && $ignored_stat_issue_count == 0 )
                {
                   array_push ( $group_user_without_issue, $data_row_index );
                }
@@ -596,13 +617,13 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
  * @param $data_rows
  * @param $stat_issue_count
  * @param $group_index
- * @param $lang_string
+ * @param $group_name
  * @param $print_flag
  * @return mixed
  */
-function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $lang_string, $print_flag )
+function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $group_name, $print_flag )
 {
-   print_group_head_row ( $group, $data_rows, $lang_string );
+   print_group_head_row ( $group, $data_rows, $group_index, $group_name );
    foreach ( $group as $data_row_index )
    {
       $data_row = $data_rows[ $data_row_index ];

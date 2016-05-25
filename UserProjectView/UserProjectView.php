@@ -86,7 +86,13 @@ class UserProjectViewPlugin extends MantisPlugin
          'CStatSelect3' => 20,
          'IAMThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
          'IAGThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
-
+         'CStatIgn1' => OFF, 'CStatIgn2' => OFF, 'CStatIgn3' => OFF,
+         'CStatIgn4' => OFF, 'CStatIgn5' => OFF, 'CStatIgn6' => OFF,
+         'CStatIgn7' => OFF, 'CStatIgn8' => OFF, 'CStatIgn9' => OFF,
+         'CStatIgn10' => OFF, 'CStatIgn11' => OFF, 'CStatIgn12' => OFF,
+         'CStatIgn13' => OFF, 'CStatIgn14' => OFF, 'CStatIgn15' => OFF,
+         'CStatIgn16' => OFF, 'CStatIgn17' => OFF, 'CStatIgn18' => OFF,
+         'CStatIgn19' => OFF, 'CStatIgn20' => OFF,
          'layer_one_name' => 0,
 
          // URI -> unreachable issue
