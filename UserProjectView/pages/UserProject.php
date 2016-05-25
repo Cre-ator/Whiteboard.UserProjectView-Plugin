@@ -56,15 +56,8 @@ else
 {
    echo '<table>';
 }
-if ( getUserHasLevel () )
-{
-   print_thead ( $print );
-   print_tbody ( $data_rows, $print );
-}
-else
-{
-   echo '<tr><td class="center">' . lang_get( 'access_denied' ) . '</td></tr>';
-}
+print_thead ( $print );
+print_tbody ( $data_rows, $print );
 echo '</table>';
 echo '</div>';
 
@@ -295,15 +288,32 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $valid_
 function print_group_head_row ( $group, $data_rows, $group_name )
 {
    $stat_issue_count = array ();
+   $stat_issue_count[ 1 ] = 0;
+   $stat_issue_count[ 2 ] = 0;
+   $stat_issue_count[ 3 ] = 0;
+
    foreach ( $group as $data_row_index )
    {
-      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      $data_row = $data_rows[ $data_row_index ];
+      $assigned_project_id = $data_row[ 'assigned_project_id' ];
+      if ( check_user_has_level ( $assigned_project_id ) )
       {
-         $stat_issue_count[ $stat_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $stat_issue_count[ $stat_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+         }
+      }
+      else
+      {
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $stat_issue_count[ $stat_index ] += 0;
+         }
       }
    }
 
-   if ( !empty( $stat_issue_count ) )
+   $user_row_issue_count = get_row_issue_count ( $stat_issue_count );
+   if ( ( $user_row_issue_count > 0 ) || ( $group_name == 'headrow_no_issue' ) )
    {
       ?>
       <tr class="clickable" data-level="0" data-status="0">
@@ -346,113 +356,117 @@ function print_group_head_row ( $group, $data_rows, $group_name )
  */
 function print_user_head_row ( $head_row, $user_id, $print )
 {
-   $filter_string = '<a href="search.php?' . generate_status_link () .
-      '&amp;handler_id=' . get_link_user_id ( $user_id ) .
-      '&amp;sortby=last_updated' .
-      '&amp;dir=DESC' .
-      '&amp;hide_status_id=-2' .
-      '&amp;match_type=0">';
-   ?>
-   <tr class="clickable" data-level="1" data-status="0">
-      <td style="max-width:15px;"></td>
-      <td class="icon"></td>
-      <?php
-      if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
-      {
-         echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
-         if ( check_user_id_is_valid ( $user_id ) )
+   $stat_issue_count = $head_row[ 1 ];
+   $user_row_issue_count = get_row_issue_count ( $stat_issue_count );
+   if ( $user_row_issue_count > 0 )
+   {
+      $filter_string = '<a href="search.php?' . generate_status_link () .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      ?>
+      <tr class="clickable" data-level="1" data-status="0">
+         <td style="max-width:15px;"></td>
+         <td class="icon"></td>
+         <?php
+         if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
          {
-            $avatar = user_get_avatar ( $user_id );
-            if ( $print )
+            echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
+            if ( check_user_id_is_valid ( $user_id ) )
             {
-               echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
+               $avatar = user_get_avatar ( $user_id );
+               if ( $print )
+               {
+                  echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
+               }
+               else
+               {
+                  echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
+               }
+            }
+            echo '</td>';
+         }
+
+         echo '<td class="group_row_bg" style="white-space: nowrap">';
+         if ( $print )
+         {
+            if ( user_exists ( $user_id ) )
+            {
+               echo user_get_name ( $user_id );
             }
             else
             {
-               echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
+               echo '<s>' . user_get_name ( $user_id ) . '</s>';
+            }
+         }
+         else
+         {
+            if ( user_exists ( $user_id ) )
+            {
+               echo $filter_string . user_get_name ( $user_id );
+            }
+            else
+            {
+               echo '<s>' . $filter_string . user_get_name ( $user_id ) . '</s></a>';
             }
          }
          echo '</td>';
-      }
 
-      echo '<td class="group_row_bg" style="white-space: nowrap">';
-      if ( $print )
-      {
-         if ( user_exists ( $user_id ) )
+         echo '<td class="group_row_bg" style="white-space: nowrap">';
+         if ( $print )
          {
-            echo user_get_name ( $user_id );
+            if ( check_user_id_is_valid ( $user_id ) )
+            {
+               echo user_get_realname ( $user_id );
+            }
          }
          else
          {
-            echo '<s>' . user_get_name ( $user_id ) . '</s>';
-         }
-      }
-      else
-      {
-         if ( user_exists ( $user_id ) )
-         {
-            echo $filter_string . user_get_name ( $user_id );
-         }
-         else
-         {
-            echo '<s>' . $filter_string . user_get_name ( $user_id ) . '</s></a>';
-         }
-      }
-      echo '</td>';
-
-      echo '<td class="group_row_bg" style="white-space: nowrap">';
-      if ( $print )
-      {
-         if ( check_user_id_is_valid ( $user_id ) )
-         {
-            echo user_get_realname ( $user_id );
-         }
-      }
-      else
-      {
-         if ( check_user_id_is_valid ( $user_id ) )
-         {
-            echo $filter_string . user_get_realname ( $user_id ) . '</a>';
-         }
-      }
-      echo '</td>';
-
-      echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
-      $stat_issue_count = $head_row[ 1 ];
-      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-      {
-         $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
-         if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
-         {
-            echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
-         }
-         else
-         {
-            echo '<td class="group_row_bg">';
-         }
-
-         if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
-         {
-            echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) .
-               '&amp;handler_id=' . get_link_user_id ( $user_id ) .
-               '&amp;sticky_issues=on' .
-               '&amp;sortby=last_updated' .
-               '&amp;dir=DESC' .
-               '&amp;hide_status_id=-2' .
-               '&amp;match_type=0">';
-            echo $stat_issue_count[ $stat_index ];
-            echo '</a>';
-         }
-         else
-         {
-            echo $stat_issue_count[ $stat_index ];
+            if ( check_user_id_is_valid ( $user_id ) )
+            {
+               echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+            }
          }
          echo '</td>';
-      }
-      ?>
-      <td class="group_row_bg"></td>
-   </tr>
-   <?php
+
+         echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
+            if ( $stat_issue_amount_threshold <= $stat_issue_count[ $stat_index ] && $stat_issue_amount_threshold > 0 )
+            {
+               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
+            }
+            else
+            {
+               echo '<td class="group_row_bg">';
+            }
+
+            if ( !$print && ( $stat_issue_count[ $stat_index ] > 0 ) )
+            {
+               echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) .
+                  '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+                  '&amp;sticky_issues=on' .
+                  '&amp;sortby=last_updated' .
+                  '&amp;dir=DESC' .
+                  '&amp;hide_status_id=-2' .
+                  '&amp;match_type=0">';
+               echo $stat_issue_count[ $stat_index ];
+               echo '</a>';
+            }
+            else
+            {
+               echo $stat_issue_count[ $stat_index ];
+            }
+            echo '</td>';
+         }
+         ?>
+         <td class="group_row_bg"></td>
+      </tr>
+      <?php
+   }
 }
 
 /**
@@ -466,13 +480,17 @@ function print_user_head_row ( $head_row, $user_id, $print )
  */
 function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
 {
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   if ( ( $group_index != 1 ) && !check_user_has_level ( $assigned_project_id ) )
+   {
+      return $stat_issue_count;
+   }
+
    get_user_row_cell_highlighting ( $data_row, true );
    echo '<td/>';
    if ( $print )
    {
       echo '<td/>';
-      $main_project_id = $data_row[ 'main_project_id' ];
-      $assigned_project_id = validate_assigned_project_id ( $main_project_id, $data_row[ 'assigned_project_id' ] );
       $user_id = $data_row[ 'user_id' ];
       $no_user = get_no_user ( $user_id );
       $no_issue = $data_row[ 'no_issue' ];

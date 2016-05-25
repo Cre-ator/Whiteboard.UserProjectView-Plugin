@@ -59,7 +59,7 @@ function print_tbody ()
       $user_id = $user[ 0 ];
       $project_ids = explode ( ',', $user[ 1 ] );
 
-      print_user_row ( $user_id );
+      print_option_user_row ( $user_id );
       for ( $project_index = 0; $project_index < count ( $project_ids ); $project_index++ )
       {
          $project_id = $project_ids[ $project_index ];
@@ -85,7 +85,7 @@ function print_tbody ()
          {
             case 'removesingle':
 
-               print_project_row ( $user_id, $project_id );
+               print_option_project_row ( $user_id, $project_id );
                break;
 
             case 'removeall':
@@ -103,28 +103,28 @@ function print_tbody ()
 
                foreach ( $sub_project_ids as $sub_project_id )
                {
-                  print_project_row ( $user_id, $sub_project_id );
+                  print_option_project_row ( $user_id, $sub_project_id );
                }
                break;
          }
       }
    }
 
-   print_submit_button ();
+   print_option_submit_button ();
    echo '</form></tbody>';
 }
 
-function print_user_row ( $user_id )
+function print_option_user_row ( $user_id )
 {
    echo '<tr class="clickable" data-level="0" data-status="0">';
    echo '<td class="icon" width="20px"></td>';
-   print_avatar_col ( $user_id );
-   print_user_name_col ( $user_id );
-   print_realname_col ( $user_id );
+   print_option_avatar_col ( $user_id );
+   print_option_user_name_col ( $user_id );
+   print_option_realname_col ( $user_id );
    echo '</tr>';
 }
 
-function print_avatar_col ( $user_id )
+function print_option_avatar_col ( $user_id )
 {
    echo '<td class="group_row_bg" style="width: 25px">';
    $avatar = user_get_avatar ( $user_id );
@@ -132,7 +132,7 @@ function print_avatar_col ( $user_id )
    echo '</td>';
 }
 
-function print_user_name_col ( $user_id )
+function print_option_user_name_col ( $user_id )
 {
    echo '<td class="group_row_bg">';
    if ( user_exists ( $user_id ) )
@@ -146,7 +146,7 @@ function print_user_name_col ( $user_id )
    echo '</td>';
 }
 
-function print_realname_col ( $user_id )
+function print_option_realname_col ( $user_id )
 {
    echo '<td class="group_row_bg">';
    if ( user_exists ( $user_id ) )
@@ -160,7 +160,7 @@ function print_realname_col ( $user_id )
    echo '</td>';
 }
 
-function print_project_row ( $user_id, $project_id )
+function print_option_project_row ( $user_id, $project_id )
 {
    echo '<tr class="info" data-level="1" data-status="0">';
    echo '<input type="hidden" name="recordset[]" value="' . $user_id . ',' . $project_id . '"/>';
@@ -169,7 +169,7 @@ function print_project_row ( $user_id, $project_id )
    echo '</tr>';
 }
 
-function print_submit_button ()
+function print_option_submit_button ()
 {
    echo '<tr>';
    echo '<td class="center" colspan="4">';

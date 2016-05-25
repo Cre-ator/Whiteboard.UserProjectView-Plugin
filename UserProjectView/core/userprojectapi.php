@@ -13,11 +13,11 @@ function is_mantis_rel ()
 /**
  * Returns true, if the user has access level
  *
+ * @param $project_id
  * @return bool
  */
-function getUserHasLevel ()
+function check_user_has_level ( $project_id )
 {
-   $project_id = helper_get_current_project ();
    $user_id = auth_get_current_user_id ();
 
    return user_get_access_level ( $user_id, $project_id ) >= plugin_config_get ( 'UserProjectAccessLevel', PLUGINS_USERPROJECTVIEW_THRESHOLD_LEVEL_DEFAULT );
@@ -513,9 +513,20 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
 
       $head_row = array ();
       $stat_issue_count = array ();
-      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      $assigned_project_id = $data_rows[ $data_row_index ][ 'assigned_project_id' ];
+      if ( check_user_has_level ( $assigned_project_id ) )
       {
-         $stat_issue_count[ $stat_index ] = $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $stat_issue_count[ $stat_index ] = $data_rows[ $data_row_index ][ 'stat_col' . $stat_index ];
+         }
+      }
+      else
+      {
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $stat_issue_count[ $stat_index ] = 0;
+         }
       }
 
       if ( $data_row_index == 0 )
@@ -543,10 +554,21 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
                   /** get his issue counter */
                   $temp_stat_issue_count = $head_row_array[ 1 ];
                   /** add count to existing */
-                  for ( $iCounter_index = 1; $iCounter_index <= get_stat_count (); $iCounter_index++ )
+                  if ( check_user_has_level ( $assigned_project_id ) )
                   {
-                     $temp_stat_issue_count[ $iCounter_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $iCounter_index ];
+                     for ( $iCounter_index = 1; $iCounter_index <= get_stat_count (); $iCounter_index++ )
+                     {
+                        $temp_stat_issue_count[ $iCounter_index ] += $data_rows[ $data_row_index ][ 'stat_col' . $iCounter_index ];
+                     }
                   }
+                  else
+                  {
+                     for ( $iCounter_index = 1; $iCounter_index <= get_stat_count (); $iCounter_index++ )
+                     {
+                        $temp_stat_issue_count[ $iCounter_index ] += 0;
+                     }
+                  }
+
                   /** save modified counter */
                   $head_row_array[ 1 ] = $temp_stat_issue_count;
                   $head_rows_array[ $head_rows_array_index ] = $head_row_array;
@@ -652,6 +674,23 @@ function get_project_hierarchy_depth ( $project_id )
    }
 
    return $project_hierarchy_depth;
+}
+
+/**
+ * Returns the sum of a given issue row
+ *
+ * @param $stat_issue_count
+ * @return int
+ */
+function get_row_issue_count ( $stat_issue_count )
+{
+   $user_row_issue_count = 0;
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      $user_row_issue_count += $stat_issue_count[ $stat_index ];
+   }
+
+   return $user_row_issue_count;
 }
 
 /**
