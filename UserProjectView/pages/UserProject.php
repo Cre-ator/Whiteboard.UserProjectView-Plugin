@@ -674,7 +674,7 @@ function print_user_avatar ( $data_row, $group_index )
          if ( !$no_user && !$unreachable_issue )
          {
             echo '<label>';
-            echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . '_' . $assigned_project_id . '"/>';
+            echo '<input type="checkbox" name="dataRow[]" value="' . $user_id . ',' . $assigned_project_id . '"/>';
             echo '</label>';
          }
          echo '</td>';

@@ -746,7 +746,7 @@ function prepare_user_project_remove_group ( $selected_values )
    for ( $record_index = 0; $record_index < $record_count; $record_index++ )
    {
       $user_hash = array ();
-      $record[ $record_index ] = explode ( '_', $selected_values[ $record_index ] );
+      $record[ $record_index ] = explode ( ',', $selected_values[ $record_index ] );
       $act_user_id = $record[ $record_index ][ 0 ];
       $act_project_id = $record[ $record_index ][ 1 ];
 
