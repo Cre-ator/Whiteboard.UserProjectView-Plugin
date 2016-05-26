@@ -442,7 +442,6 @@ function assign_groups ( $groups, $data_rows )
             /** user ist aktiv */
             if ( user_is_enabled ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
             {
-               /** todo */
                $valid_stat_issue_count = 0;
                $ignored_stat_issue_count = 0;
                for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )

@@ -279,9 +279,10 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
 function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
 {
    $stat_issue_count = array ();
-   $stat_issue_count[ 1 ] = 0;
-   $stat_issue_count[ 2 ] = 0;
-   $stat_issue_count[ 3 ] = 0;
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      $stat_issue_count[ $stat_index ] = 0;
+   }
 
    foreach ( $group as $data_row_index )
    {
@@ -502,7 +503,12 @@ function print_user_head_row ( $head_row, $user_id, $print )
 function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
 {
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   if ( ( $group_index != 1 ) && !check_user_has_level ( $assigned_project_id ) )
+   if (
+      /** groups 0, 2, 3: user has no level for specific user-row and its assigned project */
+      ( ( $group_index != 1 ) && !check_user_has_level ( $assigned_project_id ) )
+      /** group 1: user has no level for the selected project */
+      || ( ( $group_index == 1 ) && !check_user_has_level ( helper_get_current_project () ) )
+   )
    {
       return $stat_issue_count;
    }
