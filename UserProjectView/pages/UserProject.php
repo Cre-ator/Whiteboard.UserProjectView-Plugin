@@ -278,6 +278,7 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
  */
 function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
 {
+
    $stat_issue_count = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
@@ -321,8 +322,7 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
       }
    }
 
-   $user_row_issue_count = get_row_issue_count ( $stat_issue_count );
-   if ( ( $user_row_issue_count > 0 ) || ( $group_index == 1 ) || ( $group_index == 2 ) )
+   if ( !empty( $group ) )
    {
       ?>
       <tr class="clickable" data-level="0" data-status="0">
@@ -444,7 +444,10 @@ function print_user_head_row ( $head_row, $user_id, $print )
          for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
             /** Group 0 - ignore issue count for ignored status */
-            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) && ( check_user_id_is_valid ( $user_id ) ) )
+            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
+               && ( check_user_id_is_valid ( $user_id ) )
+               && ( user_is_enabled ( $user_id ) )
+            )
             {
                $spec_stat_issue_count = 0;
             }
@@ -457,6 +460,7 @@ function print_user_head_row ( $head_row, $user_id, $print )
             $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
             if ( ( $stat_issue_amount_threshold <= $spec_stat_issue_count && $stat_issue_amount_threshold > 0 )
                || ( !check_user_id_is_valid ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
+               || ( !user_is_enabled ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
             )
             {
                echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
@@ -978,7 +982,10 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $g
       if ( $group_index == 0 )
       {
          /** Group 0 - ignore issue count for ignored status */
-         if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) && ( check_user_id_is_valid ( $user_id ) ) )
+         if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
+            && ( check_user_id_is_valid ( $user_id ) )
+            && ( user_is_enabled ( $user_id ) )
+         )
          {
             $temp_stat_issue_count = 0;
          }

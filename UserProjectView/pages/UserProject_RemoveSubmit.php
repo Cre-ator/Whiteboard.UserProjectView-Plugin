@@ -13,7 +13,6 @@ if ( $record_set != null )
    removeProjectUserSet ( $record_set );
 }
 
-var_dump ( $record_set );
 $redirect_url = 'plugin.php?page=UserProjectView/UserProject&sortVal=userName&sort=ASC';
 html_page_top ( null, $redirect_url );
 echo '<div align="center">' . plugin_lang_get ( 'remove_confirm' ) . '</div>';
