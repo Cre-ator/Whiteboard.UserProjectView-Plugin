@@ -13,11 +13,11 @@ $s_plugin_UserProjectView_thead_remark = '相关信息';
 $s_plugin_UserProjectView_remark_noProject = '没有项目分配';
 $s_plugin_UserProjectView_remark_showURIssues = '不可得项';
 $s_plugin_UserProjectView_remark_IAUser = '用户处于非激活状态';
-$s_plugin_UserProjectView_remark_ZIssues = '用户没有任何项';
 $s_plugin_UserProjectView_remark_noUser = '没有用户分配';
 $s_plugin_UserProjectView_remark_since = '自';
 $s_plugin_UserProjectView_remark_day = '天';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
+$s_plugin_UserProjectView_remark_noprojectassignment = 'User is only assigned to at least one subproject.';
 
 $s_plugin_UserProjectView_headrow_user = 'User with issues';
 $s_plugin_UserProjectView_headrow_no_issue = 'User without Issues';

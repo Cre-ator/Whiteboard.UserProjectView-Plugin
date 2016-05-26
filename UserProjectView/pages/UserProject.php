@@ -518,10 +518,10 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
    }
 
    echo '<tr class="info" data-level="2" data-status="1">';
-   echo '<td/>';
+   echo '<td></td>';
    if ( $print )
    {
-      echo '<td/>';
+      echo '<td></td>';
       $user_id = $data_row[ 'user_id' ];
       $no_user = get_no_user ( $user_id );
       $no_issue = $data_row[ 'no_issue' ];
@@ -538,7 +538,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
       }
       else
       {
-         echo '<td/>';
+         echo '<td></td>';
       }
       print_user_avatar ( $data_row, $group_index );
    }
@@ -1133,7 +1133,7 @@ function print_remark ( $data_row, $group_index, $print )
          '&amp;dir=DESC' .
          '&amp;hide_status_id=-2' .
          '&amp;match_type=0">';
-      echo wordwrap ( plugin_lang_get ( 'remark_showURIssues' ), 30, '<br />\n' );
+      echo wordwrap ( plugin_lang_get ( 'remark_showURIssues' ), 30, '<br />' );
       echo '</a>]';
       echo '<br/>';
    }
@@ -1144,9 +1144,14 @@ function print_remark ( $data_row, $group_index, $print )
          echo plugin_lang_get ( 'remark_IAUser' ) . '<br/>';
       }
    }
-   if ( $no_issue )
+   if ( $group_index == 1 )
    {
-      echo plugin_lang_get ( 'remark_ZIssues' ) . '<br/>';
+      $databaseapi = new databaseapi();
+      $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, helper_get_current_project () );
+      if ( is_null ( $user_is_assigned_to_project ) && helper_get_current_project () > 0 )
+      {
+         echo plugin_lang_get ( 'remark_noprojectassignment' );
+      }
    }
    if ( $no_user )
    {
