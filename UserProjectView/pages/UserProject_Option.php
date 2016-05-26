@@ -1,5 +1,6 @@
 <?php
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
 auth_reauthenticate ();
@@ -43,6 +44,7 @@ function print_thead ()
 
 function print_tbody ()
 {
+   $databaseapi = new databaseapi();
    $selected_values = null;
    if ( isset( $_POST[ 'dataRow' ] ) )
    {
@@ -85,7 +87,18 @@ function print_tbody ()
          {
             case 'removesingle':
 
-               print_option_project_row ( $user_id, $project_id );
+               $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $project_id );
+               if ( !is_null ( $user_is_assigned_to_project ) )
+               {
+                  print_option_project_row ( $user_id, $project_id );
+               }
+               else
+               {
+                  echo '<tr class="info" data-level="1" data-status="0">';
+                  echo '<td width="20px"></td>';
+                  echo '<td class="user_row_bg" style="text-align: left" colspan="3">' . plugin_lang_get ( 'remove_noassignment' ) . '</td>';
+                  echo '</tr>';
+               }
                break;
 
             case 'removeall':
@@ -103,7 +116,15 @@ function print_tbody ()
 
                foreach ( $sub_project_ids as $sub_project_id )
                {
-                  print_option_project_row ( $user_id, $sub_project_id );
+                  $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id );
+                  if ( !is_null ( $user_is_assigned_to_project ) )
+                  {
+                     print_option_project_row ( $user_id, $sub_project_id );
+                  }
+                  else
+                  {
+                     continue;
+                  }
                }
                break;
          }
