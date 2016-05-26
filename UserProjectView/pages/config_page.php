@@ -111,16 +111,22 @@ print_config_table_title_row ( 5, 'config_specColumns' );
 
 print_config_table_row ();
 print_config_table_category_col ( 2, 1, 'config_CAmount' );
-echo '<td width="100px" colspan="1" rowspan="1">';
+echo '<td width="100px" colspan="3" rowspan="1">';
 ?>
    <label><input type="number" name="CAmount"
                  value="<?php echo plugin_config_get ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT ); ?>" min="1"
                  max="20"/></label>
 <?php
 echo '</td>';
+echo '</tr>';
 
-print_config_table_category_col ( 1, 1, 'config_BGColor' );
-print_config_table_color_picker_row ( 1, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+print_config_table_row ();
+print_config_table_category_col ( 2, 1, 'config_max_val_BGColor' );
+print_config_table_color_picker_row ( 3, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+echo '</tr>';
+print_config_table_row ();
+print_config_table_category_col ( 2, 1, 'config_inact_row_BGColor' );
+print_config_table_color_picker_row ( 3, 'IgnIssBGColor', PLUGINS_USERPROJECTVIEW_IGNISSBGColor );
 echo '</tr>';
 
 if ( plugin_config_get ( 'CAmount' ) > 0 )

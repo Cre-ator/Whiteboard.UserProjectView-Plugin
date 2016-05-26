@@ -39,6 +39,7 @@ if ( $option_change )
    update_button ( 'layer_one_name' );
 
    update_color ( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+   update_color ( 'IgnIssBGColor', PLUGINS_USERPROJECTVIEW_IGNISSBGColor );
 
    $col_amount = gpc_get_int ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
    if ( plugin_config_get ( 'CAmount' ) != $col_amount && plugin_config_get ( 'CAmount' ) != '' && $col_amount <= PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )

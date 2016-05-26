@@ -783,6 +783,7 @@ function prepare_user_project_remove_group ( $selected_values )
 /**
  * Get the specific cell colour  for each situation (no issues, etc.. )
  *
+ * @param $group_index
  * @param $user_id
  * @param $no_user
  * @param $no_issue
@@ -790,7 +791,7 @@ function prepare_user_project_remove_group ( $selected_values )
  * @param $colspan
  * @param $class
  */
-function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
+function get_cell_highlighting ( $group_index, $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
 {
    if (
       ( !user_exists ( $user_id ) && !$no_user ) ||
@@ -815,54 +816,15 @@ function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_iss
       echo '<td class="' . $class . '" colspan="' . $colspan .
          '" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
    }
+   elseif ( $group_index == 3 )
+   {
+      echo '<td class="' . $class . '" colspan="' . $colspan .
+         '" style="background-color:' . plugin_config_get ( 'IgnIssBGColor' ) . '">';
+   }
    else
    {
       echo '<td class="' . $class . '" colspan="' . $colspan .
          '" style="background-color: #e0e0e0">';
-   }
-}
-
-/**
- * Print a row for a given user in the plugin table
- *
- * @param $data_row
- * @param $ignore_row_color
- */
-function get_user_row_cell_highlighting ( $data_row, $ignore_row_color )
-{
-   $user_id = $data_row[ 'user_id' ];
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-   $no_user = get_no_user ( $user_id );
-
-   if ( !$ignore_row_color )
-   {
-      if ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
-      {
-         echo '<tr class="info" data-level="2" data-status="1" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
-      }
-      elseif ( $no_issue && plugin_config_get ( 'ZIHighlighting' ) )
-      {
-         echo '<tr class="info" data-level="2" data-status="1" style="background-color:' . plugin_config_get ( 'ZIHBGColor' ) . '">';
-      }
-      elseif ( $no_user && plugin_config_get ( 'NUIHighlighting' ) )
-      {
-         echo '<tr class="info" data-level="2" data-status="1" style="background-color:' . plugin_config_get ( 'NUIHBGColor' ) . '">';
-      }
-      elseif ( $unreachable_issue && plugin_config_get ( 'URIUHighlighting' ) )
-      {
-         echo '<tr class="info" data-level="2" data-status="1" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
-      }
-      else
-      {
-         echo '<tr class="info" data-level="2" data-status="1">';
-      }
-   }
-   else
-   {
-      echo '<tr class="info" data-level="2" data-status="1">';
    }
 }
 

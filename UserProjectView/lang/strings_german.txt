@@ -22,7 +22,7 @@ $s_plugin_UserProjectView_remark_showhideHeadRow = 'Ein- / Ausblenden';
 $s_plugin_UserProjectView_headrow_user = 'Nutzer mit Einträgen';
 $s_plugin_UserProjectView_headrow_no_issue = 'Nutzer ohne Einträge';
 $s_plugin_UserProjectView_headrow_del_user = 'Nutzer inaktiv/gelöscht';
-$s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer';
+$s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer / Ignorierte Einträge';
 $s_plugin_UserProjectView_headrow_show_all_user = 'Alle Nutzer mit Einträgen anzeigen / ausblenden';
 
 $s_plugin_UserProjectView_remove_quest = 'Sind Sie sicher, dass die folgenden Nutzer aus dem jeweils angegebenen Projekt entfernt werden sollen?';
@@ -43,7 +43,6 @@ $s_plugin_UserProjectView_config_ZIUExpl = 'Diese Optionen sind nur dann wirksam
 $s_plugin_UserProjectView_config_ZIHighlighting = 'Hervorhebung von Nutzern ohne Issues?';
 $s_plugin_UserProjectView_config_BGColor = 'Hintergrundfarbe';
 $s_plugin_UserProjectView_config_CAmount = 'Anzahl Spalten';
-$s_plugin_UserProjectView_config_CStatSelect = 'Status für Spalte';
 $s_plugin_UserProjectView_config_IAMThreshold = 'max. Anzahl Issues';
 $s_plugin_UserProjectView_config_IAGThreshold = 'max. Alter Issues (Tage)';
 $s_plugin_UserProjectView_config_IAGMThresholdExpl = 'Der Wert 0 deaktiviert die Funktion.';
@@ -59,8 +58,8 @@ $s_plugin_UserProjectView_config_layer_one_column_name = 'Name';
 $s_plugin_UserProjectView_config_layer_one_name_one = 'Hauptprojekt';
 $s_plugin_UserProjectView_config_layer_one_name_two = 'Projekt';
 $s_plugin_UserProjectView_config_layer_one_name_three = 'Kunde';
-
-
 $s_plugin_UserProjectView_config_CStat_Col = 'Spalte';
 $s_plugin_UserProjectView_config_CStat_Stat = 'Status';
-$s_plugin_UserProjectView_config_CStat_Ign = 'Zuweisung ignorieren';
+$s_plugin_UserProjectView_config_CStat_Ign = 'Benutzerzuweisung ignorieren';
+$s_plugin_UserProjectView_config_max_val_BGColor = 'Hintergrundfarbe, wenn Max-Wert erreicht';
+$s_plugin_UserProjectView_config_inact_row_BGColor = 'Hintergrundfarbe, wenn Benutzerzuweisung ignoriert';
