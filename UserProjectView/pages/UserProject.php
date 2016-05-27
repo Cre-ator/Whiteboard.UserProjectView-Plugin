@@ -254,12 +254,12 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
          $user_id = $data_rows[ $data_row_index ][ 'user_id' ];
          if ( $user_id == $head_row_user_id )
          {
+            $data_row = $data_rows[ $data_row_index ];
             if ( $counter )
             {
-               print_user_head_row ( $head_row, $user_id, $print );
+               print_user_head_row ( $head_row, $user_id, $print, $data_row );
                $counter = false;
             }
-            $data_row = $data_rows[ $data_row_index ];
             $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0, $print );
          }
       }
@@ -278,7 +278,6 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
  */
 function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
 {
-
    $stat_issue_count = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
@@ -306,6 +305,18 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
                   $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
                }
             }
+            /** Group 3 - ignore issue count for valid status */
+            elseif ( $group_index == 3 )
+            {
+               if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF ) )
+               {
+                  $stat_issue_count[ $stat_index ] += 0;
+               }
+               else
+               {
+                  $stat_issue_count[ $stat_index ] += $spec_stat_issue_count;
+               }
+            }
             /** other groups - get issue count for all status */
             else
             {
@@ -322,7 +333,9 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
       }
    }
 
-   if ( !empty( $group ) )
+   if ( ( ( !empty( $group ) ) && ( array_sum ( $stat_issue_count ) > 0 ) )
+      || ( ( !empty( $group ) ) && ( $group_index == 1 ) )
+   )
    {
       ?>
       <tr class="clickable" data-level="0" data-status="0">
@@ -362,12 +375,13 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
  * @param $head_row
  * @param $user_id
  * @param $print
+ * @param $data_row
  */
-function print_user_head_row ( $head_row, $user_id, $print )
+function print_user_head_row ( $head_row, $user_id, $print, $data_row )
 {
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $stat_issue_count = $head_row[ 1 ];
-   $user_row_issue_count = get_row_issue_count ( $stat_issue_count );
-   if ( $user_row_issue_count > 0 )
+   if ( ( array_sum ( $stat_issue_count ) > 0 ) && ( check_user_has_level ( $assigned_project_id ) ) )
    {
       $filter_string = '<a href="search.php?' . generate_status_link () .
          '&amp;handler_id=' . get_link_user_id ( $user_id ) .
@@ -446,10 +460,16 @@ function print_user_head_row ( $head_row, $user_id, $print )
             /** Group 0 - ignore issue count for ignored status */
             if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
                && ( check_user_id_is_valid ( $user_id ) )
-               && ( user_is_enabled ( $user_id ) )
             )
             {
-               $spec_stat_issue_count = 0;
+               if ( check_user_id_is_enabled ( $user_id ) )
+               {
+                  $spec_stat_issue_count = 0;
+               }
+               else
+               {
+                  $spec_stat_issue_count = $stat_issue_count[ $stat_index ];
+               }
             }
             /** Group 2 - ignore issue count for valid status */
             else
@@ -458,9 +478,12 @@ function print_user_head_row ( $head_row, $user_id, $print )
             }
 
             $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
+            /** threshold is active ( > 0 ) and lower than counted issues */
             if ( ( $stat_issue_amount_threshold <= $spec_stat_issue_count && $stat_issue_amount_threshold > 0 )
+               /** user is not valud and counted issues > 0 */
                || ( !check_user_id_is_valid ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
-               || ( !user_is_enabled ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
+               /** user is disabled and counted issues > 0 */
+               || ( !check_user_id_is_enabled ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
             )
             {
                echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
@@ -506,15 +529,38 @@ function print_user_head_row ( $head_row, $user_id, $print )
  */
 function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
 {
+   $continue_flag = true;
+   $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   if (
-      /** groups 0, 2, 3: user has no level for specific user-row and its assigned project */
-      ( ( $group_index != 1 ) && !check_user_has_level ( $assigned_project_id ) )
-      /** group 1: user has no level for the selected project */
-      || ( ( $group_index == 1 ) && !check_user_has_level ( helper_get_current_project () ) )
-   )
+   if ( $group_index == 1 )
    {
-      return $stat_issue_count;
+      $databaseapi = new databaseapi();
+      $sub_project_ids = project_hierarchy_get_all_subprojects ( helper_get_current_project () );
+      if ( helper_get_current_project () > 0 )
+      {
+         array_push ( $sub_project_ids, helper_get_current_project () );
+      }
+      foreach ( $sub_project_ids as $sub_project_id )
+      {
+         $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id );
+         if ( ( !is_null ( $user_is_assigned_to_project ) )
+            && ( check_user_has_level ( $sub_project_id ) )
+         )
+         {
+            $continue_flag = false;
+         }
+      }
+      if ( $continue_flag )
+      {
+         return $stat_issue_count;
+      }
+   }
+   else
+   {
+      if ( !check_user_has_level ( $assigned_project_id ) )
+      {
+         return $stat_issue_count;
+      }
    }
 
    echo '<tr class="info" data-level="2" data-status="1">';
@@ -522,7 +568,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
    if ( $print )
    {
       echo '<td></td>';
-      $user_id = $data_row[ 'user_id' ];
+
       $no_user = get_no_user ( $user_id );
       $no_issue = $data_row[ 'no_issue' ];
       $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
@@ -621,7 +667,7 @@ function print_user_avatar ( $data_row, $group_index )
       if ( $group_index > 0 )
       {
          if ( ( !user_exists ( $user_id ) && !$no_user )
-            || ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
+            || ( check_user_id_is_valid ( $user_id ) && !check_user_id_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
          )
          {
             echo '<td align="center" width="25px" style="background-color:' . plugin_config_get ( 'IAUHBGColor' ) . '">';
@@ -984,12 +1030,24 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $g
          /** Group 0 - ignore issue count for ignored status */
          if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
             && ( check_user_id_is_valid ( $user_id ) )
-            && ( user_is_enabled ( $user_id ) )
+            && ( check_user_id_is_enabled ( $user_id ) )
          )
          {
             $temp_stat_issue_count = 0;
          }
          /** Group 2 - ignore issue count for valid status */
+         else
+         {
+            $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
+         }
+      }
+      /** Group 3 - ignore issue count for valid status */
+      elseif ( $group_index == 3 )
+      {
+         if ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF )
+         {
+            $temp_stat_issue_count = 0;
+         }
          else
          {
             $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
@@ -1139,7 +1197,7 @@ function print_remark ( $data_row, $group_index, $print )
    }
    if ( $user_id > 0 )
    {
-      if ( !user_exists ( $user_id ) || !user_is_enabled ( $user_id ) )
+      if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
       {
          echo plugin_lang_get ( 'remark_IAUser' ) . '<br/>';
       }
@@ -1176,7 +1234,7 @@ function print_option_panel ( $stat_issue_count, $print )
          <?php
          if ( !$print )
          {
-            if ( access_has_global_level ( $access_level ) )
+            if ( $access_level >= plugin_config_get ( 'UserProjectAccessLevel' ) )
             {
                ?>
                <label for="option"></label>

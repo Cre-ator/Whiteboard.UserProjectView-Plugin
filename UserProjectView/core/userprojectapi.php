@@ -138,11 +138,36 @@ function get_user_active ( $user_id )
 {
    if ( check_user_id_is_valid ( $user_id ) )
    {
-      return user_is_enabled ( $user_id );
+      return check_user_id_is_enabled ( $user_id );
    }
    else
    {
       return null;
+   }
+}
+
+/**
+ * return true is the user account is enabled, false otherwise
+ *
+ * @param integer $user_id A valid user identifier.
+ * @return boolean
+ */
+function check_user_id_is_enabled ( $user_id )
+{
+   if ( !check_user_id_is_valid ( $user_id ) )
+   {
+      return false;
+   }
+   else
+   {
+      if ( ON == user_get_field ( $user_id, 'enabled' ) )
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
    }
 }
 
@@ -440,7 +465,7 @@ function assign_groups ( $groups, $data_rows )
          if ( user_exists ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
          {
             /** user ist aktiv */
-            if ( user_is_enabled ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
+            if ( check_user_id_is_enabled ( $data_rows[ $data_row_index ][ 'user_id' ] ) )
             {
                $valid_stat_issue_count = 0;
                $ignored_stat_issue_count = 0;
@@ -525,7 +550,7 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
 
       if ( $valid_flag )
       {
-         if ( !user_exists ( $user_id ) || !user_is_enabled ( $user_id ) )
+         if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
          {
             continue;
          }
@@ -697,23 +722,6 @@ function get_project_hierarchy_depth ( $project_id )
 }
 
 /**
- * Returns the sum of a given issue row
- *
- * @param $stat_issue_count
- * @return int
- */
-function get_row_issue_count ( $stat_issue_count )
-{
-   $user_row_issue_count = 0;
-   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-   {
-      $user_row_issue_count += $stat_issue_count[ $stat_index ];
-   }
-
-   return $user_row_issue_count;
-}
-
-/**
  * Checks the project hierarchy and returns the nessecary colspan.
  *
  * @param $colspan
@@ -794,7 +802,7 @@ function get_cell_highlighting ( $group_index, $user_id, $no_user, $no_issue, $u
 {
    if (
       ( !user_exists ( $user_id ) && !$no_user ) ||
-      ( check_user_id_is_valid ( $user_id ) && !user_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
+      ( check_user_id_is_valid ( $user_id ) && !check_user_id_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
       echo '<td class="' . $class . '" colspan="' . $colspan .
