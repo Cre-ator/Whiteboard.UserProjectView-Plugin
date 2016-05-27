@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.48';
+      $this->version = '1.3.49';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -75,7 +75,7 @@ class UserProjectViewPlugin extends MantisPlugin
          // C -> column | TAMH -> threshold amount highlighting
          'CAmount' => PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT,
          'TAMHBGColor' => PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR,
-         'IgnIssBGColor' =>PLUGINS_USERPROJECTVIEW_IGNISSBGColor,
+         'IgnIssBGColor' => PLUGINS_USERPROJECTVIEW_IGNISSBGColor,
 
          // C -> Column | IAM -> issue amount | IAG -> issue age
          'CStatSelect1' => 10,
@@ -127,7 +127,9 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function menu ()
    {
-      if ( !plugin_is_installed ( 'WhiteboardMenu' ) && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel () )
+      if ( ( !plugin_is_installed ( 'WhiteboardMenu' ) || !file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
+         && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel ()
+      )
       {
          return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_userprojecttitle' ) . '</a>';
       }
