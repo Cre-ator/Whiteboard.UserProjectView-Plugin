@@ -31,6 +31,7 @@ $s_plugin_UserProjectView_remove_selectAll = '从项目/子项目中删除用户
 $s_plugin_UserProjectView_remove_confirm = '从项目中移除的用户。';
 $s_plugin_UserProjectView_remove_failure = '错误，不能从项目中移除的用户。';
 $s_plugin_UserProjectView_remove_noassignment = 'User is not assigned to selected project.';
+$s_plugin_UserProjectView_remove_administrator = 'User is administrator and won't be removed.';
 
 $s_plugin_UserProjectView_config_showFooter = '在页脚中显示插件信息吗?';
 $s_plugin_UserProjectView_config_showMenu = '在菜单显示插件吗?';

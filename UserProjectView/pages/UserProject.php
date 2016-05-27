@@ -4,6 +4,7 @@ require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
+
 $print = false;
 if ( isset( $_POST[ 'print' ] ) )
 {
@@ -56,8 +57,8 @@ else
 {
    echo '<table>';
 }
-print_thead ( $print );
-print_tbody ( $data_rows, $print );
+print_thead ();
+print_tbody ( $data_rows );
 echo '</table>';
 echo '</div>';
 
@@ -70,14 +71,12 @@ if ( !$print )
 
 /**
  * Print the head of the plugin table
- *
- * @param $print
  */
-function print_thead ( $print )
+function print_thead ()
 {
    $dynamic_colspan = get_stat_count () + get_project_hierarchy_spec_colspan ( 6, true );
    echo '<thead>';
-   print_main_table_head_row ( $dynamic_colspan, $print );
+   print_main_table_head_row ( $dynamic_colspan );
    echo '<tr>';
    print_main_table_head_col ( 'thead_username', 'userName', plugin_config_get ( 'ShowAvatar' ) ? 3 : 2 );
    print_main_table_head_col ( 'thead_realname', 'realName', null );
@@ -117,10 +116,10 @@ function print_thead ( $print )
  * Print the row of the head of the plugin table
  *
  * @param $dynamic_colspan
- * @param $print
  */
-function print_main_table_head_row ( $dynamic_colspan, $print )
+function print_main_table_head_row ( $dynamic_colspan )
 {
+   global $print;
    ?>
    <tr>
       <td class="form-title" colspan="<?php echo ( $dynamic_colspan ); ?>">
@@ -188,9 +187,8 @@ function print_main_table_head_col ( $lang_string, $sort_val, $header_colspan )
  * Print the body of the plugin table
  *
  * @param $data_rows
- * @param $print
  */
-function print_tbody ( $data_rows, $print )
+function print_tbody ( $data_rows )
 {
    $get_sort_val = $_GET[ 'sortVal' ];
    $get_sort_order = $_GET[ 'sort' ];
@@ -217,15 +215,15 @@ function print_tbody ( $data_rows, $print )
    echo '<tbody><form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
 
    /** GROUP 0 */
-   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, 0, true, 'headrow_user', $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 0 ], $data_rows, $stat_issue_count, 0, true, 'headrow_user' );
    /** GROUP 1 */
-   $stat_issue_count = process_general_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 1, 'headrow_no_issue', $print );
+   $stat_issue_count = process_general_group ( $groups[ 1 ], $data_rows, $stat_issue_count, 1, 'headrow_no_issue' );
    /** GROUP 2 */
-   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, 2, false, 'headrow_del_user', $print );
+   $stat_issue_count = process_user_row_group ( $groups[ 2 ], $data_rows, $stat_issue_count, 2, false, 'headrow_del_user' );
    /** GROUP 3 */
-   $stat_issue_count = process_general_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 3, 'headrow_no_user', $print );
+   $stat_issue_count = process_general_group ( $groups[ 3 ], $data_rows, $stat_issue_count, 3, 'headrow_no_user' );
    /** OPTION PANEL */
-   print_option_panel ( $stat_issue_count, $print );
+   print_option_panel ( $stat_issue_count );
 
    echo '</form></tbody>';
 }
@@ -237,10 +235,9 @@ function print_tbody ( $data_rows, $print )
  * @param $group_index
  * @param $valid_flag
  * @param $group_name
- * @param $print
  * @return mixed
  */
-function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_index, $valid_flag, $group_name, $print )
+function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_index, $valid_flag, $group_name )
 {
    print_group_head_row ( $group, $data_rows, $group_index, $group_name );
    $head_rows_array = calculate_user_head_rows ( $data_rows, $valid_flag );
@@ -257,10 +254,10 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
             $data_row = $data_rows[ $data_row_index ];
             if ( $counter )
             {
-               print_user_head_row ( $head_row, $user_id, $print, $data_row );
+               print_user_head_row ( $head_row, $data_row );
                $counter = false;
             }
-            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0, $print );
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0 );
          }
       }
    }
@@ -373,12 +370,11 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
  * Print the head row for a given user
  *
  * @param $head_row
- * @param $user_id
- * @param $print
  * @param $data_row
  */
-function print_user_head_row ( $head_row, $user_id, $print, $data_row )
+function print_user_head_row ( $head_row, $data_row )
 {
+   $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $stat_issue_count = $head_row[ 1 ];
    if ( ( array_sum ( $stat_issue_count ) > 0 ) && ( check_user_has_level ( $assigned_project_id ) ) )
@@ -389,132 +385,153 @@ function print_user_head_row ( $head_row, $user_id, $print, $data_row )
          '&amp;dir=DESC' .
          '&amp;hide_status_id=-2' .
          '&amp;match_type=0">';
-      ?>
-      <tr class="clickable" data-level="1" data-status="0">
-         <td style="max-width:15px;"></td>
-         <td class="icon"></td>
-         <?php
-         if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
-         {
-            echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
-            if ( check_user_id_is_valid ( $user_id ) )
-            {
-               $avatar = user_get_avatar ( $user_id );
-               if ( $print )
-               {
-                  echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
-               }
-               else
-               {
-                  echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
-               }
-            }
-            echo '</td>';
-         }
+      echo '<tr class="clickable" data-level="1" data-status="0">';
+      echo '<td style="max-width:15px;"></td>';
+      echo '<td class="icon"></td>';
+      print_user_head_row_avatar ( $user_id, $filter_string );
+      print_user_head_row_username ( $user_id, $filter_string );
+      print_user_head_row_realname ( $user_id, $filter_string );
+      echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
+      print_user_head_row_amountofissues ( $user_id, $stat_issue_count );
+      echo '<td class="group_row_bg"></td>';
+      echo '</tr>';
+   }
+}
 
-         echo '<td class="group_row_bg" style="white-space: nowrap">';
+/**
+ * @param $user_id
+ * @param $filter_string
+ */
+function print_user_head_row_avatar ( $user_id, $filter_string )
+{
+   global $print;
+   if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
+   {
+      echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
+      if ( check_user_id_is_valid ( $user_id ) )
+      {
+         $avatar = user_get_avatar ( $user_id );
          if ( $print )
          {
-            if ( user_exists ( $user_id ) )
-            {
-               echo user_get_name ( $user_id );
-            }
-            else
-            {
-               echo '<s>' . user_get_name ( $user_id ) . '</s>';
-            }
+            echo '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" />';
          }
          else
          {
-            if ( user_exists ( $user_id ) )
-            {
-               echo $filter_string . user_get_name ( $user_id );
-            }
-            else
-            {
-               echo '<s>' . $filter_string . user_get_name ( $user_id ) . '</s></a>';
-            }
+            echo $filter_string . '<img class="avatar" src="' . $avatar[ 0 ] . '" alt="avatar" /></a>';
          }
-         echo '</td>';
+      }
+      echo '</td>';
+   }
+}
 
-         echo '<td class="group_row_bg" style="white-space: nowrap">';
-         if ( $print )
-         {
-            if ( check_user_id_is_valid ( $user_id ) )
-            {
-               echo user_get_realname ( $user_id );
-            }
-         }
-         else
-         {
-            if ( check_user_id_is_valid ( $user_id ) )
-            {
-               echo $filter_string . user_get_realname ( $user_id ) . '</a>';
-            }
-         }
-         echo '</td>';
+/**
+ * @param $user_id
+ * @param $filter_string
+ */
+function print_user_head_row_username ( $user_id, $filter_string )
+{
+   global $print;
+   echo '<td class="group_row_bg" style="white-space: nowrap">';
+   if ( $print )
+   {
+      if ( user_exists ( $user_id ) )
+      {
+         echo user_get_name ( $user_id );
+      }
+      else
+      {
+         echo '<s>' . user_get_name ( $user_id ) . '</s>';
+      }
+   }
+   else
+   {
+      if ( user_exists ( $user_id ) )
+      {
+         echo $filter_string . user_get_name ( $user_id );
+      }
+      else
+      {
+         echo '<s>' . $filter_string . user_get_name ( $user_id ) . '</s></a>';
+      }
+   }
+   echo '</td>';
+}
 
-         echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
-         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-         {
-            /** Group 0 - ignore issue count for ignored status */
-            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
-               && ( check_user_id_is_valid ( $user_id ) )
-            )
-            {
-               if ( check_user_id_is_enabled ( $user_id ) )
-               {
-                  $spec_stat_issue_count = 0;
-               }
-               else
-               {
-                  $spec_stat_issue_count = $stat_issue_count[ $stat_index ];
-               }
-            }
-            /** Group 2 - ignore issue count for valid status */
-            else
-            {
-               $spec_stat_issue_count = $stat_issue_count[ $stat_index ];
-            }
+/**
+ * @param $user_id
+ * @param $filter_string
+ */
+function print_user_head_row_realname ( $user_id, $filter_string )
+{
+   global $print;
+   echo '<td class="group_row_bg" style="white-space: nowrap">';
+   if ( check_user_id_is_valid ( $user_id ) )
+   {
+      if ( $print )
+      {
+         echo user_get_realname ( $user_id );
+      }
+      else
+      {
+         echo $filter_string . user_get_realname ( $user_id ) . '</a>';
+      }
+   }
+   echo '</td>';
+}
 
-            $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
-            /** threshold is active ( > 0 ) and lower than counted issues */
-            if ( ( $stat_issue_amount_threshold <= $spec_stat_issue_count && $stat_issue_amount_threshold > 0 )
-               /** user is not valud and counted issues > 0 */
-               || ( !check_user_id_is_valid ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
-               /** user is disabled and counted issues > 0 */
-               || ( !check_user_id_is_enabled ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
-            )
-            {
-               echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
-            }
-            else
-            {
-               echo '<td class="group_row_bg">';
-            }
+/**
+ * @param $user_id
+ * @param $stat_issue_count
+ */
+function print_user_head_row_amountofissues ( $user_id, $stat_issue_count )
+{
+   global $print;
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      /** Group 0 - ignore issue count for ignored status */
+      if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
+         && ( check_user_id_is_enabled ( $user_id ) )
+      )
+      {
+         $spec_stat_issue_count = 0;
+      }
+      /** Group 2 - ignore issue count for valid status */
+      else
+      {
+         $spec_stat_issue_count = $stat_issue_count[ $stat_index ];
+      }
 
-            if ( !$print && ( $spec_stat_issue_count > 0 ) )
-            {
-               echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) .
-                  '&amp;handler_id=' . get_link_user_id ( $user_id ) .
-                  '&amp;sticky_issues=on' .
-                  '&amp;sortby=last_updated' .
-                  '&amp;dir=DESC' .
-                  '&amp;hide_status_id=-2' .
-                  '&amp;match_type=0">';
-               echo $spec_stat_issue_count;
-               echo '</a>';
-            }
-            else
-            {
-               echo $spec_stat_issue_count;
-            }
-            echo '</td>';
-         }
-         ?>
-         <td class="group_row_bg"></td>
-      </tr>
-      <?php
+      $stat_issue_amount_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
+      /** threshold is active ( > 0 ) and lower than counted issues */
+      if ( ( $stat_issue_amount_threshold <= $spec_stat_issue_count && $stat_issue_amount_threshold > 0 )
+         /** user is not valid / enabled and counted issues > 0 */
+         || ( !check_user_id_is_enabled ( $user_id ) && ( $spec_stat_issue_count > 0 ) )
+      )
+      {
+         echo '<td class="group_row_bg" style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
+      }
+      else
+      {
+         echo '<td class="group_row_bg">';
+      }
+
+      if ( !$print && ( $spec_stat_issue_count > 0 ) )
+      {
+         echo '<a href="search.php?status_id=' . plugin_config_get ( 'CStatSelect' . $stat_index ) .
+            '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+            '&amp;sticky_issues=on' .
+            '&amp;sortby=last_updated' .
+            '&amp;dir=DESC' .
+            '&amp;hide_status_id=-2' .
+            '&amp;match_type=0">';
+         echo $spec_stat_issue_count;
+         echo '</a>';
+      }
+      else
+      {
+         echo $spec_stat_issue_count;
+      }
+      echo '</td>';
    }
 }
 
@@ -524,11 +541,11 @@ function print_user_head_row ( $head_row, $user_id, $print, $data_row )
  * @param $data_row
  * @param $stat_issue_count
  * @param $group_index
- * @param $print
  * @return mixed
  */
-function print_user_row ( $data_row, $stat_issue_count, $group_index, $print )
+function print_user_row ( $data_row, $stat_issue_count, $group_index )
 {
+   global $print;
    $continue_flag = true;
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -1223,10 +1240,10 @@ function print_remark ( $data_row, $group_index, $print )
  * for each status under the user table
  *
  * @param $stat_issue_count
- * @param $print
  */
-function print_option_panel ( $stat_issue_count, $print )
+function print_option_panel ( $stat_issue_count )
 {
+   global $print;
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
    ?>
    <tr>

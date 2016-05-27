@@ -96,7 +96,17 @@ function print_tbody ()
                {
                   echo '<tr class="info" data-level="1" data-status="0">';
                   echo '<td width="20px"></td>';
-                  echo '<td class="user_row_bg" style="text-align: left" colspan="3">' . plugin_lang_get ( 'remove_noassignment' ) . '</td>';
+                  echo '<td class="user_row_bg" style="text-align: left">' . project_get_name ( $project_id ) . '</td>';
+                  echo '<td class="user_row_bg" style="text-align: left" colspan="2">';
+                  if ( user_is_administrator ( $user_id ) )
+                  {
+                     echo plugin_lang_get ( 'remove_administrator' );
+                  }
+                  else
+                  {
+                     echo plugin_lang_get ( 'remove_noassignment' );
+                  }
+                  echo '</td>';
                   echo '</tr>';
                }
                break;
@@ -123,7 +133,20 @@ function print_tbody ()
                   }
                   else
                   {
-                     continue;
+                     echo '<tr class="info" data-level="1" data-status="0">';
+                     echo '<td width="20px"></td>';
+                     echo '<td class="user_row_bg" style="text-align: left">' . project_get_name ( $sub_project_id ) . '</td>';
+                     echo '<td class="user_row_bg" style="text-align: left" colspan="2">';
+                     if ( user_is_administrator ( $user_id ) )
+                     {
+                        echo plugin_lang_get ( 'remove_administrator' );
+                     }
+                     else
+                     {
+                        echo plugin_lang_get ( 'remove_noassignment' );
+                     }
+                     echo '</td>';
+                     echo '</tr>';
                   }
                }
                break;

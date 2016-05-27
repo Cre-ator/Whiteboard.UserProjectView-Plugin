@@ -642,16 +642,15 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
  * @param $stat_issue_count
  * @param $group_index
  * @param $group_name
- * @param $print_flag
  * @return mixed
  */
-function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $group_name, $print_flag )
+function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $group_name )
 {
    print_group_head_row ( $group, $data_rows, $group_index, $group_name );
    foreach ( $group as $data_row_index )
    {
       $data_row = $data_rows[ $data_row_index ];
-      $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index, $print_flag );
+      $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
    }
 
    return $stat_issue_count;

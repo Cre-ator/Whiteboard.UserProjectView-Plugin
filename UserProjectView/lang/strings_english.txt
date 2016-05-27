@@ -31,6 +31,7 @@ $s_plugin_UserProjectView_remove_selectAll = 'Remove User from Project/Subprojec
 $s_plugin_UserProjectView_remove_confirm = 'User removed from project.';
 $s_plugin_UserProjectView_remove_failure = 'Error, user not removed from project.';
 $s_plugin_UserProjectView_remove_noassignment = 'User is not assigned to selected project.';
+$s_plugin_UserProjectView_remove_administrator = 'User is administrator and won't be removed.';
 
 $s_plugin_UserProjectView_config_showFooter = 'Show plugin info in footer?';
 $s_plugin_UserProjectView_config_showMenu = 'Show plugin menu entry?';
