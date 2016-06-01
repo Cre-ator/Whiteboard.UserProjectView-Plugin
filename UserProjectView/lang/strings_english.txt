@@ -13,7 +13,6 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 $s_plugin_UserProjectView_remark_noProject = 'No project-assignment';
 $s_plugin_UserProjectView_remark_showURIssues = 'Unreachable issues';
 $s_plugin_UserProjectView_remark_IAUser = 'User is disabled';
-$s_plugin_UserProjectView_remark_noUser = 'No user-assignmend';
 $s_plugin_UserProjectView_remark_since = 'since';
 $s_plugin_UserProjectView_remark_day = 'Days';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';

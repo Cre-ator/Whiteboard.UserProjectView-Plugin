@@ -13,7 +13,6 @@ $s_plugin_UserProjectView_thead_remark = '相关信息';
 $s_plugin_UserProjectView_remark_noProject = '没有项目分配';
 $s_plugin_UserProjectView_remark_showURIssues = '不可得项';
 $s_plugin_UserProjectView_remark_IAUser = '用户处于非激活状态';
-$s_plugin_UserProjectView_remark_noUser = '没有用户分配';
 $s_plugin_UserProjectView_remark_since = '自';
 $s_plugin_UserProjectView_remark_day = '天';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';

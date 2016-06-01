@@ -236,6 +236,60 @@ function process_match_codes ( $matchcode )
 }
 
 /**
+ * @param $group
+ * @param $data_rows
+ * @return array
+ */
+function process_no_user_matchcodes ( $group, $data_rows )
+{
+   $group_three_matchcode = array ();
+   foreach ( $group as $data_row_index )
+   {
+      $data_row = $data_rows[ $data_row_index ];
+      $assigned_project_id = $data_row[ 'assigned_project_id' ];
+      $target_version_id = $data_row[ 'target_version_id' ];
+      $data_string = $assigned_project_id . ',' . $target_version_id;
+      array_push ( $group_three_matchcode, $data_string );
+   }
+
+   $group_three_data_rows = array ();
+   $matchcode_rows = array_count_values ( $group_three_matchcode );
+   $matchcode_row_count = count ( $matchcode_rows );
+   for ( $matchcode_row_index = 0; $matchcode_row_index < $matchcode_row_count; $matchcode_row_index++ )
+   {
+      /** process first entry in array */
+      $matchcode_row_data = key ( $matchcode_rows );
+
+      /** process data string */
+      $matchcode_row_data_values = explode ( ',', $matchcode_row_data );
+
+      $assigned_project_id = $matchcode_row_data_values[ 0 ];
+      $target_version_id = $matchcode_row_data_values[ 1 ];
+      $target_version = get_target_version ( $target_version_id );
+
+      $group_three_data_rows[ $matchcode_row_index ][ 'user_id' ] = 0;
+      $group_three_data_rows[ $matchcode_row_index ][ 'assigned_project_id' ] = $assigned_project_id;
+      $group_three_data_rows[ $matchcode_row_index ][ 'target_version_id' ] = $target_version_id;
+      $group_three_data_rows[ $matchcode_row_index ][ 'no_issue' ] = false;
+
+      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      {
+         $group_three_data_rows[ $matchcode_row_index ][ 'stat_col' . $stat_index ] = '0';
+         $stat_column = 'stat_col' . $stat_index;
+         $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+         if ( !is_null ( $stat_status_id ) )
+         {
+            $databaseapi = new databaseapi();
+            $group_three_data_rows[ $matchcode_row_index ][ $stat_column ] = $databaseapi->get_amount_issues_by_project_version_status ( $assigned_project_id, $target_version, $stat_status_id );
+         }
+      }
+      array_shift ( $matchcode_rows );
+   }
+
+   return $group_three_data_rows;
+}
+
+/**
  * get the target version by a given target version id
  *
  * @param $target_version_id
@@ -646,11 +700,22 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
  */
 function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $group_name )
 {
-   print_group_head_row ( $group, $data_rows, $group_index, $group_name );
-   foreach ( $group as $data_row_index )
+   if ( $group_index == 3 )
    {
-      $data_row = $data_rows[ $data_row_index ];
-      $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+      print_group_three_head_row ( $data_rows, $group_name );
+      foreach ($data_rows as $data_row)
+      {
+         $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+      }
+   }
+   else
+   {
+      print_group_head_row ( $group, $data_rows, $group_index, $group_name );
+      foreach ( $group as $data_row_index )
+      {
+         $data_row = $data_rows[ $data_row_index ];
+         $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+      }
    }
 
    return $stat_issue_count;
@@ -789,7 +854,6 @@ function prepare_user_project_remove_group ( $selected_values )
 /**
  * Get the specific cell colour  for each situation (no issues, etc.. )
  *
- * @param $group_index
  * @param $user_id
  * @param $no_user
  * @param $no_issue
@@ -797,7 +861,7 @@ function prepare_user_project_remove_group ( $selected_values )
  * @param $colspan
  * @param $class
  */
-function get_cell_highlighting ( $group_index, $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
+function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
 {
    if (
       ( !user_exists ( $user_id ) && !$no_user ) ||
@@ -822,11 +886,6 @@ function get_cell_highlighting ( $group_index, $user_id, $no_user, $no_issue, $u
       echo '<td class="' . $class . '" colspan="' . $colspan .
          '" style="background-color:' . plugin_config_get ( 'URIUHBGColor' ) . '">';
    }
-   elseif ( $group_index == 3 )
-   {
-      echo '<td class="' . $class . '" colspan="' . $colspan .
-         '" style="background-color:' . plugin_config_get ( 'IgnIssBGColor' ) . '">';
-   }
    else
    {
       echo '<td class="' . $class . '" colspan="' . $colspan .
@@ -837,24 +896,56 @@ function get_cell_highlighting ( $group_index, $user_id, $no_user, $no_issue, $u
 /**
  * Prepare a filter string which depends on the mantis version
  *
- * @param $unreachable_issue_status_count
- * @param $unreach_issue_status
+ * @param $data_row
+ * @param $group_index
  * @return string
  */
-function prepare_filter_string ( $unreachable_issue_status_count, $unreach_issue_status )
+function prepare_filter_string ( $data_row, $group_index )
 {
-   $filter_string = '';
-   for ( $unreachable_issue_status_index = 0; $unreachable_issue_status_index < $unreachable_issue_status_count; $unreachable_issue_status_index++ )
+   $stat_spec_issue_counts = array ();
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      if ( !is_null ( $unreach_issue_status[ $unreachable_issue_status_index ] ) )
+      $stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
+      $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+
+      if ( $group_index == 0 )
       {
-         if ( is_mantis_rel () )
+         if ( $stat_spec_status_ign == OFF )
          {
-            $filter_string = '&amp;status_id[]=' . $unreach_issue_status[ $unreachable_issue_status_index ];
+            $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
          }
          else
          {
-            $filter_string = '&amp;status[]=' . $unreach_issue_status[ $unreachable_issue_status_index ];
+            $stat_spec_issue_counts[ $stat_index ] = 0;
+         }
+      }
+
+      if ( $group_index == 3 )
+      {
+         if ( $stat_spec_status_ign == ON )
+         {
+            $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
+         }
+         else
+         {
+            $stat_spec_issue_counts[ $stat_index ] = 0;
+         }
+      }
+   }
+
+   $filter_string = '';
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      if ( $stat_spec_issue_counts[ $stat_index ] > 0 )
+      {
+         $stat_spec_issue_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+         if ( is_mantis_rel () )
+         {
+            $filter_string .= '&amp;status_id[]=' . $stat_spec_issue_status_id;
+         }
+         else
+         {
+            $filter_string .= '&amp;status[]=' . $stat_spec_issue_status_id;
          }
       }
    }
@@ -1009,18 +1100,9 @@ function get_parent_project_id ( $project_id, $assigned_project_id, $main_projec
 function get_no_user ( $user_id )
 {
    $no_user = false;
-   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   if ( $user_id == '0' )
    {
-      $spec_status = plugin_config_get ( 'CStatSelect' . $stat_index );
-      if ( $user_id == '0' && $spec_status == USERPROJECTVIEW_ASSIGNED_STATUS
-         || $user_id == '0' && $spec_status == USERPROJECTVIEW_FEEDBACK_STATUS
-         || $user_id == '0' && $spec_status == USERPROJECTVIEW_RESOLVED_STATUS
-         || $user_id == '0' && $spec_status == USERPROJECTVIEW_CLOSED_STATUS
-         || $user_id == '0'
-      )
-      {
-         $no_user = true;
-      }
+      $no_user = true;
    }
 
    return $no_user;

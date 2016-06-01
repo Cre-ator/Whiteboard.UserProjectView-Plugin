@@ -13,7 +13,6 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 $s_plugin_UserProjectView_remark_noProject = 'L´utilisateur n´est pas assigné à ce projet';
 $s_plugin_UserProjectView_remark_showURIssues = 'Problèmes inaccessibles';
 $s_plugin_UserProjectView_remark_IAUser = 'L´utilisateur est inactif';
-$s_plugin_UserProjectView_remark_noUser = 'L´utilisateur est pas affectée à';
 $s_plugin_UserProjectView_remark_since = 'depuis';
 $s_plugin_UserProjectView_remark_day = 'Jours';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';

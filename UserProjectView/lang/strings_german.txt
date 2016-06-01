@@ -13,7 +13,6 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 $s_plugin_UserProjectView_remark_noProject = 'Projekt-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_showURIssues = 'Unerreichbare Issues';
 $s_plugin_UserProjectView_remark_IAUser = 'Nutzer ist deaktiviert';
-$s_plugin_UserProjectView_remark_noUser = 'Nutzer-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_since = 'seit';
 $s_plugin_UserProjectView_remark_day = 'Tagen';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Ein- / Ausblenden';

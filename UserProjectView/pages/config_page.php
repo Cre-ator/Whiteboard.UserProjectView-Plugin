@@ -124,10 +124,6 @@ print_config_table_row ();
 print_config_table_category_col ( 2, 1, 'config_max_val_BGColor' );
 print_config_table_color_picker_row ( 3, 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
 echo '</tr>';
-print_config_table_row ();
-print_config_table_category_col ( 2, 1, 'config_inact_row_BGColor' );
-print_config_table_color_picker_row ( 3, 'IgnIssBGColor', PLUGINS_USERPROJECTVIEW_IGNISSBGColor );
-echo '</tr>';
 
 if ( plugin_config_get ( 'CAmount' ) > 0 )
 {
