@@ -705,7 +705,16 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
       print_group_three_head_row ( $data_rows, $group_name );
       foreach ( $data_rows as $data_row )
       {
-         $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+         $assigned_project_id = $data_row[ 'assigned_project_id' ];
+         /** pass data row, if user has no access level */
+         if ( !check_user_has_level ( $assigned_project_id ) )
+         {
+            continue;
+         }
+         else
+         {
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+         }
       }
    }
    else
@@ -714,7 +723,16 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
       foreach ( $group as $data_row_index )
       {
          $data_row = $data_rows[ $data_row_index ];
-         $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+         $assigned_project_id = $data_row[ 'assigned_project_id' ];
+         /** pass data row, if user has no access level */
+         if ( !check_user_has_level ( $assigned_project_id ) )
+         {
+            continue;
+         }
+         else
+         {
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+         }
       }
    }
 

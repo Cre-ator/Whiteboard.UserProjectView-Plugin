@@ -212,6 +212,8 @@ function print_tbody ( $data_rows )
    $groups[ 3 ] = array ();
    $groups = assign_groups ( $groups, $data_rows );
 
+//   var_dump ( $data_rows, $groups );
+
    $group_three_data_rows = process_no_user_matchcodes ( $groups[ 3 ], $data_rows );
 
    echo '<tbody><form action="' . plugin_page ( 'UserProject_Option' ) . '" method="post">';
@@ -254,12 +256,21 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
          if ( $user_id == $head_row_user_id )
          {
             $data_row = $data_rows[ $data_row_index ];
-            if ( $counter )
+            $assigned_project_id = $data_row[ 'assigned_project_id' ];
+            /** pass data row, if user has no access level */
+            if ( !check_user_has_level ( $assigned_project_id ) )
             {
-               print_user_head_row ( $head_row, $data_row );
-               $counter = false;
+               continue;
             }
-            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0 );
+            else
+            {
+               if ( $counter )
+               {
+                  print_user_head_row ( $head_row, $data_row );
+                  $counter = false;
+               }
+               $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0 );
+            }
          }
       }
    }
@@ -285,49 +296,73 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
       $stat_issue_count_without_ignored[ $stat_index ] = 0;
    }
 
+   $user_has_level_for_projects_in_group = true;
    foreach ( $group as $data_row_index )
    {
       $data_row = $data_rows[ $data_row_index ];
-      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      /** project is lowest level and user has no level in this project
+       *  -> there is no relevant data
+       */
+      if ( ( empty( project_hierarchy_get_all_subprojects ( helper_get_current_project () ) ) )
+         && ( !check_user_has_level ( helper_get_current_project () ) )
+      )
       {
-         $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
-         $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
-         /** Group 0 - ignore issue count for ignored status */
-         if ( $group_index == 0 )
-         {
-            if ( $stat_spec_status_ign == ON )
-            {
-               $stat_issue_count_with_ignored[ $stat_index ] += 0;
-            }
-            else
-            {
-               $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
-            }
-         }
-         /** Group 3 - ignore issue count for valid status */
-         elseif ( $group_index == 3 )
-         {
-            if ( $stat_spec_status_ign == OFF )
-            {
-               $stat_issue_count_with_ignored[ $stat_index ] += 0;
-            }
-            else
-            {
-               $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
-            }
-         }
-         /** other groups - get issue count for all status */
-         else
-         {
-            $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
-         }
+         $user_has_level_for_projects_in_group = false;
+      }
 
-         $stat_issue_count_without_ignored[ $stat_index ] += $spec_stat_issue_count;
+      /** pass data row, if user has no access level */
+      $assigned_project_id = $data_row[ 'assigned_project_id' ];
+      if ( !check_user_has_level ( $assigned_project_id ) )
+      {
+         continue;
+      }
+      else
+      {
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+         {
+            $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
+            $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+            /** Group 0 - ignore issue count for ignored status */
+            if ( $group_index == 0 )
+            {
+               if ( $stat_spec_status_ign == ON )
+               {
+                  $stat_issue_count_with_ignored[ $stat_index ] += 0;
+               }
+               else
+               {
+                  $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
+               }
+            }
+            /** Group 3 - ignore issue count for valid status */
+            elseif ( $group_index == 3 )
+            {
+               if ( $stat_spec_status_ign == OFF )
+               {
+                  $stat_issue_count_with_ignored[ $stat_index ] += 0;
+               }
+               else
+               {
+                  $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
+               }
+            }
+            /** other groups - get issue count for all status */
+            else
+            {
+               $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
+            }
+
+            $stat_issue_count_without_ignored[ $stat_index ] += $spec_stat_issue_count;
+         }
       }
    }
 
-   if ( ( ( !empty( $group ) ) && ( array_sum ( $stat_issue_count_without_ignored ) > 0 ) )
-      || ( ( !empty( $group ) ) && ( $group_index == 1 ) )
+   if ( ( ( !empty( $group ) )
+         && ( array_sum ( $stat_issue_count_without_ignored ) > 0 )
+         && ( $user_has_level_for_projects_in_group ) )
+      || ( ( !empty( $group ) )
+         && ( $group_index == 1 )
+         && ( $user_has_level_for_projects_in_group ) )
    )
    {
       ?>
@@ -383,31 +418,39 @@ function print_group_three_head_row ( $data_rows, $group_name )
 
    foreach ( $data_rows as $data_row )
    {
-      for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+      /** pass data row, if user has no access level */
+      $assigned_project_id = $data_row[ 'assigned_project_id' ];
+      if ( !check_user_has_level ( $assigned_project_id ) )
       {
-         $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
-         $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
-         if ( $stat_spec_status_ign == OFF )
+         continue;
+      }
+      else
+      {
+         for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
          {
-            $databaseapi = new databaseapi();
-            $user_id = $data_row[ 'user_id' ];
-            $assigned_project_id = $data_row[ 'assigned_project_id' ];
-            $target_version_id = $data_row[ 'target_version_id' ];
-            $target_version = '';
-            $status = plugin_config_get ( 'CStatSelect' . $stat_index );
-            if ( strlen ( $target_version_id ) > 0 )
+            $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
+            $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+            if ( $stat_spec_status_ign == OFF )
             {
-               $target_version = version_get_field ( $target_version_id, 'version' );
+               $databaseapi = new databaseapi();
+               $user_id = $data_row[ 'user_id' ];
+               $target_version_id = $data_row[ 'target_version_id' ];
+               $target_version = '';
+               $status = plugin_config_get ( 'CStatSelect' . $stat_index );
+               if ( strlen ( $target_version_id ) > 0 )
+               {
+                  $target_version = version_get_field ( $target_version_id, 'version' );
+               }
+               /** Hole die IDs der Issues, die keinem User zugewiesen sind, und nicht ignoriert werden */
+               $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, 3 );
+               $stat_issue_count_with_ignored[ $stat_index ] += count ( $stat_spec_issue_ids );
             }
-            /** Hole die IDs der Issues, die keinem User zugewiesen sind, und nicht ignoriert werden */
-            $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, 3 );
-            $stat_issue_count_with_ignored[ $stat_index ] += count ( $stat_spec_issue_ids );
+            else
+            {
+               $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
+            }
+            $stat_issue_count_without_ignored[ $stat_index ] += $spec_stat_issue_count;
          }
-         else
-         {
-            $stat_issue_count_with_ignored[ $stat_index ] += $spec_stat_issue_count;
-         }
-         $stat_issue_count_without_ignored[ $stat_index ] += $spec_stat_issue_count;
       }
    }
 
@@ -450,9 +493,8 @@ function print_group_three_head_row ( $data_rows, $group_name )
 function print_user_head_row ( $head_row, $data_row )
 {
    $user_id = $data_row[ 'user_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    $stat_issue_count = $head_row[ 1 ];
-   if ( ( array_sum ( $stat_issue_count ) > 0 ) && ( check_user_has_level ( $assigned_project_id ) ) )
+   if ( ( array_sum ( $stat_issue_count ) > 0 ) )
    {
       $filter_string = '<a href="search.php?' . generate_status_link () .
          '&amp;handler_id=' . get_link_user_id ( $user_id ) .
