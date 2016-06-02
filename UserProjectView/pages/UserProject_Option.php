@@ -206,11 +206,15 @@ function print_option_realname_col ( $user_id )
 
 function print_option_project_row ( $user_id, $project_id )
 {
-   echo '<tr class="info" data-level="1" data-status="0">';
-   echo '<input type="hidden" name="recordset[]" value="' . $user_id . ',' . $project_id . '"/>';
-   echo '<td width="20px"></td>';
-   echo '<td class="user_row_bg" style="text-align: left" colspan="3">' . project_get_name ( $project_id ) . '</td>';
-   echo '</tr>';
+   $access_level = user_get_access_level ( auth_get_current_user_id (), $project_id );
+   if ( $access_level >= plugin_config_get ( 'UserProjectAccessLevel' ) )
+   {
+      echo '<tr class="info" data-level="1" data-status="0">';
+      echo '<input type="hidden" name="recordset[]" value="' . $user_id . ',' . $project_id . '"/>';
+      echo '<td width="20px"></td>';
+      echo '<td class="user_row_bg" style="text-align: left" colspan="3">' . project_get_name ( $project_id ) . '</td>';
+      echo '</tr>';
+   }
 }
 
 function print_option_submit_button ()

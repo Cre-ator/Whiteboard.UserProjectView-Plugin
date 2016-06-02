@@ -400,7 +400,7 @@ function print_group_three_head_row ( $data_rows, $group_name )
                $target_version = version_get_field ( $target_version_id, 'version' );
             }
             /** Hole die IDs der Issues, die keinem User zugewiesen sind, und nicht ignoriert werden */
-            $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, $group_index );
+            $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, 3 );
             $stat_issue_count_with_ignored[ $stat_index ] += count ( $stat_spec_issue_ids );
          }
          else
@@ -1159,14 +1159,31 @@ function print_remark ( $data_row, $group_index, $print )
 function print_option_panel ( $stat_issue_count )
 {
    global $print;
-   $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
+   $user_has_level = false;
+   $project_ids = array ();
+   $current_project_id = helper_get_current_project ();
+   array_push ( $project_ids, $current_project_id );
+   $sub_project_ids = project_hierarchy_get_all_subprojects ( $current_project_id );
+   foreach ( $sub_project_ids as $sub_project_id )
+   {
+      array_push ( $project_ids, $sub_project_id );
+   }
+
+   foreach ( $project_ids as $project_id )
+   {
+      $access_level = user_get_access_level ( auth_get_current_user_id (), $project_id );
+      if ( $access_level >= plugin_config_get ( 'UserProjectAccessLevel' ) )
+      {
+         $user_has_level = true;
+      }
+   }
    ?>
    <tr>
       <td colspan="<?php echo get_project_hierarchy_spec_colspan ( 6, true ); ?>">
          <?php
          if ( !$print )
          {
-            if ( $access_level >= plugin_config_get ( 'UserProjectAccessLevel' ) )
+            if ( $user_has_level )
             {
                ?>
                <label for="option"></label>
