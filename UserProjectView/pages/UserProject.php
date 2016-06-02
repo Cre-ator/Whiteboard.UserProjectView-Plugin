@@ -291,10 +291,11 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
       for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
       {
          $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
+         $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
          /** Group 0 - ignore issue count for ignored status */
          if ( $group_index == 0 )
          {
-            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON ) )
+            if ( $stat_spec_status_ign == ON )
             {
                $stat_issue_count_with_ignored[ $stat_index ] += 0;
             }
@@ -306,7 +307,7 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
          /** Group 3 - ignore issue count for valid status */
          elseif ( $group_index == 3 )
          {
-            if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF ) )
+            if ( $stat_spec_status_ign == OFF )
             {
                $stat_issue_count_with_ignored[ $stat_index ] += 0;
             }
@@ -385,9 +386,22 @@ function print_group_three_head_row ( $data_rows, $group_name )
       for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
       {
          $spec_stat_issue_count = $data_row[ 'stat_col' . $stat_index ];
-         if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF ) )
+         $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+         if ( $stat_spec_status_ign == OFF )
          {
-            $stat_issue_count_with_ignored[ $stat_index ] += 0;
+            $databaseapi = new databaseapi();
+            $user_id = $data_row[ 'user_id' ];
+            $assigned_project_id = $data_row[ 'assigned_project_id' ];
+            $target_version_id = $data_row[ 'target_version_id' ];
+            $target_version = '';
+            $status = plugin_config_get ( 'CStatSelect' . $stat_index );
+            if ( strlen ( $target_version_id ) > 0 )
+            {
+               $target_version = version_get_field ( $target_version_id, 'version' );
+            }
+            /** Hole die IDs der Issues, die keinem User zugewiesen sind, und nicht ignoriert werden */
+            $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, $group_index );
+            $stat_issue_count_with_ignored[ $stat_index ] += count ( $stat_spec_issue_ids );
          }
          else
          {
@@ -1049,8 +1063,8 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $p
 
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      $data_row_stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
-      $temp_stat_issue_count = calc_group_spec_amount ( $group_index, $user_id, $data_row_stat_spec_issue_count, $stat_index );
+      $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+      $temp_stat_issue_count = calc_group_spec_amount ( $data_row, $group_index, $stat_index );
       $stat_issue_count_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
       $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
       $stat_issue_count[ $stat_index ] += $temp_stat_issue_count;
@@ -1088,7 +1102,9 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $p
          $filter_string = '<a href="search.php?project_id=' . $assigned_project_id .
             '&amp;status_id=' . $stat_status_id;
 
-         if ( $group_index != 3 )
+         if ( ( $group_index != 3 )
+            || ( ( $stat_spec_status_ign == OFF ) && ( $group_index == 3 ) )
+         )
          {
             $filter_string .= '&amp;handler_id=' . get_link_user_id ( $data_row[ 'user_id' ] );
          }

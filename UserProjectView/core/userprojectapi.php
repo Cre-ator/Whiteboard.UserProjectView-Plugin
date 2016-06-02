@@ -899,48 +899,63 @@ function get_cell_highlighting ( $data_row, $colspan, $class )
 }
 
 /**
+ * @param $data_row
  * @param $group_index
- * @param $user_id
- * @param $additional_amount
  * @param $stat_index
  * @return int
  */
-function calc_group_spec_amount ( $group_index, $user_id, $additional_amount, $stat_index )
+function calc_group_spec_amount ( $data_row, $group_index, $stat_index )
 {
+   $user_id = $data_row[ 'user_id' ];
+   $data_row_stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
+   $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
+
    if ( $group_index == 0 )
    {
       /** Group 0 - ignore issue count for ignored status */
-      if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
+      if ( ( $stat_spec_status_ign == ON )
          && ( check_user_id_is_enabled ( $user_id ) )
       )
       {
-         $temp_stat_issue_count = 0;
+         $stat_issue_count = 0;
       }
       /** Group 2 - ignore issue count for valid status */
       else
       {
-         $temp_stat_issue_count = $additional_amount;
+         $stat_issue_count = $data_row_stat_spec_issue_count;
       }
    }
    /** Group 3 - ignore issue count for valid status */
    elseif ( $group_index == 3 )
    {
-      if ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF )
+      if ( $stat_spec_status_ign == OFF )
       {
-         $temp_stat_issue_count = 0;
+         $databaseapi = new databaseapi();
+         $user_id = $data_row[ 'user_id' ];
+         $assigned_project_id = $data_row[ 'assigned_project_id' ];
+         $target_version_id = $data_row[ 'target_version_id' ];
+         $target_version = '';
+         $status = plugin_config_get ( 'CStatSelect' . $stat_index );
+         if ( strlen ( $target_version_id ) > 0 )
+         {
+            $target_version = version_get_field ( $target_version_id, 'version' );
+         }
+         /** Hole die IDs der Issues, die keinem User zugewiesen sind, und nicht ignoriert werden */
+         $stat_spec_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $status, $stat_spec_status_ign, $group_index );
+         $stat_issue_count = count ( $stat_spec_issue_ids );
       }
       else
       {
-         $temp_stat_issue_count = $additional_amount;
+         $stat_issue_count = $data_row_stat_spec_issue_count;
       }
    }
    /** other groups - get issue count for all status */
    else
    {
-      $temp_stat_issue_count = $additional_amount;
+      $stat_issue_count = $data_row_stat_spec_issue_count;
    }
 
-   return $temp_stat_issue_count;
+   return $stat_issue_count;
 }
 
 /**
