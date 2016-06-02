@@ -646,12 +646,7 @@ function print_user_row ( $data_row, $stat_issue_count, $group_index )
    if ( $print )
    {
       echo '<td></td>';
-
-      $no_user = get_no_user ( $user_id );
-      $no_issue = $data_row[ 'no_issue' ];
-      $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-      $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-      get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'nowrap' );
+      get_cell_highlighting ( $data_row, 1, 'nowrap' );
       echo '</td>';
    }
    else
@@ -819,17 +814,12 @@ function print_user_name ( $data_row )
 {
    $user_id = $data_row[ 'user_id' ];
    $user_name = '';
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    if ( $user_id > 0 )
    {
       $user_name = user_get_name ( $user_id );
    }
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'nowrap' );
+   get_cell_highlighting ( $data_row, 1, 'nowrap' );
    if ( check_user_id_is_valid ( $user_id ) )
    {
       echo $user_name;
@@ -850,17 +840,12 @@ function print_real_name ( $data_row )
 {
    $user_id = $data_row[ 'user_id' ];
    $real_name = '';
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
    if ( check_user_id_is_valid ( $user_id ) )
    {
       $real_name = user_get_realname ( $user_id );
    }
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'nowrap' );
+   get_cell_highlighting ( $data_row, 1, 'nowrap' );
    echo $real_name;
    echo '</td>';
 }
@@ -891,10 +876,6 @@ function print_layer_one_project ( $data_row, $print, $group_index )
       $layer_one_project_name = '';
    }
 
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
    $colspan = 1;
    if ( $group_index == 0 || $group_index == 3 )
@@ -906,7 +887,7 @@ function print_layer_one_project ( $data_row, $print, $group_index )
       $colspan = get_project_hierarchy_spec_colspan ( 2, false );
    }
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, 'normalwrap' );
+   get_cell_highlighting ( $data_row, $colspan, 'normalwrap' );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?' . generate_status_link () .
@@ -936,9 +917,6 @@ function print_version_layer_project ( $data_row, $print )
 {
    $databaseapi = new databaseapi();
    $user_id = $data_row[ 'user_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
    $target_version_id = $data_row[ 'target_version_id' ];
    $version_assigned_project_id = '';
    if ( $target_version_id != '' )
@@ -951,12 +929,9 @@ function print_version_layer_project ( $data_row, $print )
    {
       $version_assigned_project_name = '';
    }
-
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'normalwrap' );
+   get_cell_highlighting ( $data_row, 1, 'normalwrap' );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?' . generate_status_link () .
@@ -994,14 +969,9 @@ function print_bug_layer_project ( $data_row, $print )
    {
       $assigned_project_name = '';
    }
-
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'normalwrap' );
+   get_cell_highlighting ( $data_row, 1, 'normalwrap' );
    if ( access_has_global_level ( $access_level ) && !$print )
    {
       echo '<a href="search.php?' . generate_status_link () .
@@ -1039,13 +1009,9 @@ function print_target_version ( $data_row, $print )
       $target_version = version_get_field ( $target_version_id, 'version' );
       $target_version_date = date ( 'Y-m-d', version_get_field ( $target_version_id, 'date_order' ) );
    }
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
    $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
 
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'breakwordwrap' );
+   get_cell_highlighting ( $data_row, 1, 'breakwordwrap' );
    echo $target_version_date . ' ';
    if ( access_has_global_level ( $access_level ) && !$print )
    {
@@ -1079,59 +1045,13 @@ function print_target_version ( $data_row, $print )
  */
 function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $print )
 {
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   $target_version_id = $data_row[ 'target_version_id' ];
-   $target_version = '';
-   if ( strlen ( $target_version_id ) > 0 )
-   {
-      $target_version = version_get_field ( $target_version_id, 'version' );
-   }
-
-   $stat_issue_count_array = array ();
-   $issue_amount_thresholds = array ();
-   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-   {
-      $stat_issue_count_array[ $stat_index ] = $data_row[ 'stat_col' . $stat_index ];
-      $issue_amount_thresholds[ $stat_index ] = plugin_config_get ( 'IAMThreshold' . $stat_index );
-   }
-
    $user_id = $data_row[ 'user_id' ];
+
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      if ( $group_index == 0 )
-      {
-         /** Group 0 - ignore issue count for ignored status */
-         if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
-            && ( check_user_id_is_enabled ( $user_id ) )
-         )
-         {
-            $temp_stat_issue_count = 0;
-         }
-         /** Group 2 - ignore issue count for valid status */
-         else
-         {
-            $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
-         }
-      }
-      /** Group 3 - ignore issue count for valid status */
-      elseif ( $group_index == 3 )
-      {
-         if ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF )
-         {
-            $temp_stat_issue_count = 0;
-         }
-         else
-         {
-            $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
-         }
-      }
-      /** other groups - get issue count for all status */
-      else
-      {
-         $temp_stat_issue_count = $stat_issue_count_array[ $stat_index ];
-      }
-
-      $stat_issue_amount_threshold = $issue_amount_thresholds[ $stat_index ];
+      $data_row_stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
+      $temp_stat_issue_count = calc_group_spec_amount ( $group_index, $user_id, $data_row_stat_spec_issue_count, $stat_index );
+      $stat_issue_count_threshold = plugin_config_get ( 'IAMThreshold' . $stat_index );
       $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
       $stat_issue_count[ $stat_index ] += $temp_stat_issue_count;
       /** group 2 -> mark all cells where issue count > 0 */
@@ -1145,7 +1065,7 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $p
       /** group 0, 1, 3 -> mark cell if threshold is reached */
       else
       {
-         if ( ( $stat_issue_amount_threshold <= $temp_stat_issue_count ) && ( $stat_issue_amount_threshold > 0 ) )
+         if ( ( $stat_issue_count_threshold <= $temp_stat_issue_count ) && ( $stat_issue_count_threshold > 0 ) )
          {
             echo '<td style="background-color:' . plugin_config_get ( 'TAMHBGColor' ) . '">';
          }
@@ -1157,15 +1077,30 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $p
 
       if ( !$print && ( $temp_stat_issue_count > 0 ) )
       {
-         echo '<a href="search.php?project_id=' . $assigned_project_id .
-            '&amp;status_id=' . $stat_status_id .
-            '&amp;handler_id=' . get_link_user_id ( $data_row[ 'user_id' ] ) .
-            '&amp;sticky_issues=on' .
+         $assigned_project_id = $data_row[ 'assigned_project_id' ];
+         $target_version_id = $data_row[ 'target_version_id' ];
+         $target_version = '';
+         if ( strlen ( $target_version_id ) > 0 )
+         {
+            $target_version = version_get_field ( $target_version_id, 'version' );
+         }
+
+         $filter_string = '<a href="search.php?project_id=' . $assigned_project_id .
+            '&amp;status_id=' . $stat_status_id;
+
+         if ( $group_index != 3 )
+         {
+            $filter_string .= '&amp;handler_id=' . get_link_user_id ( $data_row[ 'user_id' ] );
+         }
+
+         $filter_string .= '&amp;sticky_issues=on' .
             '&amp;target_version=' . $target_version .
             '&amp;sortby=last_updated' .
             '&amp;dir=DESC' .
             '&amp;hide_status_id=-2' .
             '&amp;match_type=0">';
+
+         echo $filter_string;
          echo $temp_stat_issue_count;
          echo '</a>';
       }
@@ -1188,96 +1123,13 @@ function print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $p
 function print_remark ( $data_row, $group_index, $print )
 {
    $user_id = $data_row[ 'user_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
-   $target_version_id = $data_row[ 'target_version_id' ];
-   $target_version = '';
-   if ( strlen ( $target_version_id ) > 0 )
-   {
-      $target_version = version_get_field ( $target_version_id, 'version' );
-   }
-   $no_user = get_no_user ( $user_id );
-   $no_issue = $data_row[ 'no_issue' ];
-
-   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
-   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
-
-   get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, 1, 'nowrap' );
-   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-   {
-      $stat_issue_age_threshold = plugin_config_get ( 'IAGThreshold' . $stat_index );
-      if ( $assigned_project_id == null )
-      {
-         continue;
-      }
-
-      $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
-      $databaseapi = new databaseapi();
-      $stat_issue_id_assoc_array = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_status_id );
-      $stat_issue_id_db_result = mysqli_fetch_row ( $stat_issue_id_assoc_array );
-      $stat_issue_ids = array ();
-      while ( $stat_issue_id = $stat_issue_id_db_result [ 0 ] )
-      {
-         $stat_issue_ids[] = $stat_issue_id;
-         $stat_issue_id_db_result = mysqli_fetch_row ( $stat_issue_id_assoc_array );
-      }
-
-      if ( $stat_issue_ids != null )
-      {
-         $stat_time_difference = calculate_time_difference ( $stat_issue_ids )[ 0 ];
-         $stat_oldest_issue_id = calculate_time_difference ( $stat_issue_ids )[ 1 ];
-
-         if ( $stat_time_difference > $stat_issue_age_threshold && !$print )
-         {
-            $stat_issue_id_db_result = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
-            echo '<a href="search.php?project_id=' . $assigned_project_id .
-               '&amp;search=' . $stat_oldest_issue_id .
-               '&amp;status_id=' . $stat_status_id .
-               '&amp;handler_id=' . get_link_user_id ( $user_id ) .
-               '&amp;sticky_issues=on' .
-               '&amp;target_version=' . $target_version .
-               '&amp;sortby=last_updated' .
-               '&amp;dir=DESC' .
-               '&amp;hide_status_id=-2' .
-               '&amp;match_type=0">';
-            echo $stat_issue_id_db_result [ $stat_status_id ] .
-               ' ' . plugin_lang_get ( 'remark_since' ) . ' ' . $stat_time_difference .
-               ' ' . plugin_lang_get ( 'remark_day' );
-            echo '<br/>';
-            echo '</a>';
-         }
-      }
-   }
-
-   if ( $unreachable_issue )
-   {
-      echo '<a href="search.php?project_id=' . $assigned_project_id .
-         prepare_filter_string ( $data_row, $group_index ) .
-         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
-         '&amp;sticky_issues=on' .
-         '&amp;target_version=' . $target_version .
-         '&amp;sortby=last_updated' .
-         '&amp;dir=DESC' .
-         '&amp;hide_status_id=-2' .
-         '&amp;match_type=0">';
-      echo wordwrap ( plugin_lang_get ( 'remark_noProject' ), 30, '<br />' );
-      echo '</a>';
-      echo '<br/>';
-   }
-   if ( $user_id > 0 )
-   {
-      if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
-      {
-         echo plugin_lang_get ( 'remark_IAUser' ) . '<br/>';
-      }
-   }
+   get_cell_highlighting ( $data_row, 1, 'nowrap' );
+   remark_old_issues ( $data_row, $print, $group_index );
+   remark_unreachable_issues ( $data_row, $group_index );
+   remark_inactive ( $user_id );
    if ( $group_index == 1 )
    {
-      $databaseapi = new databaseapi();
-      $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, helper_get_current_project () );
-      if ( is_null ( $user_is_assigned_to_project ) && helper_get_current_project () > 0 )
-      {
-         echo plugin_lang_get ( 'remark_noprojectassignment' );
-      }
+      remark_assigned_subprojects ( $user_id );
    }
    echo '</td>';
 }
@@ -1323,6 +1175,146 @@ function print_option_panel ( $stat_issue_count )
       <td></td>
    </tr>
    <?php
+}
+
+/**
+ * remark about issues, where last update is older than configured threshold
+ *
+ * @param $data_row
+ * @param $print
+ * @param $group_index
+ */
+function remark_old_issues ( $data_row, $print, $group_index )
+{
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $target_version_id = $data_row[ 'target_version_id' ];
+   $target_version = '';
+   if ( strlen ( $target_version_id ) > 0 )
+   {
+      $target_version = version_get_field ( $target_version_id, 'version' );
+   }
+
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      $stat_issue_age_threshold = plugin_config_get ( 'IAGThreshold' . $stat_index );
+      if ( $assigned_project_id == null )
+      {
+         continue;
+      }
+
+      $stat_ignore_status = plugin_config_get ( 'CStatIgn' . $stat_index );
+      $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+      $databaseapi = new databaseapi();
+
+      $stat_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_status_id, $stat_ignore_status, $group_index );
+
+      if ( !empty( $stat_issue_ids ) )
+      {
+         $stat_time_difference = calculate_time_difference ( $stat_issue_ids )[ 0 ];
+         $stat_oldest_issue_id = calculate_time_difference ( $stat_issue_ids )[ 1 ];
+
+         if ( ( $stat_time_difference > $stat_issue_age_threshold ) && !$print )
+         {
+            if ( ( $stat_ignore_status == OFF ) || ( $group_index == 3 ) )
+            {
+
+               $stat_enum = MantisEnum::getAssocArrayIndexedByValues ( lang_get ( 'status_enum_string' ) );
+
+               $filter_string = '<a href="search.php?project_id=' . $assigned_project_id .
+                  '&amp;search=' . $stat_oldest_issue_id .
+                  '&amp;status_id=' . $stat_status_id;
+
+               if ( $group_index != 3 )
+               {
+                  $filter_string .= '&amp;handler_id=' . get_link_user_id ( $user_id );
+               }
+
+               $filter_string .= '&amp;sticky_issues=on' .
+                  '&amp;target_version=' . $target_version .
+                  '&amp;sortby=last_updated' .
+                  '&amp;dir=DESC' .
+                  '&amp;hide_status_id=-2' .
+                  '&amp;match_type=0">';
+
+               echo $filter_string;
+               echo '"' . $stat_enum [ $stat_status_id ] . '"' .
+                  ' ' . plugin_lang_get ( 'remark_since' ) . ' ' . $stat_time_difference .
+                  ' ' . plugin_lang_get ( 'remark_day' );
+               echo '<br/>';
+               echo '</a>';
+            }
+         }
+      }
+   }
+}
+
+/**
+ * information about unreachable issues cause of missing project assignment
+ *
+ * @param $data_row
+ * @param $group_index
+ */
+function remark_unreachable_issues ( $data_row, $group_index )
+{
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
+   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
+
+   if ( $unreachable_issue )
+   {
+      $target_version_id = $data_row[ 'target_version_id' ];
+      $target_version = '';
+      if ( strlen ( $target_version_id ) > 0 )
+      {
+         $target_version = version_get_field ( $target_version_id, 'version' );
+      }
+
+      echo '<a href="search.php?project_id=' . $assigned_project_id .
+         prepare_filter_string ( $data_row, $group_index ) .
+         '&amp;handler_id=' . get_link_user_id ( $user_id ) .
+         '&amp;sticky_issues=on' .
+         '&amp;target_version=' . $target_version .
+         '&amp;sortby=last_updated' .
+         '&amp;dir=DESC' .
+         '&amp;hide_status_id=-2' .
+         '&amp;match_type=0">';
+      echo wordwrap ( plugin_lang_get ( 'remark_noProject' ), 30, '<br />' );
+      echo '</a>';
+      echo '<br/>';
+   }
+}
+
+/**
+ * information about inactive / deleted users
+ *
+ * @param $user_id
+ */
+function remark_inactive ( $user_id )
+{
+   if ( $user_id > 0 )
+   {
+      if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
+      {
+         echo plugin_lang_get ( 'remark_IAUser' ) . '<br/>';
+      }
+   }
+}
+
+/**
+ * information if user in group one is just assigned to subprojects
+ *
+ * @param $user_id
+ */
+function remark_assigned_subprojects ( $user_id )
+{
+   $databaseapi = new databaseapi();
+   $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, helper_get_current_project () );
+   if ( is_null ( $user_is_assigned_to_project ) && helper_get_current_project () > 0 )
+   {
+      echo plugin_lang_get ( 'remark_noprojectassignment' );
+   }
 }
 
 /** ***************************************************************************************************************** */

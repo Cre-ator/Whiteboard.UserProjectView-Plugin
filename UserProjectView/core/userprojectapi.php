@@ -703,7 +703,7 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
    if ( $group_index == 3 )
    {
       print_group_three_head_row ( $data_rows, $group_name );
-      foreach ($data_rows as $data_row)
+      foreach ( $data_rows as $data_row )
       {
          $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
       }
@@ -854,15 +854,20 @@ function prepare_user_project_remove_group ( $selected_values )
 /**
  * Get the specific cell colour  for each situation (no issues, etc.. )
  *
- * @param $user_id
- * @param $no_user
- * @param $no_issue
- * @param $unreachable_issue
+ * @param $data_row
  * @param $colspan
  * @param $class
  */
-function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_issue, $colspan, $class )
+function get_cell_highlighting ( $data_row, $colspan, $class )
 {
+   $user_id = $data_row[ 'user_id' ];
+   $no_user = get_no_user ( $user_id );
+   $no_issue = $data_row[ 'no_issue' ];
+
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
+   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
+
    if (
       ( !user_exists ( $user_id ) && !$no_user ) ||
       ( check_user_id_is_valid ( $user_id ) && !check_user_id_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
@@ -891,6 +896,51 @@ function get_cell_highlighting ( $user_id, $no_user, $no_issue, $unreachable_iss
       echo '<td class="' . $class . '" colspan="' . $colspan .
          '" style="background-color: #e0e0e0">';
    }
+}
+
+/**
+ * @param $group_index
+ * @param $user_id
+ * @param $additional_amount
+ * @param $stat_index
+ * @return int
+ */
+function calc_group_spec_amount ( $group_index, $user_id, $additional_amount, $stat_index )
+{
+   if ( $group_index == 0 )
+   {
+      /** Group 0 - ignore issue count for ignored status */
+      if ( ( plugin_config_get ( 'CStatIgn' . $stat_index ) == ON )
+         && ( check_user_id_is_enabled ( $user_id ) )
+      )
+      {
+         $temp_stat_issue_count = 0;
+      }
+      /** Group 2 - ignore issue count for valid status */
+      else
+      {
+         $temp_stat_issue_count = $additional_amount;
+      }
+   }
+   /** Group 3 - ignore issue count for valid status */
+   elseif ( $group_index == 3 )
+   {
+      if ( plugin_config_get ( 'CStatIgn' . $stat_index ) == OFF )
+      {
+         $temp_stat_issue_count = 0;
+      }
+      else
+      {
+         $temp_stat_issue_count = $additional_amount;
+      }
+   }
+   /** other groups - get issue count for all status */
+   else
+   {
+      $temp_stat_issue_count = $additional_amount;
+   }
+
+   return $temp_stat_issue_count;
 }
 
 /**
