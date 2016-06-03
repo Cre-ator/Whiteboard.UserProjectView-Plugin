@@ -779,17 +779,16 @@ function create_information_flag_array ( $group, $data_rows )
  * @param $user_id
  * @return bool
  */
-function check_information_flag_array( $information_flag_array, $user_id )
+function check_information_flag_array ( $information_flag_array, $user_id )
 {
    foreach ( $information_flag_array as $information_hash )
    {
-      if ( $information_hash[ 'user_id' ] == $user_id )
+      $information_hash_flag = $information_hash[ 'information_flag' ];
+      if ( ( $information_hash[ 'user_id' ] == $user_id )
+         && ( $information_hash_flag == true )
+      )
       {
-         $information_hash_flag = $information_hash[ 'information_flag' ];
-         if ( $information_hash_flag == true )
-         {
-            return true;
-         }
+         return true;
       }
    }
 
@@ -894,7 +893,9 @@ function check_remark_inactive ( $data_row )
    $inactive = false;
    if ( $user_id > 0 )
    {
-      if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
+      if ( !user_exists ( $user_id )
+         || !check_user_id_is_enabled ( $user_id )
+      )
       {
          $inactive = true;
       }
@@ -1072,9 +1073,8 @@ function get_cell_highlighting ( $data_row, $colspan, $class )
    $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
    $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
 
-   if (
-      ( !user_exists ( $user_id ) && !$no_user ) ||
-      ( check_user_id_is_valid ( $user_id ) && !check_user_id_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
+   if ( ( !user_exists ( $user_id ) && !$no_user )
+      || ( check_user_id_is_valid ( $user_id ) && !check_user_id_is_enabled ( $user_id ) && plugin_config_get ( 'IAUHighlighting' ) )
    )
    {
       echo '<td class="' . $class . '" colspan="' . $colspan .
@@ -1304,7 +1304,9 @@ function get_assigned_to_project ( $user_id, $assigned_project_id )
 {
    $databaseapi = new databaseapi();
    $assigned_user_id = '0';
-   if ( check_user_id_is_valid ( $user_id ) && $assigned_project_id != '' )
+   if ( check_user_id_is_valid ( $user_id )
+      && ( $assigned_project_id != '' )
+   )
    {
       if ( !user_is_administrator ( $user_id ) )
       {
@@ -1324,7 +1326,9 @@ function get_assigned_to_project ( $user_id, $assigned_project_id )
 function get_unreachable_issue ( $assigned_to_project )
 {
    $unreachable_issue = false;
-   if ( is_null ( $assigned_to_project ) || $assigned_to_project == '' )
+   if ( is_null ( $assigned_to_project )
+      || ( $assigned_to_project == '' )
+   )
    {
       $unreachable_issue = true;
    }
@@ -1343,11 +1347,15 @@ function get_unreachable_issue ( $assigned_to_project )
 function get_parent_project_id ( $project_id, $assigned_project_id, $main_project_id )
 {
    $parent_project_id = '';
-   if ( $assigned_project_id == '' && $main_project_id == '' )
+   if ( ( $assigned_project_id == '' )
+      && ( $main_project_id == '' )
+   )
    {
       $parent_project_id = $project_id;
    }
-   elseif ( $assigned_project_id == '' && $main_project_id != '' )
+   elseif ( ( $assigned_project_id == '' )
+      && ( $main_project_id != '' )
+   )
    {
       $parent_project_id = $main_project_id;
    }
@@ -1413,7 +1421,9 @@ function calculate_time_difference ( $stat_issue_ids )
  */
 function validate_assigned_project_id ( $main_project_id, $assigned_project_id )
 {
-   if ( strlen ( $assigned_project_id ) == 0 && !is_null ( $main_project_id ) )
+   if ( ( strlen ( $assigned_project_id ) == 0 )
+      && ( is_null ( $main_project_id ) == false )
+   )
    {
       $assigned_project_id = $main_project_id;
    }

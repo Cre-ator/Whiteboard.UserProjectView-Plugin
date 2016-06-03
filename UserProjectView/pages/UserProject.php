@@ -4,7 +4,6 @@ require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
-
 $print = false;
 if ( isset( $_POST[ 'print' ] ) )
 {
@@ -266,7 +265,7 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
             else
             {
                /** information flag is true, if any data row contains information text */
-               $information_flag = check_information_flag_array( $information_flag_array, $user_id );
+               $information_flag = check_information_flag_array ( $information_flag_array, $user_id );
                if ( !$user_head_row_printed )
                {
                   print_user_head_row ( $head_row, $data_row, $information_flag );
@@ -523,8 +522,11 @@ function print_user_head_row_avatar ( $user_id, $filter_string )
    global $print;
    if ( plugin_config_get ( 'ShowAvatar' ) && config_get ( 'show_avatar' ) )
    {
+      $user_global_access_level = user_get_field ( auth_get_current_user_id (), 'access_level' );
       echo '<td class="group_row_bg" align = "center" style = "max-width:25px;" >';
-      if ( check_user_id_is_valid ( $user_id ) )
+      if ( check_user_id_is_valid ( $user_id )
+         && ( $user_global_access_level >= config_get ( 'show_avatar_threshold' ) )
+      )
       {
          $avatar = user_get_avatar ( $user_id );
          if ( $print )
@@ -768,6 +770,7 @@ function print_chackbox ( $data_row )
 function print_user_avatar ( $data_row, $group_index )
 {
    $user_id = $data_row[ 'user_id' ];
+   $user_global_access_level = user_get_field ( auth_get_current_user_id (), 'access_level' );
    $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -812,7 +815,9 @@ function print_user_avatar ( $data_row, $group_index )
                   '&amp;match_type=0">';
             }
 
-            if ( config_get ( 'show_avatar' ) )
+            if ( config_get ( 'show_avatar' )
+               && ( $user_global_access_level >= config_get ( 'show_avatar_threshold' ) )
+            )
             {
                if ( $user_id > 0 )
                {
