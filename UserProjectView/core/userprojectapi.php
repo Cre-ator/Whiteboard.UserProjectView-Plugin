@@ -746,6 +746,164 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
 }
 
 /**
+ * fills an array with information flags for each user row
+ *
+ * @param $group
+ * @param $data_rows
+ * @return array
+ */
+function create_information_flag_array ( $group, $data_rows )
+{
+   $information_flag_array = array ();
+   for ( $group_index = 0; $group_index < count ( $group ); $group_index++ )
+   {
+      $data_row_index = $group[ $group_index ];
+      $user_id = $data_rows[ $data_row_index ][ 'user_id' ];
+      $data_row = $data_rows[ $data_row_index ];
+
+      $information_flag_array[ $group_index ][ 'user_id' ] = $user_id;
+      $information_flag_array[ $group_index ][ 'information_flag' ] = false;
+      if ( check_remark ( $data_row ) )
+      {
+         $information_flag_array[ $group_index ][ 'information_flag' ] = true;
+      }
+   }
+
+   return $information_flag_array;
+}
+
+/**
+ * returns true, if one data row by a specific user_id has information
+ *
+ * @param $information_flag_array
+ * @param $user_id
+ * @return bool
+ */
+function check_information_flag_array( $information_flag_array, $user_id )
+{
+   foreach ( $information_flag_array as $information_hash )
+   {
+      if ( $information_hash[ 'user_id' ] == $user_id )
+      {
+         $information_hash_flag = $information_hash[ 'information_flag' ];
+         if ( $information_hash_flag == true )
+         {
+            return true;
+         }
+      }
+   }
+
+   return false;
+}
+
+/**
+ * check the user row for any remarks.
+ * returns true, if > 0 remarks will be displayed.
+ *
+ * @param $data_row
+ * @return bool
+ */
+function check_remark ( $data_row )
+{
+   /** old-issue information */
+   $old_issues = check_remark_old_issues ( $data_row );
+   /** unreachable issue information */
+   $unreachable_issues = check_remark_unreachable_issues ( $data_row );
+   /** invalid / deleted user information */
+   $inactive = check_remark_inactive ( $data_row );
+
+   return ( $old_issues || $unreachable_issues || $inactive );
+}
+
+/**
+ * check if there are old issues
+ *
+ * @param $data_row
+ * @return bool
+ */
+function check_remark_old_issues ( $data_row )
+{
+   $old_issues = false;
+   $databaseapi = new databaseapi();
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $target_version_id = $data_row[ 'target_version_id' ];
+   $target_version = '';
+   if ( strlen ( $target_version_id ) > 0 )
+   {
+      $target_version = version_get_field ( $target_version_id, 'version' );
+   }
+
+   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
+   {
+      if ( $assigned_project_id == null )
+      {
+         continue;
+      }
+
+      $stat_issue_age_threshold = plugin_config_get ( 'IAGThreshold' . $stat_index );
+      $stat_ignore_status = plugin_config_get ( 'CStatIgn' . $stat_index );
+      $stat_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+      $stat_issue_ids = $databaseapi->get_issues_by_user_project_version_status ( $user_id, $assigned_project_id, $target_version, $stat_status_id, $stat_ignore_status, 0 );
+      if ( !empty( $stat_issue_ids ) )
+      {
+         $stat_time_difference = calculate_time_difference ( $stat_issue_ids )[ 0 ];
+         if ( $stat_time_difference > $stat_issue_age_threshold )
+         {
+            if ( ( $stat_ignore_status == OFF ) )
+            {
+               $old_issues = true;
+            }
+         }
+      }
+   }
+
+   return $old_issues;
+}
+
+/**
+ * checks if there are unreachable issues
+ *
+ * @param $data_row
+ * @return bool
+ */
+function check_remark_unreachable_issues ( $data_row )
+{
+   $unreachable_issues = false;
+   $user_id = $data_row[ 'user_id' ];
+   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   $assigned_to_project = get_assigned_to_project ( $user_id, $assigned_project_id );
+   $unreachable_issue = get_unreachable_issue ( $assigned_to_project );
+   if ( $unreachable_issue )
+   {
+      $unreachable_issues = true;
+   }
+
+   return $unreachable_issues;
+}
+
+/**
+ * check if user is inactive
+ *
+ * @param $data_row
+ * @return bool
+ */
+function check_remark_inactive ( $data_row )
+{
+   $user_id = $data_row[ 'user_id' ];
+   $inactive = false;
+   if ( $user_id > 0 )
+   {
+      if ( !user_exists ( $user_id ) || !check_user_id_is_enabled ( $user_id ) )
+      {
+         $inactive = true;
+      }
+   }
+
+   return $inactive;
+}
+
+/**
  * check to the currently selected project, if the user has permission in current or any subproject
  *
  * @return bool

@@ -245,12 +245,15 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
    $head_rows_array = calculate_user_head_rows ( $data_rows, $valid_flag );
    foreach ( $head_rows_array as $head_row )
    {
+      /** get information flag with specific user_id for each data row */
+      $information_flag_array = create_information_flag_array ( $group, $data_rows );
       $head_row_user_id = $head_row[ 0 ];
-      $counter = true;
+      $user_head_row_printed = false;
       for ( $group_index = 0; $group_index < count ( $group ); $group_index++ )
       {
          $data_row_index = $group[ $group_index ];
          $user_id = $data_rows[ $data_row_index ][ 'user_id' ];
+
          if ( $user_id == $head_row_user_id )
          {
             $data_row = $data_rows[ $data_row_index ];
@@ -262,10 +265,12 @@ function process_user_row_group ( $group, $data_rows, $stat_issue_count, $group_
             }
             else
             {
-               if ( $counter )
+               /** information flag is true, if any data row contains information text */
+               $information_flag = check_information_flag_array( $information_flag_array, $user_id );
+               if ( !$user_head_row_printed )
                {
-                  print_user_head_row ( $head_row, $data_row );
-                  $counter = false;
+                  print_user_head_row ( $head_row, $data_row, $information_flag );
+                  $user_head_row_printed = true;
                }
                $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, 0 );
             }
@@ -477,8 +482,9 @@ function print_group_three_head_row ( $data_rows, $group_name )
  *
  * @param $head_row
  * @param $data_row
+ * @param $information_flag
  */
-function print_user_head_row ( $head_row, $data_row )
+function print_user_head_row ( $head_row, $data_row, $information_flag )
 {
    $user_id = $data_row[ 'user_id' ];
    $stat_issue_count = $head_row[ 1 ];
@@ -498,7 +504,12 @@ function print_user_head_row ( $head_row, $data_row )
       print_user_head_row_realname ( $user_id, $filter_string );
       echo '<td class="group_row_bg" colspan="' . get_project_hierarchy_spec_colspan ( 2, false ) . '"></td>';
       print_user_head_row_amountofissues ( $user_id, $stat_issue_count );
-      echo '<td class="group_row_bg"></td>';
+      echo '<td class="group_row_bg">';
+      if ( $information_flag )
+      {
+         echo '***';
+      }
+      echo '</td>';
       echo '</tr>';
    }
 }
