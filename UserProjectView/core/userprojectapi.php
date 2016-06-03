@@ -700,6 +700,7 @@ function calculate_user_head_rows ( $data_rows, $valid_flag )
  */
 function process_general_group ( $group, $data_rows, $stat_issue_count, $group_index, $group_name )
 {
+   /** group 3 */
    if ( $group_index == 3 )
    {
       print_group_three_head_row ( $data_rows, $group_name );
@@ -717,21 +718,36 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
          }
       }
    }
+   /** group 1 */
    else
    {
       print_group_head_row ( $group, $data_rows, $group_index, $group_name );
       foreach ( $group as $data_row_index )
       {
          $data_row = $data_rows[ $data_row_index ];
-         $assigned_project_id = $data_row[ 'assigned_project_id' ];
-         /** pass data row, if user has no access level */
-         if ( !check_user_has_level ( $assigned_project_id ) )
+         /** assigned_project_id is always null, so check current selected project and subprojects,
+          * if the user has permission to see info
+          */
+         $user_permission = false;
+         $current_project_id = helper_get_current_project ();
+         $sub_project_ids = project_hierarchy_get_all_subprojects ( $current_project_id );
+         array_push ( $sub_project_ids, $current_project_id );
+         foreach ( $sub_project_ids as $project_id )
          {
-            continue;
+            if ( check_user_has_level ( $project_id ) )
+            {
+               $user_permission = true;
+            }
+         }
+
+         /** pass data row, if user has no access level */
+         if ( $user_permission )
+         {
+            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
          }
          else
          {
-            $stat_issue_count = print_user_row ( $data_row, $stat_issue_count, $group_index );
+            continue;
          }
       }
    }
