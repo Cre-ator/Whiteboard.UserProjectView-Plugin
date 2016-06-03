@@ -293,25 +293,11 @@ function print_group_head_row ( $group, $data_rows, $group_index, $group_name )
       $stat_issue_count_with_ignored[ $stat_index ] = 0;
       $stat_issue_count_without_ignored[ $stat_index ] = 0;
    }
-
-   $user_permission = false;
+   /** check permission to any relevant project/subproject */
+   $user_permission = check_user_permission ();
    foreach ( $group as $data_row_index )
    {
       $data_row = $data_rows[ $data_row_index ];
-      /** project is lowest level and user has no level in this project
-       *  -> there is no relevant data
-       */
-      $current_project_id = helper_get_current_project ();
-      $sub_project_ids = project_hierarchy_get_all_subprojects ( $current_project_id );
-      array_push ( $sub_project_ids, $current_project_id );
-      foreach ( $sub_project_ids as $project_id )
-      {
-         if ( check_user_has_level ( $project_id ) )
-         {
-            $user_permission = true;
-         }
-      }
-
       /** pass data row, if user has no access level */
       $assigned_project_id = $data_row[ 'assigned_project_id' ];
       if ( check_user_has_level ( $assigned_project_id ) && $group_index != 1 )
@@ -665,88 +651,73 @@ function print_user_head_row_amountofissues ( $user_id, $stat_issue_count )
 function print_user_row ( $data_row, $stat_issue_count, $group_index )
 {
    global $print;
-   $continue_flag = true;
-   $user_id = $data_row[ 'user_id' ];
-   $assigned_project_id = $data_row[ 'assigned_project_id' ];
+   /** group 1 */
    if ( $group_index == 1 )
    {
-      $databaseapi = new databaseapi();
-      $sub_project_ids = project_hierarchy_get_all_subprojects ( helper_get_current_project () );
-      if ( helper_get_current_project () > 0 )
-      {
-         array_push ( $sub_project_ids, helper_get_current_project () );
-      }
-      foreach ( $sub_project_ids as $sub_project_id )
-      {
-         $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id );
-         if ( ( !is_null ( $user_is_assigned_to_project ) )
-            && ( check_user_has_level ( $sub_project_id ) )
-         )
-         {
-            $continue_flag = false;
-         }
-      }
-      if ( $continue_flag )
-      {
-         return $stat_issue_count;
-      }
+      /** assigned_project_id is always null, so check current selected project and subprojects,
+       * if the user has permission to see info
+       */
+      $user_permission = check_user_permission ();
    }
+   /** other groups */
    else
    {
-      if ( !check_user_has_level ( $assigned_project_id ) )
-      {
-         return $stat_issue_count;
-      }
+      $assigned_project_id = $data_row[ 'assigned_project_id' ];
+      $user_permission = check_user_has_level ( $assigned_project_id );
    }
 
-   echo '<tr class="info" data-level="2" data-status="1">';
-   echo '<td></td>';
-   if ( $print )
+   if ( $user_permission )
    {
+      echo '<tr class="info" data-level="2" data-status="1">';
       echo '<td></td>';
-      get_cell_highlighting ( $data_row, 1, 'nowrap' );
-      echo '</td>';
-   }
-   else
-   {
-      if ( $group_index == 1 )
+      if ( $print )
       {
-         print_chackbox ( $data_row );
+         echo '<td></td>';
+         get_cell_highlighting ( $data_row, 1, 'nowrap' );
+         echo '</td>';
       }
       else
       {
-         echo '<td></td>';
+         if ( $group_index == 1 )
+         {
+            print_chackbox ( $data_row );
+         }
+         else
+         {
+            echo '<td></td>';
+         }
+         print_user_avatar ( $data_row, $group_index );
       }
-      print_user_avatar ( $data_row, $group_index );
-   }
 
-   if ( $group_index == 1 )
-   {
-      print_user_name ( $data_row );
-      print_real_name ( $data_row );
-   }
-
-   print_layer_one_project ( $data_row, $print, $group_index );
-   $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project () );
-   if ( $group_index != 1 )
-   {
-      if ( $project_hierarchy_depth > 1 )
+      if ( $group_index == 1 )
       {
-         print_bug_layer_project ( $data_row, $print );
+         print_user_name ( $data_row );
+         print_real_name ( $data_row );
       }
 
-      if ( $project_hierarchy_depth > 2 )
+      print_layer_one_project ( $data_row, $print, $group_index );
+      $project_hierarchy_depth = get_project_hierarchy_depth ( helper_get_current_project () );
+      if ( $group_index != 1 )
       {
-         print_version_layer_project ( $data_row, $print );
-      }
+         if ( $project_hierarchy_depth > 1 )
+         {
+            print_bug_layer_project ( $data_row, $print );
+         }
 
-      print_target_version ( $data_row, $print );
+         if ( $project_hierarchy_depth > 2 )
+         {
+            print_version_layer_project ( $data_row, $print );
+         }
+
+         print_target_version ( $data_row, $print );
+      }
+      $stat_issue_count = print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $print );
+      print_remark ( $data_row, $group_index, $print );
+      echo '</tr>';
    }
-   $stat_issue_count = print_amount_of_issues ( $data_row, $group_index, $stat_issue_count, $print );
-   print_remark ( $data_row, $group_index, $print );
-   echo '</tr>';
 
    return $stat_issue_count;
+
 }
 
 /**
@@ -785,7 +756,6 @@ function print_chackbox ( $data_row )
  */
 function print_user_avatar ( $data_row, $group_index )
 {
-   $access_level = user_get_access_level ( auth_get_current_user_id (), helper_get_current_project () );
    $user_id = $data_row[ 'user_id' ];
    $no_user = get_no_user ( $user_id );
    $no_issue = $data_row[ 'no_issue' ];
@@ -821,7 +791,7 @@ function print_user_avatar ( $data_row, $group_index )
          }
          if ( user_exists ( $user_id ) )
          {
-            if ( access_has_global_level ( $access_level ) && $group_index != 1 )
+            if ( $group_index != 1 )
             {
                echo '<a href="search.php?' . generate_status_link () .
                   '&amp;handler_id=' . get_link_user_id ( $user_id ) .
@@ -831,7 +801,7 @@ function print_user_avatar ( $data_row, $group_index )
                   '&amp;match_type=0">';
             }
 
-            if ( config_get ( 'show_avatar' ) && $access_level >= config_get ( 'show_avatar_threshold' ) )
+            if ( config_get ( 'show_avatar' ) )
             {
                if ( $user_id > 0 )
                {
@@ -840,7 +810,7 @@ function print_user_avatar ( $data_row, $group_index )
                }
             }
 
-            if ( access_has_global_level ( $access_level ) && $group_index != 1 )
+            if ( $group_index != 1 )
             {
                echo '</a>';
             }

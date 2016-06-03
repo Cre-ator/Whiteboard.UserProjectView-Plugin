@@ -728,17 +728,7 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
          /** assigned_project_id is always null, so check current selected project and subprojects,
           * if the user has permission to see info
           */
-         $user_permission = false;
-         $current_project_id = helper_get_current_project ();
-         $sub_project_ids = project_hierarchy_get_all_subprojects ( $current_project_id );
-         array_push ( $sub_project_ids, $current_project_id );
-         foreach ( $sub_project_ids as $project_id )
-         {
-            if ( check_user_has_level ( $project_id ) )
-            {
-               $user_permission = true;
-            }
-         }
+         $user_permission = check_user_permission ();
 
          /** pass data row, if user has no access level */
          if ( $user_permission )
@@ -753,6 +743,28 @@ function process_general_group ( $group, $data_rows, $stat_issue_count, $group_i
    }
 
    return $stat_issue_count;
+}
+
+/**
+ * check to the currently selected project, if the user has permission in current or any subproject
+ *
+ * @return bool
+ */
+function check_user_permission ()
+{
+   $user_permission = false;
+   $current_project_id = helper_get_current_project ();
+   $sub_project_ids = project_hierarchy_get_all_subprojects ( $current_project_id );
+   array_push ( $sub_project_ids, $current_project_id );
+   foreach ( $sub_project_ids as $project_id )
+   {
+      if ( check_user_has_level ( $project_id ) )
+      {
+         $user_permission = true;
+      }
+   }
+
+   return $user_permission;
 }
 
 /**
