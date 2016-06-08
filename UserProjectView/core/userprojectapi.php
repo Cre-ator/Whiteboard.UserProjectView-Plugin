@@ -1174,22 +1174,34 @@ function prepare_filter_string ( $data_row, $group_index )
    $stat_spec_issue_counts = array ();
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
+      $user_id = $data_row[ 'user_id' ];
       $stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
       $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
 
+      /** group 0, 2 */
       if ( $group_index == 0 )
       {
-         if ( $stat_spec_status_ign == OFF )
+         /** user is valid - ignore ignored status */
+         if ( check_user_id_is_enabled ( $user_id ) )
+         {
+            if ( $stat_spec_status_ign == OFF )
+            {
+               $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
+            }
+            else
+            {
+               $stat_spec_issue_counts[ $stat_index ] = 0;
+            }
+         }
+         /** user is invalid -> group 2 - count all status */
+         else
          {
             $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
          }
-         else
-         {
-            $stat_spec_issue_counts[ $stat_index ] = 0;
-         }
-      }
 
-      if ( $group_index == 3 )
+      }
+      /** group 3 */
+      elseif ( $group_index == 3 )
       {
          if ( $stat_spec_status_ign == ON )
          {

@@ -16,7 +16,7 @@ $s_plugin_UserProjectView_remark_IAUser = 'L´utilisateur est inactif';
 $s_plugin_UserProjectView_remark_since = 'depuis';
 $s_plugin_UserProjectView_remark_day = 'Jours';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Show / Hide';
-$s_plugin_UserProjectView_remark_noprojectassignment = 'User is only assigned to at least one subproject.';
+$s_plugin_UserProjectView_remark_noprojectassignment = 'Only assigned to subproject';
 
 $s_plugin_UserProjectView_headrow_user = 'User with issues';
 $s_plugin_UserProjectView_headrow_no_issue = 'User without Issues';
