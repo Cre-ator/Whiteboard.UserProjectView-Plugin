@@ -1165,69 +1165,21 @@ function calc_group_spec_amount ( $data_row, $group_index, $stat_index )
 /**
  * Prepare a filter string which depends on the mantis version
  *
- * @param $data_row
- * @param $group_index
  * @return string
  */
-function prepare_filter_string ( $data_row, $group_index )
+function prepare_filter_string ()
 {
-   $stat_spec_issue_counts = array ();
-   for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
-   {
-      $user_id = $data_row[ 'user_id' ];
-      $stat_spec_issue_count = $data_row[ 'stat_col' . $stat_index ];
-      $stat_spec_status_ign = plugin_config_get ( 'CStatIgn' . $stat_index );
-
-      /** group 0, 2 */
-      if ( $group_index == 0 )
-      {
-         /** user is valid - ignore ignored status */
-         if ( check_user_id_is_enabled ( $user_id ) )
-         {
-            if ( $stat_spec_status_ign == OFF )
-            {
-               $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
-            }
-            else
-            {
-               $stat_spec_issue_counts[ $stat_index ] = 0;
-            }
-         }
-         /** user is invalid -> group 2 - count all status */
-         else
-         {
-            $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
-         }
-
-      }
-      /** group 3 */
-      elseif ( $group_index == 3 )
-      {
-         if ( $stat_spec_status_ign == ON )
-         {
-            $stat_spec_issue_counts[ $stat_index ] = $stat_spec_issue_count;
-         }
-         else
-         {
-            $stat_spec_issue_counts[ $stat_index ] = 0;
-         }
-      }
-   }
-
    $filter_string = '';
    for ( $stat_index = 1; $stat_index <= get_stat_count (); $stat_index++ )
    {
-      if ( $stat_spec_issue_counts[ $stat_index ] > 0 )
+      $stat_spec_issue_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
+      if ( is_mantis_rel () )
       {
-         $stat_spec_issue_status_id = plugin_config_get ( 'CStatSelect' . $stat_index );
-         if ( is_mantis_rel () )
-         {
-            $filter_string .= '&amp;status_id[]=' . $stat_spec_issue_status_id;
-         }
-         else
-         {
-            $filter_string .= '&amp;status[]=' . $stat_spec_issue_status_id;
-         }
+         $filter_string .= '&amp;status_id[]=' . $stat_spec_issue_status_id;
+      }
+      else
+      {
+         $filter_string .= '&amp;status[]=' . $stat_spec_issue_status_id;
       }
    }
    return $filter_string;

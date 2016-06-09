@@ -1171,7 +1171,7 @@ function print_remark ( $data_row, $group_index, $print )
    $user_id = $data_row[ 'user_id' ];
    get_cell_highlighting ( $data_row, 1, 'nowrap' );
    remark_old_issues ( $data_row, $print, $group_index );
-   remark_unreachable_issues ( $data_row, $group_index );
+   remark_unreachable_issues ( $data_row );
    remark_inactive ( $user_id );
    if ( $group_index == 1 )
    {
@@ -1316,9 +1316,8 @@ function remark_old_issues ( $data_row, $print, $group_index )
  * information about unreachable issues cause of missing project assignment
  *
  * @param $data_row
- * @param $group_index
  */
-function remark_unreachable_issues ( $data_row, $group_index )
+function remark_unreachable_issues ( $data_row )
 {
    $user_id = $data_row[ 'user_id' ];
    $assigned_project_id = $data_row[ 'assigned_project_id' ];
@@ -1335,7 +1334,7 @@ function remark_unreachable_issues ( $data_row, $group_index )
       }
 
       echo '<a href="search.php?project_id=' . $assigned_project_id .
-         prepare_filter_string ( $data_row, $group_index ) .
+         prepare_filter_string () .
          '&amp;handler_id=' . get_link_user_id ( $user_id ) .
          '&amp;sticky_issues=on' .
          '&amp;target_version=' . $target_version .
