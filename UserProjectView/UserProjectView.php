@@ -8,7 +8,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.35';
+      $this->version = '1.3.63';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -86,15 +86,17 @@ class UserProjectViewPlugin extends MantisPlugin
          'CStatSelect3' => 20,
          'IAMThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
          'IAGThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
-
+         'CStatIgn1' => OFF, 'CStatIgn2' => OFF, 'CStatIgn3' => OFF,
+         'CStatIgn4' => OFF, 'CStatIgn5' => OFF, 'CStatIgn6' => OFF,
+         'CStatIgn7' => OFF, 'CStatIgn8' => OFF, 'CStatIgn9' => OFF,
+         'CStatIgn10' => OFF, 'CStatIgn11' => OFF, 'CStatIgn12' => OFF,
+         'CStatIgn13' => OFF, 'CStatIgn14' => OFF, 'CStatIgn15' => OFF,
+         'CStatIgn16' => OFF, 'CStatIgn17' => OFF, 'CStatIgn18' => OFF,
+         'CStatIgn19' => OFF, 'CStatIgn20' => OFF,
          'layer_one_name' => 0,
 
          // URI -> unreachable issue
          'URIThreshold' => array (
-            '0' => 20,
-            '1' => 30,
-            '2' => 40,
-            '3' => 50
          ),
 
          'UserProjectAccessLevel' => ADMINISTRATOR
@@ -120,7 +122,9 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function menu ()
    {
-      if ( !plugin_is_installed ( 'WhiteboardMenu' ) && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel () )
+      if ( ( !plugin_is_installed ( 'WhiteboardMenu' ) || !file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
+         && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel ()
+      )
       {
          return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_userprojecttitle' ) . '</a>';
       }

@@ -109,24 +109,53 @@ class databaseapi
     * @param $project_id
     * @param $target_version
     * @param $status
+    * @param $stat_ignore_status
+    * @param $group_index
     * @return mixed
     */
-   public function get_issues_by_user_project_version_status ( $user_id, $project_id, $target_version, $status )
+   public function get_issues_by_user_project_version_status ( $user_id, $project_id, $target_version, $status, $stat_ignore_status, $group_index )
    {
       $bug_table = $this->get_mantis_table ( 'bug' );
 
-      $query = "SELECT id FROM $bug_table
-          WHERE handler_id = " . $user_id . "
-          AND status = " . $status . "
-          AND target_version = '" . $target_version . "'";
+      $query = "SELECT id FROM $bug_table";
+
+      $where_flag = false;
+      if ( $stat_ignore_status == OFF || $group_index != 3 )
+      {
+         $query .= " WHERE handler_id = " . $user_id;
+         $where_flag = true;
+      }
+
+      if ( $where_flag )
+      {
+         $query .= " AND";
+      }
+      else
+      {
+         $query .= " WHERE";
+      }
+
+      $query .= " status = " . $status . "
+         AND target_version = '" . $target_version . "'";
+
       if ( $project_id != '' || $project_id != 0 )
       {
          $query .= " AND project_id = " . $project_id;
       }
 
-      $issues = $this->mysqli->query ( $query );
+      $result = $this->mysqli->query ( $query );
 
-      return $issues;
+      $issues = array ();
+      if ( 0 != $result->num_rows )
+      {
+         while ( $row = $result->fetch_row () )
+         {
+            $issues[] = $row[ 0 ];
+         }
+         return $issues;
+      }
+
+      return null;
    }
 
    /**
@@ -145,6 +174,32 @@ class databaseapi
       $query = "SELECT COUNT(*) FROM $bug_table
           WHERE handler_id = " . $user_id . "
           AND status = " . $status . "
+          AND target_version = '" . $target_version . "'";
+      if ( $project_id != '' || $project_id != 0 )
+      {
+         $query .= " AND project_id = " . $project_id;
+      }
+
+      $assoc_array = mysqli_fetch_row ( $this->mysqli->query ( $query ) );
+      $amount = $assoc_array[ 0 ];
+
+      return $amount;
+   }
+
+   /**
+    * Gets the amount of issue ids by a specific filter
+    *
+    * @param $project_id
+    * @param $target_version
+    * @param $status
+    * @return mixed
+    */
+   public function get_amount_issues_by_project_version_status ( $project_id, $target_version, $status )
+   {
+      $bug_table = $this->get_mantis_table ( 'bug' );
+
+      $query = "SELECT COUNT(*) FROM $bug_table
+          WHERE status = " . $status . "
           AND target_version = '" . $target_version . "'";
       if ( $project_id != '' || $project_id != 0 )
       {

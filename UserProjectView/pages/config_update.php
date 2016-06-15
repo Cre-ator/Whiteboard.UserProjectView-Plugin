@@ -65,6 +65,7 @@ if ( $option_change )
    update_multiple_values ( 'CStatSelect', PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT );
    update_multiple_values ( 'IAMThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD );
    update_multiple_values ( 'IAGThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD );
+   update_multiple_values ( 'CStatIgn', PLUGINS_USERPROJECTVIEW_COLUMN_CSTATIGN );
 }
 
 form_security_purge ( 'plugin_UserProjectView_config_update' );

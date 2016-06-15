@@ -1,183 +1,227 @@
 <?php
 require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
+require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
 require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
 
 auth_reauthenticate ();
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
+?>
+   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+   <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>
+   <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
+<?php
 html_page_top2 ();
-
 if ( plugin_is_installed ( 'WhiteboardMenu' ) && file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
 {
    require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
    $whiteboard_print_api = new whiteboard_print_api();
    $whiteboard_print_api->printWhiteboardMenu ();
 }
-echo '<link rel="stylesheet" href="' . USERPROJECTVIEW_PLUGIN_URL . 'files/UserProjectView.css">';
-$selected_values = null;
-if ( !empty( $_POST[ 'dataRow' ] ) )
+
+echo '<div align="center">';
+echo '<hr size="1" width="50%"/>';
+echo plugin_lang_get ( 'remove_quest' ) . '<br/><br/>';
+echo '<table class="width50" cellspacing="1">';
+print_thead ();
+print_tbody ();
+echo '</table>';
+html_page_bottom ();
+
+function print_thead ()
 {
-   $selected_values = $_POST[ 'dataRow' ];
+   echo '<thead>';
+   echo '<tr>';
+   echo '<th width="20px"></th>';
+   echo '<th class="headrow" style="text-align: left" colspan="2">' . plugin_lang_get ( 'thead_username' ) . '</th>';
+   echo '<th class="headrow" style="text-align: left">' . plugin_lang_get ( 'thead_realname' ) . '</th>';
+   echo '</tr>';
+   echo '<tr>';
+   echo '<th></th>';
+   echo '<th class="headrow" style="text-align: left" colspan="3">' . plugin_lang_get ( 'config_layer_one_name_two' ) . '</th>';
+   echo '</tr>';
+   echo '</thead>';
 }
-$record_count = count ( $selected_values );
-$select = strtolower ( $_POST[ 'option' ] );
 
-switch ( $select )
+function print_tbody ()
 {
-   case 'removesingle':
-      ?>
-      <div align="center">
-         <hr size="1" width="50%"/>
-         <?php echo plugin_lang_get ( 'remove_quest' ); ?><br/><br/>
-         <form action="<?php echo plugin_page ( 'UserProject_RemoveSubmit' ); ?>" method="post">
-            <table class="width50" cellspacing="1">
-               <tr class="row-category">
-                  <th><?php echo plugin_lang_get ( 'thead_username' ); ?></th>
-                  <th><?php echo plugin_lang_get ( 'thead_layer_issue_project' ); ?></th>
-               </tr>
-               <?php
-               for ( $recordIndex = 0;
-                     $recordIndex < $record_count;
-                     $recordIndex++ )
-               {
-                  $record[ $recordIndex ] = explode ( '_', $selected_values[ $recordIndex ] );
+   $databaseapi = new databaseapi();
+   $selected_values = null;
+   if ( isset( $_POST[ 'dataRow' ] ) )
+   {
+      $selected_values = $_POST[ 'dataRow' ];
+   }
+   $select = strtolower ( $_POST[ 'option' ] );
 
-                  $user_id = $record[ $recordIndex ][ 0 ];
-                  $project_id = $record[ $recordIndex ][ 1 ];
-                  ?>
-                  <input type="hidden" name="recordSet[]" value="<?php echo $selected_values[ $recordIndex ]; ?>"/>
-                  <?php
-                  if ( is_mantis_rel () )
+   /** prepare user groups */
+   $user_group = userprojectapi::prepare_user_project_remove_group ( $selected_values );
+
+   echo '<tbody><form action="' . plugin_page ( 'UserProject_RemoveSubmit' ) . '" method="post">';
+   foreach ( $user_group as $user )
+   {
+      $user_id = $user[ 0 ];
+      $project_ids = explode ( ',', $user[ 1 ] );
+
+      print_option_user_row ( $user_id );
+      for ( $project_index = 0; $project_index < count ( $project_ids ); $project_index++ )
+      {
+         $project_id = $project_ids[ $project_index ];
+
+         if ( $project_index > 0 )
+         {
+            $project_id_spec_sub_projects = project_hierarchy_get_all_subprojects ( $project_id );
+            $old_project_id = $project_ids[ $project_index - 1 ];
+            $old_project_id_spec_sub_projects = project_hierarchy_get_all_subprojects ( $old_project_id );
+
+            if ( in_array ( $old_project_id, $project_id_spec_sub_projects ) )
+            {
+               /** alte löschen */
+               $project_ids[ $project_index - 1 ] = null;
+            }
+            elseif ( in_array ( $project_id, $old_project_id_spec_sub_projects ) )
+            {
+               continue;
+            }
+         }
+
+         switch ( $select )
+         {
+            case 'removesingle':
+
+               $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $project_id );
+               if ( !is_null ( $user_is_assigned_to_project ) )
+               {
+                  print_option_project_row ( $user_id, $project_id );
+               }
+               else
+               {
+                  echo '<tr class="info" data-level="1" data-status="0">';
+                  echo '<td width="20px"></td>';
+                  echo '<td class="user_row_bg" style="text-align: left">' . project_get_name ( $project_id ) . '</td>';
+                  echo '<td class="user_row_bg" style="text-align: left" colspan="2">';
+                  if ( user_is_administrator ( $user_id ) )
                   {
-                     ?>
-                     <tr <?php echo helper_alternate_class (); ?>>
-                     <?php
+                     echo plugin_lang_get ( 'remove_administrator' );
                   }
                   else
                   {
-                     ?>
-                     <tr>
-                     <?php
+                     echo plugin_lang_get ( 'remove_noassignment' );
                   }
-                  ?>
-                  <td>
-                     <a href="manage_user_edit_page.php?user_id=<?php echo $user_id; ?>">
-                        <?php
-                        if ( user_exists ( $user_id ) )
-                        {
-                           echo user_get_name ( $user_id );
-                        }
-                        else
-                        {
-                           echo '<s>' . user_get_name ( $user_id ) . '</s>';
-                        }
-                        ?>
-                     </a>
-                  </td>
-                  <td>
-                     <a href="manage_proj_edit_page.php?project_id=<?php echo $project_id; ?>">
-                        <?php echo project_get_name ( $project_id ); ?>
-                     </a>
-                  </td>
-                  </tr>
-                  <?php
+                  echo '</td>';
+                  echo '</tr>';
                }
-               ?>
-               <tr>
-                  <td class="center" colspan="2">
-                     <input type="submit" name="formSubmit" class="button"
-                            value="<?php echo plugin_lang_get ( 'remove_selectSingle' ); ?>"/>
-                  </td>
-               </tr>
-            </table>
-         </form>
-         <hr size="1" width="50%"/>
-      </div>
+               break;
 
-      <?php
-      break;
+            case 'removeall':
 
-   case 'removeall':
+               $sub_project_ids = array ();
+               array_push ( $sub_project_ids, $project_id );
+               $t_sub_project_ids = project_hierarchy_get_all_subprojects ( $project_id );
+               foreach ( $t_sub_project_ids as $t_sub_project_id )
+               {
+                  if ( !in_array ( $t_sub_project_id, $sub_project_ids, true ) )
+                  {
+                     array_push ( $sub_project_ids, $t_sub_project_id );
+                  }
+               }
 
-      echo '<div align="center">';
-      echo '<hr size="1" width="50%" />';
-      echo plugin_lang_get ( 'remove_quest' ) . '<br/><br/>';
-
-      echo '<table class="width50" cellspacing="1">';
-      echo '<tr class="row-category">';
-      echo '<th>' . plugin_lang_get ( 'thead_username' ) . '</th>';
-      echo '<th>' . plugin_lang_get ( 'thead_layer_issue_project' ) . '</th>';
-      echo '</tr>';
-
-      for ( $recordIndex = 0; $recordIndex < $record_count; $recordIndex++ )
-      {
-         $record[ $recordIndex ] = explode ( '__', $selected_values[ $recordIndex ] );
-
-         $user_id = $record[ $recordIndex ][ 0 ];
-         $project_id = $record[ $recordIndex ][ 1 ];
-
-         $sub_projects = array ();
-         array_push ( $sub_projects, $project_id );
-         $t_sub_projects = array ();
-         $t_sub_projects = project_hierarchy_get_all_subprojects ( $project_id );
-
-         foreach ( $t_sub_projects as $t_sub_project )
-         {
-            array_push ( $sub_projects, $t_sub_project );
+               foreach ( $sub_project_ids as $sub_project_id )
+               {
+                  $user_is_assigned_to_project = $databaseapi->check_user_project_assignment ( $user_id, $sub_project_id );
+                  if ( !is_null ( $user_is_assigned_to_project ) )
+                  {
+                     print_option_project_row ( $user_id, $sub_project_id );
+                  }
+                  else
+                  {
+                     echo '<tr class="info" data-level="1" data-status="0">';
+                     echo '<td width="20px"></td>';
+                     echo '<td class="user_row_bg" style="text-align: left">' . project_get_name ( $sub_project_id ) . '</td>';
+                     echo '<td class="user_row_bg" style="text-align: left" colspan="2">';
+                     if ( user_is_administrator ( $user_id ) )
+                     {
+                        echo plugin_lang_get ( 'remove_administrator' );
+                     }
+                     else
+                     {
+                        echo plugin_lang_get ( 'remove_noassignment' );
+                     }
+                     echo '</td>';
+                     echo '</tr>';
+                  }
+               }
+               break;
          }
-
-         foreach ( $sub_projects as $sub_project )
-         {
-            echo '<form action="' . plugin_page ( 'UserProject_RemoveSubmit' ) . '" method="post">';
-            echo '<input type="hidden" name="user[]" value="' . $user_id . '"/>';
-            echo '<input type="hidden" name="project[]" value="' . $sub_project . '"/>';
-
-            if ( is_mantis_rel () )
-            {
-               echo '<tr ' . helper_alternate_class () . '>';
-            }
-            else
-            {
-               echo '<tr>';
-            }
-
-            echo '<td>';
-            echo '<a href="manage_user_edit_page.php?user_id=' . $user_id . '">';
-            if ( user_exists ( $user_id ) )
-            {
-               echo user_get_name ( $user_id );
-            }
-            else
-            {
-               echo '<s>' . user_get_name ( $user_id ) . '</s>';
-            }
-            echo '</a>';
-            echo '</td>';
-            echo '<td>';
-            echo '<a href="manage_proj_edit_page.php?project_id=' . $sub_project . '">';
-            echo project_get_name ( $sub_project );
-            echo '</a>';
-            echo '</td>';
-            echo '</tr>';
-         }
-         echo '<tr>';
-         echo '<td class="spacer" colspan="6">&nbsp;</td>';
-         echo '</tr>';
       }
+   }
 
-      echo '<tr>';
-      echo '<td class="center" colspan="2">';
-      ?>
-      <input type="submit" name="formSubmit" class="button"
-             value="<?php echo plugin_lang_get ( 'remove_selectAll' ); ?>"/>
-      <?php
-      echo '</td>';
-      echo '</tr>';
-      echo '</table>';
-
-      echo '<hr size="1" width="50%" /></div>';
-      echo '</div>';
-
-      break;
+   print_option_submit_button ();
+   echo '</form></tbody>';
 }
 
-html_page_bottom ();
+function print_option_user_row ( $user_id )
+{
+   echo '<tr class="clickable" data-level="0" data-status="0">';
+   echo '<td class="icon" width="20px"></td>';
+   print_option_avatar_col ( $user_id );
+   print_option_user_name_col ( $user_id );
+   print_option_realname_col ( $user_id );
+   echo '</tr>';
+}
+
+function print_option_avatar_col ( $user_id )
+{
+   echo '<td class="group_row_bg" style="width: 25px">';
+   $avatar = user_get_avatar ( $user_id );
+   echo '<img class="avatar" src="' . $avatar [ 0 ] . '" />';
+   echo '</td>';
+}
+
+function print_option_user_name_col ( $user_id )
+{
+   echo '<td class="group_row_bg">';
+   if ( user_exists ( $user_id ) )
+   {
+      echo user_get_name ( $user_id );
+   }
+   else
+   {
+      echo '<s>' . user_get_name ( $user_id ) . '</s>';
+   }
+   echo '</td>';
+}
+
+function print_option_realname_col ( $user_id )
+{
+   echo '<td class="group_row_bg">';
+   if ( user_exists ( $user_id ) )
+   {
+      echo user_get_realname ( $user_id );
+   }
+   else
+   {
+      echo '<s>' . user_get_realname ( $user_id ) . '</s>';
+   }
+   echo '</td>';
+}
+
+function print_option_project_row ( $user_id, $project_id )
+{
+   $access_level = user_get_access_level ( auth_get_current_user_id (), $project_id );
+   if ( $access_level >= plugin_config_get ( 'UserProjectAccessLevel' ) )
+   {
+      echo '<tr class="info" data-level="1" data-status="0">';
+      echo '<input type="hidden" name="recordset[]" value="' . $user_id . ',' . $project_id . '"/>';
+      echo '<td width="20px"></td>';
+      echo '<td class="user_row_bg" style="text-align: left" colspan="3">' . project_get_name ( $project_id ) . '</td>';
+      echo '</tr>';
+   }
+}
+
+function print_option_submit_button ()
+{
+   echo '<tr>';
+   echo '<td class="center" colspan="4">';
+   echo '<input type="submit" name="formSubmit" class="button" value="' . plugin_lang_get ( 'remove_selectSingle' ) . '"/>';
+   echo '</td>';
+   echo '</tr>';
+}
