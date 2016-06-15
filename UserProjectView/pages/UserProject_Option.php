@@ -53,7 +53,7 @@ function print_tbody ()
    $select = strtolower ( $_POST[ 'option' ] );
 
    /** prepare user groups */
-   $user_group = prepare_user_project_remove_group ( $selected_values );
+   $user_group = userprojectapi::prepare_user_project_remove_group ( $selected_values );
 
    echo '<tbody><form action="' . plugin_page ( 'UserProject_RemoveSubmit' ) . '" method="post">';
    foreach ( $user_group as $user )
