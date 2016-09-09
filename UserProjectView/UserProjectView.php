@@ -11,7 +11,7 @@ class UserProjectViewPlugin extends MantisPlugin
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.64';
+      $this->version = '1.4.1';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
@@ -145,6 +145,7 @@ class UserProjectViewPlugin extends MantisPlugin
       {
          userprojectapi::addPluginToWhiteboardMenu ();
       }
+
       if ( ( !plugin_is_installed ( 'WhiteboardMenu' ) || !file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
          && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel ()
       )
