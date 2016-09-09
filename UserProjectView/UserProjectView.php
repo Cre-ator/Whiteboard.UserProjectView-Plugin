@@ -40,8 +40,6 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function config ()
    {
-      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constantapi.php' );
-
       return array
       (
          'ShowMenu' => ON,
@@ -133,7 +131,7 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       if ( plugin_config_get ( 'ShowInFooter' ) && $this->getUserHasLevel () )
       {
-         return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
+         return '<address>' . $this->shortName . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
       }
       return null;
    }
