@@ -1,6 +1,7 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constantapi.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'databaseapi.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 auth_reauthenticate ();
 access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
@@ -13,13 +14,16 @@ if ( $option_reset )
 {
    $databaseapi = new databaseapi();
    $databaseapi->reset_plugin ();
+   userprojectapi::removePluginFromWhiteboardMenu ();
 }
 
 if ( $option_change )
 {
    update_single_value ( 'UserProjectAccessLevel', ADMINISTRATOR );
+   userprojectapi::editPluginInWhiteboardMenu ( 'plugin_access_level', gpc_get_int ( 'UserProjectAccessLevel', ADMINISTRATOR ) );
 
    update_button ( 'ShowMenu' );
+   userprojectapi::editPluginInWhiteboardMenu ( 'plugin_show_menu', gpc_get_int ( 'ShowMenu' ) );
    update_button ( 'ShowInFooter' );
    update_button ( 'ShowAvatar' );
 

@@ -2,21 +2,24 @@
 
 class UserProjectViewPlugin extends MantisPlugin
 {
+   private $shortName = null;
+
    function register ()
    {
-      $this->name = 'UserProjectView';
+      $this->shortName = 'UserProjectView';
+      $this->name = 'Whiteboard.' . $this->shortName;
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.63';
+      $this->version = '1.3.64';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
       );
 
-      $this->author = 'Stefan Schwarz';
+      $this->author = 'cbb software GmbH (Rainer Dierck, Stefan Schwarz)';
       $this->contact = '';
-      $this->url = '';
+      $this->url = 'https://github.com/Cre-ator';
    }
 
    function hooks ()
@@ -31,23 +34,13 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function init ()
    {
-      $t_core_path = config_get_global ( 'plugin_path' )
-         . plugin_get_current ()
-         . DIRECTORY_SEPARATOR
-         . 'core'
-         . DIRECTORY_SEPARATOR;
-      require_once ( $t_core_path . 'constantapi.php' );
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constantapi.php' );
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
    }
 
    function config ()
    {
-      $t_core_path = config_get_global ( 'plugin_path' )
-         . plugin_get_current ()
-         . DIRECTORY_SEPARATOR
-         . 'core'
-         . DIRECTORY_SEPARATOR;
-
-      require_once ( $t_core_path . 'constantapi.php' );
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constantapi.php' );
 
       return array
       (
@@ -96,11 +89,36 @@ class UserProjectViewPlugin extends MantisPlugin
          'layer_one_name' => 0,
 
          // URI -> unreachable issue
-         'URIThreshold' => array (
-         ),
+         'URIThreshold' => array (),
 
          'UserProjectAccessLevel' => ADMINISTRATOR
       );
+   }
+
+   function schema ()
+   {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      $tableArray = array ();
+
+      $whiteboardMenuTable = array
+      (
+         'CreateTableSQL', array ( plugin_table ( 'menu', 'whiteboard' ), "
+            id                   I       NOTNULL UNSIGNED AUTOINCREMENT PRIMARY,
+            plugin_name          C(250)  DEFAULT '',
+            plugin_access_level  I       UNSIGNED,
+            plugin_show_menu     I       UNSIGNED,
+            plugin_menu_path     C(250)  DEFAULT ''
+            " )
+      );
+
+      $boolArray = userprojectapi::checkWhiteboardTablesExist ();
+      # add whiteboardmenu table if it does not exist
+      if ( !$boolArray[ 0 ] )
+      {
+         array_push ( $tableArray, $whiteboardMenuTable );
+      }
+
+      return $tableArray;
    }
 
    function getUserHasLevel ()
@@ -122,6 +140,11 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function menu ()
    {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      if ( !userprojectapi::checkPluginIsRegisteredInWhiteboardMenu () )
+      {
+         userprojectapi::addPluginToWhiteboardMenu ();
+      }
       if ( ( !plugin_is_installed ( 'WhiteboardMenu' ) || !file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
          && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel ()
       )
@@ -129,5 +152,11 @@ class UserProjectViewPlugin extends MantisPlugin
          return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_userprojecttitle' ) . '</a>';
       }
       return null;
+   }
+
+   function uninstall ()
+   {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      userprojectapi::removePluginFromWhiteboardMenu ();
    }
 }
