@@ -38,15 +38,8 @@ html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
 if ( !$print )
 {
    html_page_top2 ();
-   if ( plugin_is_installed ( 'WhiteboardMenu' )
-      && file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' )
-   )
-   {
-      require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-         'WhiteboardMenu' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'wmApi.php' );
-      echo '<link rel="stylesheet" href="plugins/WhiteboardMenu/files/whiteboardmenu.css"/>';
-      wmApi::printWhiteboardMenu ();
-   }
+   # print whiteboard menu bar
+   userprojectapi::htmlPluginTriggerWhiteboardMenu ();
 }
 
 echo '<div id="manage-user-div" class="form-container">' . PHP_EOL;

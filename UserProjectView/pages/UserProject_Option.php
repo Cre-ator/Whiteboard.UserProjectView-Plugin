@@ -11,6 +11,8 @@ html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
    <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
 <?php
 html_page_top2 ();
+# print whiteboard menu bar
+userprojectapi::htmlPluginTriggerWhiteboardMenu ();
 echo '<div align="center">';
 echo '<hr size="1" width="50%"/>';
 echo plugin_lang_get ( 'remove_quest' ) . '<br/><br/>';

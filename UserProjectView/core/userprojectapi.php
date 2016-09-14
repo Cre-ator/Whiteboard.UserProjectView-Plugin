@@ -35,6 +35,22 @@ class userprojectapi
    }
 
    /**
+    * triggers whiteboard menu if installed
+    */
+   public static function htmlPluginTriggerWhiteboardMenu ()
+   {
+      if ( plugin_is_installed ( 'WhiteboardMenu' ) &&
+         file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' )
+      )
+      {
+         require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+            'WhiteboardMenu' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'wmApi.php' );
+         echo '<link rel="stylesheet" href="plugins/WhiteboardMenu/files/whiteboardmenu.css"/>';
+         wmApi::printWhiteboardMenu ();
+      }
+   }
+
+   /**
     * checks if given table exists
     *
     * @param $tableName
