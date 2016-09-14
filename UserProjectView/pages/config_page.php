@@ -1,6 +1,6 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'uvConst.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 auth_reauthenticate ();
 access_ensure_global_level ( plugin_config_get ( 'UserProjectAccessLevel' ) );

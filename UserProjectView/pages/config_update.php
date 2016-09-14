@@ -1,10 +1,10 @@
 <?php
-require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constantapi.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'uvConst.php' );
 require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'databaseapi.php' );
 require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 auth_reauthenticate ();
-access_ensure_global_level ( config_get ( 'UserProjectAccessLevel' ) );
+access_ensure_global_level ( config_get ( 'UserProjectAccessLevel', ADMINISTRATOR ) );
 form_security_validate ( 'plugin_UserProjectView_config_update' );
 
 $option_reset = gpc_get_bool ( 'reset', false );
@@ -14,7 +14,6 @@ if ( $option_reset )
 {
    $databaseapi = new databaseapi();
    $databaseapi->reset_plugin ();
-   userprojectapi::removePluginFromWhiteboardMenu ();
 }
 
 if ( $option_change )
@@ -28,30 +27,30 @@ if ( $option_change )
    update_button ( 'ShowAvatar' );
 
    update_button ( 'IAUHighlighting' );
-   update_color ( 'IAUHBGColor', PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR );
+   update_color ( 'IAUHBGColor', '#E67C7C' );
 
    update_button ( 'URIUHighlighting' );
-   update_color ( 'URIUHBGColor', PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR );
+   update_color ( 'URIUHBGColor', '#E67C7C' );
 
    update_button ( 'NUIHighlighting' );
-   update_color ( 'NUIHBGColor', PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR );
+   update_color ( 'NUIHBGColor', '#FCBDBD' );
 
    update_button ( 'ShowZIU' );
    update_button ( 'ZIHighlighting' );
-   update_color ( 'ZIHBGColor', PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR );
+   update_color ( 'ZIHBGColor', '#F8FFCC' );
 
    update_button ( 'layer_one_name' );
 
-   update_color ( 'TAMHBGColor', PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR );
+   update_color ( 'TAMHBGColor', '#FAD785' );
 
-   $col_amount = gpc_get_int ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
-   if ( plugin_config_get ( 'CAmount' ) != $col_amount && plugin_config_get ( 'CAmount' ) != '' && $col_amount <= PLUGINS_USERPROJECTVIEW_MAX_COLUMNS )
+   $col_amount = gpc_get_int ( 'CAmount', 3 );
+   if ( plugin_config_get ( 'CAmount' ) != $col_amount && plugin_config_get ( 'CAmount' ) != '' && $col_amount <= 20 )
    {
       plugin_config_set ( 'CAmount', $col_amount );
    }
    elseif ( plugin_config_get ( 'CAmount' ) == '' )
    {
-      plugin_config_set ( 'CAmount', PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT );
+      plugin_config_set ( 'CAmount', 3 );
    }
 
    if ( !empty( $_POST[ 'URIThreshold' ] ) )
@@ -66,10 +65,10 @@ if ( $option_change )
       }
    }
 
-   update_multiple_values ( 'CStatSelect', PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT );
-   update_multiple_values ( 'IAMThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD );
-   update_multiple_values ( 'IAGThreshold', PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD );
-   update_multiple_values ( 'CStatIgn', PLUGINS_USERPROJECTVIEW_COLUMN_CSTATIGN );
+   update_multiple_values ( 'CStatSelect', 50 );
+   update_multiple_values ( 'IAMThreshold', 5 );
+   update_multiple_values ( 'IAGThreshold', 30 );
+   update_multiple_values ( 'CStatIgn', OFF );
 }
 
 form_security_purge ( 'plugin_UserProjectView_config_update' );

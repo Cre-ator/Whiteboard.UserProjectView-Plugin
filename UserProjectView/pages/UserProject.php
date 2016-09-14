@@ -1,8 +1,7 @@
 <?php
-
-require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'uvConst.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'databaseapi.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 $print = false;
 if ( isset( $_POST[ 'print' ] ) )

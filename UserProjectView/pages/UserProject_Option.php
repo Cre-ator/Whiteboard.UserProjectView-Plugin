@@ -1,7 +1,7 @@
 <?php
-require_once USERPROJECTVIEW_CORE_URI . 'constantapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'databaseapi.php';
-require_once USERPROJECTVIEW_CORE_URI . 'userprojectapi.php';
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'uvConst.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'databaseapi.php' );
+require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 auth_reauthenticate ();
 html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
@@ -11,13 +11,6 @@ html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
    <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
 <?php
 html_page_top2 ();
-if ( plugin_is_installed ( 'WhiteboardMenu' ) && file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
-{
-   require_once WHITEBOARDMENU_CORE_URI . 'whiteboard_print_api.php';
-   $whiteboard_print_api = new whiteboard_print_api();
-   $whiteboard_print_api->printWhiteboardMenu ();
-}
-
 echo '<div align="center">';
 echo '<hr size="1" width="50%"/>';
 echo plugin_lang_get ( 'remove_quest' ) . '<br/><br/>';
