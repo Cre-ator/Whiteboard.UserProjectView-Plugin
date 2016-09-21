@@ -108,7 +108,7 @@ class userprojectapi
       $pluginName = plugin_get_current ();
       $pluginAccessLevel = ADMINISTRATOR;
       $pluginShowMenu = ON;
-      $pluginPath = '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">';
+      $pluginPath = plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC';
 
       $mysqli = self::initializeDbConnection ();
 
