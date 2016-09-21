@@ -28,7 +28,7 @@ if ( plugin_config_get ( 'ShowZIU' ) )
    $data_rows = userprojectapi::process_no_issue_users ( $data_rows, $matchcode_row_index, $project_id );
 }
 
-html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
+html_page_top1 ( plugin_lang_get ( 'menu_title' ) );
 ?>
    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
    <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>
@@ -113,7 +113,7 @@ function print_main_table_head_row ( $dynamic_colspan )
    global $print;
    echo '<tr>' . PHP_EOL;
    echo '<td class="form-title" colspan="' . $dynamic_colspan . '">';
-   echo plugin_lang_get ( 'menu_userprojecttitle' ) . ' - ' . plugin_lang_get ( 'thead_projects_title' )
+   echo plugin_lang_get ( 'menu_title' ) . ' - ' . plugin_lang_get ( 'thead_projects_title' )
       . project_get_name ( helper_get_current_project () ) . PHP_EOL;
    echo '</td>' . PHP_EOL;
    if ( !$print )

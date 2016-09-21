@@ -1,6 +1,6 @@
 ﻿<?php
 $s_plugin_UserProjectView_menu_printbutton = 'Print report';
-$s_plugin_UserProjectView_menu_userprojecttitle = 'User report';
+$s_plugin_UserProjectView_menu_title = 'User report';
 
 $s_plugin_UserProjectView_thead_projects_title = 'Selected project: ';
 $s_plugin_UserProjectView_thead_username = 'Username';

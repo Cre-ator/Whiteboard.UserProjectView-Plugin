@@ -4,7 +4,7 @@ require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'cor
 require_once ( __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
 
 auth_reauthenticate ();
-html_page_top1 ( plugin_lang_get ( 'menu_userprojecttitle' ) );
+html_page_top1 ( plugin_lang_get ( 'menu_title' ) );
 ?>
    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
    <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>

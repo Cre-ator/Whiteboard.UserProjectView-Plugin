@@ -1,6 +1,6 @@
 ﻿<?php
 $s_plugin_UserProjectView_menu_printbutton = 'Imprimer le rapport';
-$s_plugin_UserProjectView_menu_userprojecttitle = 'Rapport d´utilisateur';
+$s_plugin_UserProjectView_menu_title = 'Rapport d´utilisateur';
 
 $s_plugin_UserProjectView_thead_projects_title = 'Projet sélectionné: ';
 $s_plugin_UserProjectView_thead_username = 'Nom d´utilisateur';
