@@ -32,7 +32,6 @@ html_page_top1 ( plugin_lang_get ( 'menu_title' ) );
 ?>
    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
    <script type="text/javascript" src="plugins/UserProjectView/javascript/table.js"></script>
-   <script type="text/javascript" src="plugins/UserProjectView/javascript/cookie.js"></script>
    <link rel="stylesheet" href="plugins/UserProjectView/files/UserProjectView.css"/>
 <?php
 if ( !$print )
@@ -150,10 +149,10 @@ function print_main_table_head_col ( $lang_string, $sort_val, $header_colspan )
    if ( $sort_val == 'userName' || $sort_val == 'realName' )
    {
       echo '<a href="' . plugin_page ( 'UserProject' ) . '&amp;sortVal=' . $sort_val . '&amp;sort=ASC">';
-      echo '<img src="plugins/UserProjectView/files/up.gif" alt="sort asc"/>';
+      echo '<img class="symbol" src="plugins/UserProjectView/files/sort_az_ascending2.png" alt="sort asc"/>';
       echo '</a>';
       echo '<a href="' . plugin_page ( 'UserProject' ) . '&amp;sortVal=' . $sort_val . '&amp;sort=DESC">';
-      echo '<img src="plugins/UserProjectView/files/down.gif" alt="sort desc"/>';
+      echo '<img class="symbol" src="plugins/UserProjectView/files/sort_az_ascending.png" alt="sort desc"/>';
       echo '</a>';
    }
    echo '</th>' . PHP_EOL;
