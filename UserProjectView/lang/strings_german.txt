@@ -1,6 +1,6 @@
 ﻿<?php
 $s_plugin_UserProjectView_menu_printbutton = 'Bericht Drucken';
-$s_plugin_UserProjectView_menu_userprojecttitle = 'Benutzer Bericht';
+$s_plugin_UserProjectView_menu_title = 'Benutzer Bericht';
 
 $s_plugin_UserProjectView_thead_projects_title = 'Ausgewähltes Projekt: ';
 $s_plugin_UserProjectView_thead_username = 'Benutzername';
@@ -12,7 +12,7 @@ $s_plugin_UserProjectView_thead_remark = 'Information';
 
 $s_plugin_UserProjectView_remark_noProject = 'Projekt-Zuweisung fehlt';
 $s_plugin_UserProjectView_remark_showURIssues = 'Unerreichbare Issues';
-$s_plugin_UserProjectView_remark_IAUser = 'Inaktiv';
+$s_plugin_UserProjectView_remark_IAUser = 'deaktiviert';
 $s_plugin_UserProjectView_remark_since = 'seit';
 $s_plugin_UserProjectView_remark_day = 'Tagen';
 $s_plugin_UserProjectView_remark_showhideHeadRow = 'Ein- / Ausblenden';
@@ -20,7 +20,7 @@ $s_plugin_UserProjectView_remark_noprojectassignment = 'Nur Unterprojekten zugeo
 
 $s_plugin_UserProjectView_headrow_user = 'Nutzer mit Einträgen';
 $s_plugin_UserProjectView_headrow_no_issue = 'Nutzer ohne Einträge';
-$s_plugin_UserProjectView_headrow_del_user = 'Nutzer inaktiv/gelöscht';
+$s_plugin_UserProjectView_headrow_del_user = 'Nutzer deaktiviert/gelöscht';
 $s_plugin_UserProjectView_headrow_no_user = 'Einträge ohne Nutzer / Ignorierte Einträge';
 $s_plugin_UserProjectView_headrow_show_all_user = 'Alle Nutzer mit Einträgen anzeigen / ausblenden';
 

@@ -2,21 +2,24 @@
 
 class UserProjectViewPlugin extends MantisPlugin
 {
+   private $shortName = null;
+
    function register ()
    {
-      $this->name = 'UserProjectView';
+      $this->shortName = 'UserProjectView';
+      $this->name = 'Whiteboard.' . $this->shortName;
       $this->description = 'Shows detailed information about each user and his assigned issues';
       $this->page = 'config_page';
 
-      $this->version = '1.3.63';
+      $this->version = '1.4.7';
       $this->requires = array
       (
          'MantisCore' => '1.2.0, <= 1.3.99'
       );
 
-      $this->author = 'Stefan Schwarz';
+      $this->author = 'cbb software GmbH (Rainer Dierck, Stefan Schwarz)';
       $this->contact = '';
-      $this->url = '';
+      $this->url = 'https://github.com/Cre-ator';
    }
 
    function hooks ()
@@ -31,24 +34,12 @@ class UserProjectViewPlugin extends MantisPlugin
 
    function init ()
    {
-      $t_core_path = config_get_global ( 'plugin_path' )
-         . plugin_get_current ()
-         . DIRECTORY_SEPARATOR
-         . 'core'
-         . DIRECTORY_SEPARATOR;
-      require_once ( $t_core_path . 'constantapi.php' );
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'uvConst.php' );
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
    }
 
    function config ()
    {
-      $t_core_path = config_get_global ( 'plugin_path' )
-         . plugin_get_current ()
-         . DIRECTORY_SEPARATOR
-         . 'core'
-         . DIRECTORY_SEPARATOR;
-
-      require_once ( $t_core_path . 'constantapi.php' );
-
       return array
       (
          'ShowMenu' => ON,
@@ -57,35 +48,35 @@ class UserProjectViewPlugin extends MantisPlugin
 
          // IAU -> inactive user
          'IAUHighlighting' => ON,
-         'IAUHBGColor' => PLUGINS_USERPROJECTVIEW_IAUHBGCOLOR,
+         'IAUHBGColor' => '#E67C7C',
 
          // URIU -> unreachable issue user (issue isnt reachable by user)
          'URIUHighlighting' => ON,
-         'URIUHBGColor' => PLUGINS_USERPROJECTVIEW_URIUHBGCOLOR,
+         'URIUHBGColor' => '#E67C7C',
 
          // NUI -> no user issue (issues without user)
          'NUIHighlighting' => ON,
-         'NUIHBGColor' => PLUGINS_USERPROJECTVIEW_NUIHBGCOLOR,
+         'NUIHBGColor' => '#FCBDBD',
 
          // ZIU -> zero issue user | ZI -> zero issue
          'ShowZIU' => ON,
          'ZIHighlighting' => ON,
-         'ZIHBGColor' => PLUGINS_USERPROJECTVIEW_ZIHBGCOLOR,
+         'ZIHBGColor' => '#F8FFCC',
 
          // C -> column | TAMH -> threshold amount highlighting
-         'CAmount' => PLUGINS_USERPROJECTVIEW_COLUMN_AMOUNT,
-         'TAMHBGColor' => PLUGINS_USERPROJECTVIEW_TAMHBGCOLOR,
+         'CAmount' => 3,
+         'TAMHBGColor' => '#FAD785',
 
          // C -> Column | IAM -> issue amount | IAG -> issue age
          'CStatSelect1' => 10,
          'IAMThreshold1' => 0,
          'IAGThreshold1' => 60,
-         'CStatSelect2' => PLUGINS_USERPROJECTVIEW_COLUMN_STAT_DEFAULT,
-         'IAMThreshold2' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
-         'IAGThreshold2' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
+         'CStatSelect2' => 50,
+         'IAMThreshold2' => 5,
+         'IAGThreshold2' => 30,
          'CStatSelect3' => 20,
-         'IAMThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAMTHRESHOLD,
-         'IAGThreshold3' => PLUGINS_USERPROJECTVIEW_COLUMN_IAGTHRESHOLD,
+         'IAMThreshold3' => 5,
+         'IAGThreshold3' => 30,
          'CStatIgn1' => OFF, 'CStatIgn2' => OFF, 'CStatIgn3' => OFF,
          'CStatIgn4' => OFF, 'CStatIgn5' => OFF, 'CStatIgn6' => OFF,
          'CStatIgn7' => OFF, 'CStatIgn8' => OFF, 'CStatIgn9' => OFF,
@@ -96,11 +87,36 @@ class UserProjectViewPlugin extends MantisPlugin
          'layer_one_name' => 0,
 
          // URI -> unreachable issue
-         'URIThreshold' => array (
-         ),
+         'URIThreshold' => array (),
 
          'UserProjectAccessLevel' => ADMINISTRATOR
       );
+   }
+
+   function schema ()
+   {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      $tableArray = array ();
+
+      $whiteboardMenuTable = array
+      (
+         'CreateTableSQL', array ( plugin_table ( 'menu', 'whiteboard' ), "
+            id                   I       NOTNULL UNSIGNED AUTOINCREMENT PRIMARY,
+            plugin_name          C(250)  DEFAULT '',
+            plugin_access_level  I       UNSIGNED,
+            plugin_show_menu     I       UNSIGNED,
+            plugin_menu_path     C(250)  DEFAULT ''
+            " )
+      );
+
+      $boolArray = userprojectapi::checkWhiteboardTablesExist ();
+      # add whiteboardmenu table if it does not exist
+      if ( !$boolArray[ 0 ] )
+      {
+         array_push ( $tableArray, $whiteboardMenuTable );
+      }
+
+      return $tableArray;
    }
 
    function getUserHasLevel ()
@@ -115,19 +131,31 @@ class UserProjectViewPlugin extends MantisPlugin
    {
       if ( plugin_config_get ( 'ShowInFooter' ) && $this->getUserHasLevel () )
       {
-         return '<address>' . $this->name . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
+         return '<address>' . $this->shortName . ' ' . $this->version . ' Copyright &copy; 2015 by ' . $this->author . '</address>';
       }
       return null;
    }
 
    function menu ()
    {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      if ( !userprojectapi::checkPluginIsRegisteredInWhiteboardMenu () )
+      {
+         userprojectapi::addPluginToWhiteboardMenu ();
+      }
+
       if ( ( !plugin_is_installed ( 'WhiteboardMenu' ) || !file_exists ( config_get_global ( 'plugin_path' ) . 'WhiteboardMenu' ) )
          && plugin_config_get ( 'ShowMenu' ) && $this->getUserHasLevel ()
       )
       {
-         return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_userprojecttitle' ) . '</a>';
+         return '<a href="' . plugin_page ( 'UserProject' ) . '&sortVal=userName&sort=ASC">' . plugin_lang_get ( 'menu_title' ) . '</a>';
       }
       return null;
+   }
+
+   function uninstall ()
+   {
+      require_once ( __DIR__ . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'userprojectapi.php' );
+      userprojectapi::removePluginFromWhiteboardMenu ();
    }
 }

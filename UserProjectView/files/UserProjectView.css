@@ -1,86 +1,75 @@
-a
-{
+a {
     color: black;
     background: transparent;
     text-decoration: none;
 }
 
-a:hover
-{
+a:hover {
     text-decoration: underline;
 }
 
-.avatar
-{
+.avatar {
     max-width: 25px;
     width: 100%;
     height: auto;
 }
 
-.headrow
-{
+.headrow {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     background-color: #c8c8e8;
 }
 
-.headrow_status
-{
+.headrow_status {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-table
-{
+table {
     border-spacing: 1px;
     border-collapse: separate;
 }
 
 tbody td[class="group_row_bg"],
-tbody th[class="group_row_bg"]
-{
+tbody th[class="group_row_bg"] {
     background-color: #d0d0d0;
 }
 
-tbody td[class="user_row_bg"]
-{
+tbody td[class="user_row_bg"] {
     background-color: #e0e0e0;
 }
 
-tbody tr[class="info"]
-{
+tbody tr[class="info"] {
     max-width: 15px;
 }
 
-tbody td[class="icon"]
-{
+tbody td[class="icon"] {
     max-width: 15px;
 }
 
-table
-{
+table {
     border: none;
 }
 
-table caption
-{
+table caption {
     text-align: left;
 }
 
-tbody td[class="nowrap"]
-{
+tbody td[class="nowrap"] {
     white-space: nowrap;
 }
 
-tbody td[class="normalwrap"]
-{
+tbody td[class="normalwrap"] {
     word-wrap: normal;
 }
 
-tbody td[class="breakwordwrap"]
-{
+tbody td[class="breakwordwrap"] {
     word-wrap: break-word;
 }
 
+.symbol {
+    height: 12px;
+    width: 12px;
+}
